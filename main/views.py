@@ -39,6 +39,12 @@ def data():
         # and a 38" measurement. This eliminates those anomolies.
         if (depth < 5 and last_depth > 10) and (int(month) > 9 or int(month) < 4):
             depth = last_depth
+
+        # In 1956 there's an extra zero (120 instead of 12)
+        elif depth - last_depth > 100:
+            depth = last_depth
+
+        # set last depth in the event that we need it next loop
         last_depth = depth
 
         first_half = int(year) == season_year and int(month) > 8
