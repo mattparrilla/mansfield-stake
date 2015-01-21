@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, jsonify
 from main import app
 
 import requests
@@ -19,23 +19,48 @@ def data():
     data = csv.reader(StringIO(r.text), delimiter=',')
     snow_csv = [l for l in data]
 
-    snow_dict = {}
-    last_depth = 0.0
+    snowdepth_object = []  # object to be converted to json and served
+    last_depth = 0.0  # always update last_depth for unmeasured dates
+    season_year = 1953  # the year of the first half of the season ex. '53-'54
+    season_values = []  # the values for a particular season
+    season = False
+
     for row in snow_csv[1:-1]:
         year, month, day = row[0].split('-')
         depth = row[1]
 
+        # if no value, use last measurement (even if 0)
         if not depth:
             depth = last_depth
-
         last_depth = depth
 
-        date = "%s-%s" % (month, day)
-        if date not in snow_dict:
-            snow_dict[date] = [{year: depth}]
-        else:
-            snow_dict[date].append({year: depth})
+        first_half = int(year) == season_year and int(month) > 8
+        second_half = int(year) == season_year + 1 and int(month) < 7
 
-    snow_json = json.dumps(snow_dict)
+        # skip July and August
+        if int(month) > 8 or int(month) < 7:
 
-    return snow_json
+            # if in current season, append value
+            if first_half or second_half:
+                season_values.append({'date': "%s-%s" % (month, day),
+                    'depth': int(float(depth))})
+
+            # if next season, add season to object and instantiate new array
+            else:
+
+                if season:
+                # add previous season to main object (if season exists)
+                    snowdepth_object.append({'season': season,
+                        'values': season_values})
+
+                # update year + season
+                season_year = int(year)
+                season = "'%s-%s" % (str(season_year)[2:],
+                    str(season_year + 1)[2:])
+
+                # clear season values array and add first new entry
+                season_values = [{'date': "%s-%s" % (month, day),
+                    'depth': depth}]
+                obj = {'data': snowdepth_object}
+
+    return jsonify(**obj)

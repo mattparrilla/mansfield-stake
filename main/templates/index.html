@@ -37,34 +37,94 @@
 </head>
 
 <body>
-    <p>Hello World!</p>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script>
+var margin = {top: 20, right: 80, bottom: 30, left: 50},
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
-    d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data) {
-        var lastDepth,
-            parseDate = d3.time.format("%Y-%m-%d").parse;
+var parseDate = d3.time.format("%m-%d").parse;
 
-        data.forEach(function(d) {
-            d.date = parseDate(d.Date);
-            d.depth = parseFloat(d.Depth);
+var x = d3.time.scale()
+    .range([0, width]);
 
-            delete d.Date;
-            delete d.Depth;
+var y = d3.scale.linear()
+    .range([height, 0]);
 
-            if (isNaN(d.depth)) {
-                if (typeof lastDepth !== "undefined") {
-                    d.depth = lastDepth;
-                } else {
-                    d.depth = 0.00;
-                }
+var color = d3.scale.linear()
+    .range(['#d3d3d3', '#a8a8a8']);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+// y-axis, left, no domain
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+// generate line, mapping x to date and y to temp
+var line = d3.svg.line()
+    .interpolate("basis")
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.depth); });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, data) {
+    var snowData = data.data,
+        seasonDomain = [],
+        season;
+
+    snowData.forEach(function(d) {
+        seasonDomain.push(d.season);
+        d.values.forEach(function(value) {
+            value.date = parseDate(value.date);
+            if (value.date.getMonth() < 8) {
+                value.date.setYear(1901);
             }
-            lastDepth = d.depth;
         })
-        for (var i=500; i<600; i++) {
-            console.log(data[i]);
-        }
-    });
+    })
+    color.domain(seasonDomain);
+
+    x.domain(d3.extent(snowData[10].values, function(d) { return d.date; }))
+
+    y.domain([0,
+        d3.max(snowData, function(s) {
+            return d3.max(s.values, function(d) { return d.depth; })
+        })
+    ])
+
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Depth (inches)");
+
+  season = svg.selectAll(".season")
+      .data(snowData)
+    .enter().append("g")
+      .attr("class", "season");
+
+  season.append("path")
+      .attr("class", "line")
+      .attr("d", function(d) { return line(d.values); })
+      .style("stroke", function(d) { return color(d.season); });
+
+})
 </script>
 </body>
 </html>
