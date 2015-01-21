@@ -20,17 +20,24 @@ def data():
     snow_csv = [l for l in data]
 
     snowdepth_object = []  # object to be converted to json and served
-    last_depth = 0.0  # always update last_depth for unmeasured dates
+    last_depth = 0  # always update last_depth for unmeasured dates
     season_year = 1953  # the year of the first half of the season ex. '53-'54
     season_values = []  # the values for a particular season
     season = False
 
     for row in snow_csv[1:-1]:
         year, month, day = row[0].split('-')
-        depth = row[1]
 
-        # if no value, use last measurement (even if 0)
-        if not depth:
+        # sometimes the date exists but a measurement doesn't
+        try:
+            depth = int(float(row[1]))
+        except ValueError:
+            continue
+
+        # Sometimes there are 0 measurements instead of nulls or there are
+        # impossibly low measurements (like a 2" measurement between a 34"
+        # and a 38" measurement. This eliminates those anomolies.
+        if (depth < 5 and last_depth > 10) and (int(month) > 9 or int(month) < 4):
             depth = last_depth
         last_depth = depth
 
@@ -43,7 +50,7 @@ def data():
             # if in current season, append value
             if first_half or second_half:
                 season_values.append({'date': "%s-%s" % (month, day),
-                    'depth': int(float(depth))})
+                    'depth': depth})
 
             # if next season, add season to object and instantiate new array
             else:
@@ -61,6 +68,11 @@ def data():
                 # clear season values array and add first new entry
                 season_values = [{'date': "%s-%s" % (month, day),
                     'depth': depth}]
-                obj = {'data': snowdepth_object}
+
+    # Push last season into dataset (above code won't do it)
+    snowdepth_object.append({'season': season, 'values': season_values})
+
+    # Stick in dict to make Python happy
+    obj = {'data': snowdepth_object}
 
     return jsonify(**obj)

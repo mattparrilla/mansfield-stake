@@ -28,8 +28,12 @@
 
         .line {
         fill: none;
-        stroke: steelblue;
+        stroke: #d3d3d3;
         stroke-width: 1.5px;
+        }
+
+        .season-14-15 {
+        stroke-width: 2.5px;
         }
     </style>
 
@@ -51,8 +55,8 @@ var x = d3.time.scale()
 var y = d3.scale.linear()
     .range([height, 0]);
 
-var color = d3.scale.linear()
-    .range(['#d3d3d3', '#a8a8a8']);
+var color = d3.scale.ordinal()
+    .range(['#e4e4e4', '#d3d3d3']);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -80,8 +84,8 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
         seasonDomain = [],
         season;
 
-    snowData.forEach(function(d) {
-        seasonDomain.push(d.season);
+    snowData.forEach(function(d, i) {
+        seasonDomain.push(i);
         d.values.forEach(function(value) {
             value.date = parseDate(value.date);
             if (value.date.getMonth() < 8) {
@@ -120,9 +124,20 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
       .attr("class", "season");
 
   season.append("path")
-      .attr("class", "line")
-      .attr("d", function(d) { return line(d.values); })
-      .style("stroke", function(d) { return color(d.season); });
+      .attr("class", function(d) {
+        return ("season-" + d.season.substring(1) + " line")
+      })
+      .attr("d", function(d, i) { return line(d.values); })
+      .style("stroke", function(d, i) {
+        if (d.season === "'14-15") {
+            return "#635050";
+        } else {
+            return color(i);
+        }
+      })
+      .on("click", function(d) {
+        console.log(d.season);
+      });
 
 })
 </script>
