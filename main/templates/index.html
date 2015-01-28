@@ -60,6 +60,7 @@ var color = d3.scale.ordinal()
 
 var xAxis = d3.svg.axis()
     .scale(x)
+    .tickFormat(d3.time.format("%B"))
     .orient("bottom");
 
 // y-axis, left, no domain
