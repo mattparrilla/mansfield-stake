@@ -37,7 +37,9 @@ def data():
         # Sometimes there are 0 measurements instead of nulls or there are
         # impossibly low measurements (like a 2" measurement between a 34"
         # and a 38" measurement. This eliminates those anomolies.
-        if (depth < 5 and last_depth > 10) and (int(month) > 9 or int(month) < 4):
+        if ((depth < 5 and last_depth > 10 or last_depth - depth > 20) and
+           (int(month) > 9 or int(month) < 4)):
+
             depth = last_depth
 
         # In 1956 there's an extra zero (120 instead of 12)
