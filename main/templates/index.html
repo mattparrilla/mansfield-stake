@@ -8,11 +8,16 @@
     <meta name="description" content="Snow depth from the top of Vermont">
 
     <!-- Styles -->
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-        <style>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/d3.slider.css') }}">
+
+    <style>
 
         body {
         font: 10px sans-serif;
+        }
+
+        svg {
+            border: 1px solid black;
         }
 
         .axis path,
@@ -35,14 +40,33 @@
         .season-14-15 {
         stroke-width: 2.5px;
         }
-    </style>
 
+        .wrapper {
+        width: 830px;
+        margin-left: 50px;
+        margin-right: 80px;
+        }
+
+        .wrapper div {
+        margin: 35px 0;
+        }
+    </style>
 
 </head>
 
 <body>
+
+<div id="chart"></div>
+
+<div class="wrapper">
+    <div id="slider"></div>
+</div>
+
 <script src="http://d3js.org/d3.v3.js"></script>
+<script src="{{ url_for('static', filename='js/d3.slider.js') }}"></script>
+
 <script>
+
 var margin = {top: 20, right: 80, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
@@ -74,7 +98,7 @@ var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.depth); });
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
@@ -141,6 +165,17 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
       });
 
 })
+
+d3.select('#slider')
+    .call(d3.slider()
+        .axis(true)
+        .value( [ 10, 25 ] )
+        .on("slide", function(evt, value) {
+            d3.select('#slidertextmin').text(value[ 0 ]);
+            d3.select('#slidertextmax').text(value[ 1 ]);
+        })
+    );
+
 </script>
 </body>
 </html>
