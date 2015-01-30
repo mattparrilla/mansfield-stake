@@ -34,14 +34,13 @@ d3.slider = function module() {
       // Create scale if not defined by user
       if (!scale) {
         scale = d3.scale.linear().domain([min, max]);
-      }  
+      }
 
       // Start value
       value = value || scale.domain()[0]; 
 
       // DIV container
       var div = d3.select(this).classed("d3-slider d3-slider-" + orientation, true);
-      
       var drag = d3.behavior.drag();
 
       // Slider handle
@@ -123,7 +122,6 @@ d3.slider = function module() {
         createAxis(div);
       }
 
-
       function createAxis(dom) {
 
         // Create axis if not defined by user
@@ -134,13 +132,12 @@ d3.slider = function module() {
               .tickFormat(tickFormat)
               .orient((orientation === "horizontal") ? "bottom" :  "right");
 
-        }      
+        }
 
         // Copy slider scale to move from percentages to pixels
-        axisScale = scale.copy().range([0, sliderLength]);
-          axis.scale(axisScale);
+        axis.scale(scale);
 
-        console.log(axisScale());
+
           // Create SVG axis container
         var svg = dom.append("svg")
             .classed("d3-slider-axis d3-slider-axis-" + axis.orient(), true)

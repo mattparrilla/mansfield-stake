@@ -75,8 +75,8 @@ var x = d3.time.scale()
 var y = d3.scale.linear()
     .range([height, 0]);
 
-var color = d3.scale.ordinal()
-    .range(['#e4e4e4', '#d3d3d3']);
+var color = d3.scale.linear()
+    .rangeRound(['#e4e4e4', 'steelblue']);
 
 var xAxis = d3.svg.axis()
     .scale(x)
@@ -100,9 +100,12 @@ var svg = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var seasonScale,
+    sliderAxis,
+    slider;
+
 d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, data) {
     var snowData,
-        seasonScale,
         seasonDomain = [],
         season;
 
@@ -165,25 +168,22 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
 
     seasonScale = d3.scale.ordinal()
         .domain(snowData.map(function(d) { return d.season; }))
-        .range([0, width]);
+        .rangePoints([0, width]);
 
-    console.log(seasonScale.domain().length);
+    sliderAxis = d3.svg.axis()
+        .scale(seasonScale)
+        .ticks(20);
+
+    slider = d3.slider()
+        .scale(seasonScale)
+        .axis(sliderAxis)
+        .on("slide", function(evt, value) {
+            d3.select('#slidertextmin').text(value[ 0 ]);
+            d3.select('#slidertextmax').text(value[ 1 ]);
+        });
 
     d3.select('#slider')
-        .call(d3.slider()
-            .scale(seasonScale)
-            .axis(
-                d3.svg.axis()
-                    .scale(seasonScale)
-                    .ticks(seasonScale.domain().length)
-            )
-            .value( [ 10, 25 ] )
-            .on("slide", function(evt, value) {
-                console.log(value);
-                d3.select('#slidertextmin').text(value[ 0 ]);
-                d3.select('#slidertextmax').text(value[ 1 ]);
-            })
-        );
+        .call(slider);
 })
 
 </script>
