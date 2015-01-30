@@ -20,6 +20,7 @@ d3.slider = function module() {
       active = 1,
       scale; 
 
+
   // Private variables
   var axisScale,
       dispatch = d3.dispatch("slide"),
@@ -139,6 +140,7 @@ d3.slider = function module() {
         axisScale = scale.copy().range([0, sliderLength]);
           axis.scale(axisScale);
 
+        console.log(axisScale());
           // Create SVG axis container
         var svg = dom.append("svg")
             .classed("d3-slider-axis d3-slider-axis-" + axis.orient(), true)

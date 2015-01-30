@@ -16,10 +16,6 @@
         font: 10px sans-serif;
         }
 
-        svg {
-            border: 1px solid black;
-        }
-
         .axis path,
         .axis line {
         fill: none;
@@ -105,9 +101,12 @@ var svg = d3.select("#chart").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, data) {
-    var snowData = data.data,
+    var snowData,
+        seasonScale,
         seasonDomain = [],
         season;
+
+    snowData = data.data;
 
     snowData.forEach(function(d, i) {
         seasonDomain.push(i);
@@ -128,53 +127,64 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
         })
     ])
 
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Depth (inches)");
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
+        .append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 6)
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Depth (inches)");
 
-  season = svg.selectAll(".season")
-      .data(snowData)
-    .enter().append("g")
-      .attr("class", "season");
+    season = svg.selectAll(".season")
+        .data(snowData)
+        .enter().append("g")
+        .attr("class", "season");
 
-  season.append("path")
-      .attr("class", function(d) {
-        return ("season-" + d.season.substring(1) + " line")
-      })
-      .attr("d", function(d, i) { return line(d.values); })
-      .style("stroke", function(d, i) {
-        if (d.season === "'14-15") {
-            return "#635050";
-        } else {
-            return color(i);
-        }
-      })
-      .on("click", function(d) {
-        console.log(d.season);
-      });
-
-})
-
-d3.select('#slider')
-    .call(d3.slider()
-        .axis(true)
-        .value( [ 10, 25 ] )
-        .on("slide", function(evt, value) {
-            d3.select('#slidertextmin').text(value[ 0 ]);
-            d3.select('#slidertextmax').text(value[ 1 ]);
+    season.append("path")
+        .attr("class", function(d) {
+            return ("season-" + d.season.substring(1) + " line")
         })
-    );
+        .attr("d", function(d, i) { return line(d.values); })
+        .style("stroke", function(d, i) {
+            if (d.season === "'14-15") {
+                return "#635050";
+            } else {
+                return color(i);
+            }
+        })
+        .on("click", function(d) {
+            console.log(d.season);
+        });
+
+    seasonScale = d3.scale.ordinal()
+        .domain(snowData.map(function(d) { return d.season; }))
+        .range([0, width]);
+
+    console.log(seasonScale.domain().length);
+
+    d3.select('#slider')
+        .call(d3.slider()
+            .scale(seasonScale)
+            .axis(
+                d3.svg.axis()
+                    .scale(seasonScale)
+                    .ticks(seasonScale.domain().length)
+            )
+            .value( [ 10, 25 ] )
+            .on("slide", function(evt, value) {
+                console.log(value);
+                d3.select('#slidertextmin').text(value[ 0 ]);
+                d3.select('#slidertextmax').text(value[ 1 ]);
+            })
+        );
+})
 
 </script>
 </body>
