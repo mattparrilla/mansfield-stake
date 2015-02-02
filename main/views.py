@@ -1,10 +1,11 @@
 from flask import render_template, jsonify
 from main import app
+from StringIO import StringIO
+from datetime import datetime
 
 import requests
 import csv
 import json
-from StringIO import StringIO
 
 
 @app.route('/')
@@ -72,6 +73,7 @@ def data():
                 season_year = int(year)
                 season = "'%s-%s" % (str(season_year)[2:],
                     str(season_year + 1)[2:])
+                season = datetime(season_year, 1, 1).isoformat()
 
                 # clear season values array and add first new entry
                 season_values = [{'date': "%s-%s" % (month, day),
