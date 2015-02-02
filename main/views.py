@@ -2,10 +2,10 @@ from flask import render_template, jsonify
 from main import app
 from StringIO import StringIO
 from datetime import datetime
-
 import requests
 import csv
 import json
+import arrow
 
 
 @app.route('/')
@@ -25,6 +25,12 @@ def data():
     season_year = 1953  # the year of the first half of the season ex. '53-'54
     season_values = []  # the values for a particular season
     season = False
+
+    # Note about how "season" is defined:
+    # Since winters span multiple calendar years, but a datetime object
+    # can only be a single year, I've decided to assign each season to the
+    # calendar year where the bulk of the snow occurs (Jan-March).
+    # Therefore, the "1955 season" is really the "1954-1955 season"
 
     for row in snow_csv[1:-1]:
         year, month, day = row[0].split('-')
@@ -71,9 +77,9 @@ def data():
 
                 # update year + season
                 season_year = int(year)
-                season = "'%s-%s" % (str(season_year)[2:],
-                    str(season_year + 1)[2:])
-                season = datetime(season_year, 1, 1).isoformat()
+                #
+                season = arrow.get(datetime(season_year + 1, 1, 1),
+                    'US/Eastern').isoformat()
 
                 # clear season values array and add first new entry
                 season_values = [{'date': "%s-%s" % (month, day),
