@@ -37,6 +37,7 @@ d3.slider = function module() {
 
       // Start value
       value = value || scale.domain()[0]; 
+
       // DIV container
       var div = d3.select(this).classed("d3-slider d3-slider-" + orientation, true);
       

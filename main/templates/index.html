@@ -107,17 +107,15 @@ var svg = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var snowData;
+
 d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, data) {
-    var snowData,
-        seasonDomain = [],
-        season;
+    var season;
 
     snowData = data.data;
 
     snowData.forEach(function(d, i) {
-        console.log(d.season);
-        console.log(new Date(d.season));
-        seasonDomain.push(new Date(d.season));
+        d.year = new Date(d.season).getFullYear();
         d.values.forEach(function(value) {
             value.date = parseDate(value.date);
             if (value.date.getMonth() < 8) {
@@ -125,7 +123,6 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
             }
         })
     })
-    color.domain(seasonDomain);
 
     x.domain(d3.extent(snowData[10].values, function(d) { return d.date; }))
 
@@ -151,28 +148,59 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
         .text("Depth (inches)");
 
     season = svg.selectAll(".season")
-        .data(snowData)
+        .data(snowData, function(d) { return d.year; })
         .enter().append("g")
         .attr("class", "season");
 
     season.append("path")
-        .attr("class", function(d) {
-            return ("season-" + d.season.substring(1) + " line")
-        })
+        .attr("class", "line")
         .attr("d", function(d, i) { return line(d.values); })
-        .style("stroke", function(d, i) {
-            if (d.season === "'14-15") {
-                return "#635050";
+        .style("stroke", function(d) {
+            if (d.year === 2015) {
+                return "#353331";
             } else {
-                return color(i);
+                return "#d3d3d3";
             }
         })
         .on("click", function(d) {
             console.log(d.season);
         });
 
-    makeSlider(seasonDomain);
+    makeSlider();
 })
+
+var updateChart = function(dateRange) {
+    var newData = [];
+    console.log(dateRange);
+
+    snowData.forEach(function(d, i) {
+        if (d.year >= dateRange[0] && d.year <= dateRange[1]) {
+            newData.push(d);
+        } else if (d.year === 2015) {
+            newData.push(d);
+        }
+    });
+
+    console.log(newData);
+    var lines = svg.selectAll("path.line")
+        .data(newData, function(d) { return d.year; });
+
+    lines.enter().append("path")
+        .attr("class", "line")
+        .attr("d", function(d, i) { return line(d.values); })
+        .style("stroke", function(d) {
+            if (d.year === 2015) {
+                return "#353331";
+            } else {
+                return "#d3d3d3";
+            }
+        })
+        .on("click", function(d) {
+            console.log(d.season);
+        });
+
+    lines.exit().remove();
+};
 
 svg.append("text")
     .attr("class", "title")
@@ -180,48 +208,22 @@ svg.append("text")
     .attr("y", 20)
     .text("Snow Depth On Top Of Mt. Mansfield");
 
-var makeSlider = function(seasonDomain) {
-    var seasonScale = d3.time.scale()
-        .domain([seasonDomain[0], seasonDomain[seasonDomain.length - 1]]);
-
-    //console.log(seasonDomain[0]);
-    console.log(seasonScale.ticks(10));
-
-    //console.log("seasonScale");
-    //console.log("Domain: ", seasonScale.domain());
-    //console.log("Range: ", seasonScale.range());
-
-    var seasonFormat = d3.time.format("%y");
-
+var makeSlider = function() {
     var sliderAxis = d3.svg.axis()
-        .scale(seasonScale)
-        .tickFormat(function(d) {
-            var lastYear = new Date(d);
-            lastYear.setFullYear(lastYear.getFullYear() - 1);
-            return "'" + seasonFormat(lastYear) + "-" + seasonFormat(d);
-        });
+        .ticks(13)
+        .tickFormat(d3.format(".0"))
+        .orient("bottom");
 
-    //console.log("sliderAxis");
-    //console.log("Domain: ", sliderAxis.scale().domain());
-    //console.log("Range: ", sliderAxis.scale().range());
-    //console.log("Ticks: ", sliderAxis.scale().ticks());
-
-    var seasonLength = (seasonDomain[seasonDomain.length - 1] - seasonDomain[0]) / seasonDomain.length;
 
     var slider = d3.slider()
-        .scale(seasonScale)
         .axis(sliderAxis)
-        .value([seasonDomain[0], seasonDomain[seasonDomain.length -1]])
-        .step(seasonLength)
+        .value([1955,2015])
+        .min(1955)
+        .max(2015)
+        .step(1)
         .on("slide", function(evt, value) {
-            console.log(value);
-            console.log(new Date(value[0]).getFullYear());
-            console.log(new Date(value[1]).getFullYear());
+            updateChart(value);
         });
-
-    //console.log("scale: " + slider.scale());
-    //console.log("axis: " + slider.axis());
-    //console.log("value: " + slider.value());
 
     d3.select('#slider')
         .call(slider);
