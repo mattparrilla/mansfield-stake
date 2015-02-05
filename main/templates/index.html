@@ -13,7 +13,7 @@
     <style>
 
         body {
-        font: 10px sans-serif;
+        font: 10px Helvetica Neue, Helvetica, Arial;
         }
 
         .axis path,
@@ -49,9 +49,14 @@
 
         .title {
             font-size: 24px;
-            font-family: Helvetica Neue;
+            font-weight: 200;
             stroke: #353331;
             fill: #353331;
+        }
+        .average-depth {
+            font-size: 16px;
+            stroke: #999;
+            fill: #999;
         }
     </style>
 
@@ -110,19 +115,48 @@ var svg = d3.select("#chart").append("svg")
 var snowData;
 
 d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, data) {
-    var season;
-
     snowData = data.data;
+
+    var currentYear = snowData[snowData.length - 1],
+        currentDate = currentYear.values[currentYear.values.length - 1],
+        sumForDate = [],
+        moreSnowOnDate = [],
+        monthNameFormat = d3.time.format("%B"),
+        currentMonth = monthNameFormat(parseDate(currentDate.date)),
+        dayNameFormat = d3.time.format("%e"),
+        currentDay = dayNameFormat(parseDate(currentDate.date)),
+        avgDepthOnDate,
+        season;
+
 
     snowData.forEach(function(d, i) {
         d.year = new Date(d.season).getFullYear();
         d.values.forEach(function(value) {
+
+            // Get depth on current date for all years but current year
+            if ((value.date === currentDate.date) && (i !== snowData.length -1)) {
+                sumForDate.push(value.depth);
+                if (value.depth > currentDate.depth) {
+                    moreSnowOnDate.push(value.depth);
+                }
+            }
             value.date = parseDate(value.date);
+
+            // Since I'm not providing a year, dates get a default year of
+            // 1900. As I'm using d3's time scale and want the graph to display
+            // by season and not by calendar year, I think give all dates in
+            // the second half of the season a year of 1901.
             if (value.date.getMonth() < 8) {
                 value.date.setYear(1901);
             }
         })
     })
+
+    avgDepthOnDate = Math.round(sumForDate.reduce(function(runningSum, current) {
+        return runningSum + current;
+    }, 0) / sumForDate.length);
+
+    console.log(avgDepthOnDate);
 
     x.domain(d3.extent(snowData[10].values, function(d) { return d.date; }))
 
@@ -166,40 +200,37 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
             console.log(d.season);
         });
 
+
+    svg.append("text")
+        .attr("class", "average-depth")
+        .attr("x", 45)
+        .attr("y", 50)
+        .text("Current depth at the fabled stake: " + currentDate.depth + " inches");
+
+    svg.append("text")
+        .attr("class", "average-depth")
+        .attr("x", 45)
+        .attr("y", 70)
+        .text("Average depth on " + currentMonth + " " + currentDay + ": " + avgDepthOnDate + " inches");
+
+    svg.append("text")
+        .attr("class", "average-depth")
+        .attr("x", 45)
+        .attr("y", 100)
+        .text("Number of winters with more snow: " + moreSnowOnDate.length);
+
     makeSlider();
 })
 
-var updateChart = function(dateRange) {
-    var newData = [];
-    console.log(dateRange);
-
-    snowData.forEach(function(d, i) {
-        if (d.year >= dateRange[0] && d.year <= dateRange[1]) {
-            newData.push(d);
-        } else if (d.year === 2015) {
-            newData.push(d);
-        }
-    });
-
-    console.log(newData);
-    var lines = svg.selectAll("path.line")
-        .data(newData, function(d) { return d.year; });
-
-    lines.enter().append("path")
-        .attr("class", "line")
-        .attr("d", function(d, i) { return line(d.values); })
+var updateChart = function(year) {
+    d3.selectAll('path.line')
         .style("stroke", function(d) {
-            if (d.year === 2015) {
+            if (d.year === year) {
                 return "#353331";
             } else {
                 return "#d3d3d3";
             }
-        })
-        .on("click", function(d) {
-            console.log(d.season);
         });
-
-    lines.exit().remove();
 };
 
 svg.append("text")
@@ -214,13 +245,11 @@ var makeSlider = function() {
         .tickFormat(d3.format(".0"))
         .orient("bottom");
 
-
     var slider = d3.slider()
         .axis(sliderAxis)
-        .value([1955,2015])
+        .value(2015)
         .min(1955)
         .max(2015)
-        .step(1)
         .on("slide", function(evt, value) {
             updateChart(value);
         });
