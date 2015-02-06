@@ -4,6 +4,6 @@ A [d3.js](d3js.org) visualization of the snow depth on Mt. Mansfield since the 1
 
 This is a work in progress, but here's that progress so far:
 
-![Mt. Mansfield Snow Depth Chart](http://i.imgur.com/i1wBlkH.png)
+![Mt. Mansfield Snow Depth Chart](http://i.imgur.com/Jbx4es2.png)
 
 See issues to see roadmap. I expect to complete this in the next couple of days.

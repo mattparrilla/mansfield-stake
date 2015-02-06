@@ -14,6 +14,7 @@
 
         body {
         font: 10px Helvetica Neue, Helvetica, Arial;
+        margin-left: 100px;
         }
 
         .axis path,
@@ -48,15 +49,17 @@
         }
 
         .title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 200;
             stroke: #353331;
             fill: #353331;
         }
-        .average-depth {
-            font-size: 16px;
-            stroke: #999;
-            fill: #999;
+        .stat, .stat-description {
+            font-size: 14px;
+            font-weight: 200;
+            font-family: Helvetica;
+            stroke: #777;
+            fill: #777;
         }
     </style>
 
@@ -137,8 +140,9 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
             if ((value.date === currentDate.date) && (i !== snowData.length -1)) {
                 sumForDate.push(value.depth);
                 if (value.depth > currentDate.depth) {
-                    moreSnowOnDate.push(value.depth);
+                    moreSnowOnDate.push(d.year);
                 }
+                console.log("year: " + d.year + "; depth: " + value.depth);
             }
             value.date = parseDate(value.date);
 
@@ -156,7 +160,7 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
         return runningSum + current;
     }, 0) / sumForDate.length);
 
-    console.log(avgDepthOnDate);
+    console.log(moreSnowOnDate);
 
     x.domain(d3.extent(snowData[10].values, function(d) { return d.date; }))
 
@@ -193,7 +197,7 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
             if (d.year === 2015) {
                 return "#353331";
             } else {
-                return "#d3d3d3";
+                return "#ddd";
             }
         })
         .on("click", function(d) {
@@ -202,22 +206,40 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
 
 
     svg.append("text")
-        .attr("class", "average-depth")
+        .attr("class", "stat")
         .attr("x", 45)
-        .attr("y", 50)
-        .text("Current depth at the fabled stake: " + currentDate.depth + " inches");
+        .attr("y", 45)
+        .text(currentDate.depth + " - ");
 
     svg.append("text")
-        .attr("class", "average-depth")
-        .attr("x", 45)
-        .attr("y", 70)
-        .text("Average depth on " + currentMonth + " " + currentDay + ": " + avgDepthOnDate + " inches");
+        .attr("class", "stat-description")
+        .attr("x", 73)
+        .attr("y", 45)
+        .text("Current depth at the fabled stake (in inches)");
 
     svg.append("text")
-        .attr("class", "average-depth")
+        .attr("class", "stat")
         .attr("x", 45)
-        .attr("y", 100)
-        .text("Number of winters with more snow: " + moreSnowOnDate.length);
+        .attr("y", 65)
+        .text(avgDepthOnDate + " - ");
+
+    svg.append("text")
+        .attr("class", "stat-description")
+        .attr("x", 73)
+        .attr("y", 65)
+        .text("Average depth on " + currentMonth + " " + currentDay);
+
+    svg.append("text")
+        .attr("class", "stat")
+        .attr("x", 45)
+        .attr("y", 85)
+        .text(moreSnowOnDate.length + " - ");
+
+    svg.append("text")
+        .attr("class", "stat-description")
+        .attr("x", 73)
+        .attr("y", 85)
+        .text("Number of winters with more snow");
 
     makeSlider();
 })
@@ -237,7 +259,7 @@ svg.append("text")
     .attr("class", "title")
     .attr("x", 45)
     .attr("y", 20)
-    .text("Snow Depth On Top Of Mt. Mansfield");
+    .text("Snow Depth On Top Of Mt. Mansfield Since 1954");
 
 var makeSlider = function() {
     var sliderAxis = d3.svg.axis()
