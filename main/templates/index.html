@@ -49,17 +49,20 @@
         }
 
         .title {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 200;
             stroke: #353331;
             fill: #353331;
         }
         .stat, .stat-description {
-            font-size: 14px;
+            font-size: 18px;
             font-weight: 200;
             font-family: Helvetica;
             stroke: #777;
             fill: #777;
+        }
+        .stat {
+            stroke: #333;
         }
     </style>
 
@@ -208,37 +211,37 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
     svg.append("text")
         .attr("class", "stat")
         .attr("x", 45)
-        .attr("y", 45)
-        .text(currentDate.depth + " - ");
+        .attr("y", 55)
+        .text(currentDate.depth);
 
     svg.append("text")
         .attr("class", "stat-description")
         .attr("x", 73)
-        .attr("y", 45)
+        .attr("y", 55)
         .text("Current depth at the fabled stake (in inches)");
 
     svg.append("text")
         .attr("class", "stat")
         .attr("x", 45)
-        .attr("y", 65)
-        .text(avgDepthOnDate + " - ");
+        .attr("y", 77)
+        .text(avgDepthOnDate);
 
     svg.append("text")
         .attr("class", "stat-description")
         .attr("x", 73)
-        .attr("y", 65)
+        .attr("y", 77)
         .text("Average depth on " + currentMonth + " " + currentDay);
 
     svg.append("text")
         .attr("class", "stat")
-        .attr("x", 45)
-        .attr("y", 85)
-        .text(moreSnowOnDate.length + " - ");
+        .attr("x", 54)
+        .attr("y", 99)
+        .text(moreSnowOnDate.length);
 
     svg.append("text")
         .attr("class", "stat-description")
         .attr("x", 73)
-        .attr("y", 85)
+        .attr("y", 99)
         .text("Number of winters with more snow");
 
     makeSlider();
