@@ -112,7 +112,8 @@ var yAxis = d3.svg.axis()
 var line = d3.svg.line()
     .interpolate("basis")
     .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.depth); });
+    .y(function(d) { return y(d.depth); })
+    .defined(function(d) { return !isNaN(d.depth); });
 
 var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -167,13 +168,13 @@ d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data
     var season = svg.selectAll(".season")
         .data(seasons)
         .enter().append("g")
-        .attr("class", "season");
+            .attr("class", "season");
 
     season.append("path")
         .attr("class", "line")
         .attr("d", function(d, i) { return line(d.values); })
         .style("stroke", function(d) {
-            if (d.name === 2015) {
+            if (parseInt(d.season) === 2015) {
                 return "#353331";
             } else {
                 return "#ddd";

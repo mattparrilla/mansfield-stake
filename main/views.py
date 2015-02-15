@@ -134,7 +134,7 @@ def table():
         if not season_list or season not in season_list:
             season_list.append(season)
             # create array for current year
-            season_data = [0] * len(header_row)
+            season_data = ['null'] * len(header_row)
             # first entry is year of season
             season_data[0] = season
             snowdepth_table.append(season_data)
@@ -162,7 +162,11 @@ def table():
             if not j:
                 continue
 
-            depth = int(depth)
+            # Ignore null data
+            try:
+                depth = int(depth)
+            except ValueError:
+                continue
 
             month, day = [int(x) for x in snowdepth_table[0][j].split('/')]
 
