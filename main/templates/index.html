@@ -178,8 +178,12 @@ d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data
             } else {
                 return "#ddd";
             }
+        })
+        .on("click", function(d) {
+            console.log(d.season);
         });
 
+    /*
     svg.append("text")
         .attr("class", "stat")
         .attr("x", 45)
@@ -216,6 +220,7 @@ d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data
         .attr("y", 99)
         .text("Number of winters with more snow");
 
+    */
 })
 
 var updateChart = function(year) {

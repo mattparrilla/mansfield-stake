@@ -46,7 +46,7 @@ def data():
         # Sometimes there are 0 measurements instead of nulls or there are
         # impossibly low measurements (like a 2" measurement between a 34"
         # and a 38" measurement. This eliminates those anomolies.
-        if ((depth < 5 and last_depth > 10 or last_depth - depth > 20) and
+        if ((depth < 5 and last_depth > 10 or depth - last_depth > 20) and
            (int(month) > 9 or int(month) < 4)):
 
             depth = last_depth
@@ -151,6 +151,8 @@ def table():
 
     last_depth = 0
     for i, row in enumerate(snowdepth_table):
+
+        # Skip first row (headers)
         if not i:
             continue
 
@@ -162,7 +164,6 @@ def table():
 
             depth = int(depth)
 
-            print snowdepth_table[0][j]
             month, day = [int(x) for x in snowdepth_table[0][j].split('/')]
 
             # Sometimes there are measurements of "0" instead of nulls or there
@@ -175,10 +176,10 @@ def table():
 
             # In 1956 there's an extra zero (120 instead of 12) for depth
             elif depth - last_depth > 100:
-                depth = last_depth
+                snowdepth_table[i][j] = last_depth
 
             # set last_depth in the event that we need it next loop
-            last_depth = depth
+            last_depth = snowdepth_table[i][j]
 
 
     si = StringIO()
