@@ -116,8 +116,6 @@ def table():
 
     snowdepth_table = [header_row]
     season_list = []
-    print snowdepth_table
-
 
     # parses SKIVT-L csv
     for row in snow_csv[1:-1]:
@@ -134,7 +132,7 @@ def table():
         if not season_list or season not in season_list:
             season_list.append(season)
             # create array for current year
-            season_data = ['null'] * len(header_row)
+            season_data = [0] * len(header_row)
             # first entry is year of season
             season_data[0] = season
             snowdepth_table.append(season_data)
@@ -162,21 +160,26 @@ def table():
             if not j:
                 continue
 
-            # Ignore null data
-            try:
-                depth = int(depth)
-            except ValueError:
-                continue
-
             month, day = [int(x) for x in snowdepth_table[0][j].split('/')]
 
             # Sometimes there are measurements of "0" instead of nulls or there
             # are impossibly low measurments (like a 2" reading between a 34"
             # and a 38" measurement. This eliminates those anomolies
             if ((depth < 5 and last_depth > 10 or last_depth - depth > 20) and
-                (month > 9 or month < 4)):
+                (month > 9 or month < 6)):
 
-                snowdepth_table[i][j] = last_depth
+                print "%s/%s" % (month, day)
+                steps = 0
+                while not depth:
+                    steps += 1
+                    try:
+                        depth = snowdepth_table[i][j + steps]
+                    except IndexError:
+                        break
+                delta = (depth - last_depth) / (steps + 1)
+                print delta
+                depth = last_depth + delta
+                snowdepth_table[i][j] = depth
 
             # In 1956 there's an extra zero (120 instead of 12) for depth
             elif depth - last_depth > 100:
