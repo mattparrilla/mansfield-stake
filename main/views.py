@@ -113,10 +113,11 @@ def table():
         for date in range(number_of_days):
             header_row.append("%d/%d" % (month, date + 1))
 
-    season_list = []
     snowdepth_table = [header_row]
+    season_list = []
 
 
+    # parses SKIVT-L csv
     for row in snow_csv[1:-1]:
         year, month, day = [int(i) for i in row[0].split('-')]
         date = "%d/%d" % (month, day)
@@ -176,7 +177,7 @@ def table():
 
     si = StringIO()
     write_csv = csv.writer(si)
-    for row in snowdepth_table:
+    for row in zip(*snowdepth_table):
         write_csv.writerow(row)
 
     output = make_response(si.getvalue())
