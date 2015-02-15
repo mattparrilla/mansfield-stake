@@ -7,6 +7,7 @@ import csv
 import json
 import arrow
 import calendar
+from pprint import pprint
 
 
 @app.route('/')
@@ -106,7 +107,7 @@ def table():
     data = csv.reader(StringIO(r.text), delimiter=',')
     snow_csv = [l for l in data]
 
-    header_row = ['season']
+    header_row = ['date']
 
     for month in [9, 10, 11, 12, 1, 2, 3, 4, 5, 6]:
         number_of_days = calendar.monthrange(2012, month)[1]
@@ -115,6 +116,7 @@ def table():
 
     snowdepth_table = [header_row]
     season_list = []
+    print snowdepth_table
 
 
     # parses SKIVT-L csv
@@ -148,16 +150,20 @@ def table():
                 continue
 
     last_depth = 0
-    for row in snowdepth_table[1:]:
-        for i, depth in enumerate(row):
+    for i, row in enumerate(snowdepth_table):
+        if not i:
+            continue
+
+        for j, depth in enumerate(row):
 
             # Skip first iteration (since it's a label)
-            if not i:
+            if not j:
                 continue
 
             depth = int(depth)
 
-            month, day = [int(x) for x in snowdepth_table[0][i].split('/')]
+            print snowdepth_table[0][j]
+            month, day = [int(x) for x in snowdepth_table[0][j].split('/')]
 
             # Sometimes there are measurements of "0" instead of nulls or there
             # are impossibly low measurments (like a 2" reading between a 34"
@@ -165,7 +171,7 @@ def table():
             if ((depth < 5 and last_depth > 10 or last_depth - depth > 20) and
                 (month > 9 or month < 4)):
 
-                depth = last_depth
+                snowdepth_table[i][j] = last_depth
 
             # In 1956 there's an extra zero (120 instead of 12) for depth
             elif depth - last_depth > 100:
