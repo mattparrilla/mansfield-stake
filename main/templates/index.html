@@ -49,7 +49,7 @@
         }
 
         .title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 200;
             stroke: #353331;
             fill: #353331;
@@ -93,7 +93,7 @@ var x = d3.time.scale()
 var y = d3.scale.linear()
     .range([height, 0]);
 
-var maxScale = d3.scale.linear();
+var linearScale = d3.scale.linear();
 
 var color = d3.scale.linear()
     .rangeRound(['#e4e4e4', 'steelblue']);
@@ -121,21 +121,25 @@ var svg = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var snowData;
 
 d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data) {
-    snowData = data;
+    var snowData = data;
 
-    maxScale.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
+    // each data row includes all seasons as keys, plus a date key
+    // below defines domain as array of all seasons (ignores "date")
+    linearScale.domain(d3.keys(snowData[0]).filter(function(key) { return key !== "date"; }));
 
     snowData.forEach(function(d,i) {
+        // default year is 1900
         d.date = parseDate(d.date);
+        // to get each season on same line, set second half of year to 1901
         if (d.date.getMonth() < 7) {
             d.date.setFullYear(1901)
         }
     });
 
-    var seasons = maxScale.domain().map(function(season) {
+    // for each season, create values object of date and depth
+    var seasons = linearScale.domain().map(function(season) {
         return {
             season: season,
             values : data.map(function(d) {
@@ -143,8 +147,10 @@ d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data
             })
         };
     });
+
     x.domain(d3.extent(data, function(d) { return d.date; }));
 
+    // go through each season and find max depth
     y.domain([0, d3.max(seasons, function(s) { return d3.max(s.values,
         function(v) { return v.depth; });
         })
@@ -183,6 +189,15 @@ d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data
         .on("click", function(d) {
             console.log(d.season);
         });
+
+    var xText = 45,
+        yText = 20;
+
+    svg.append("text")
+        .attr("class", "title")
+        .attr("x", xText)
+        .attr("y", yText)
+        .text("Snow Depth On Top Of Mt. Mansfield Since 1954");
 
     /*
     svg.append("text")
@@ -235,11 +250,6 @@ var updateChart = function(year) {
         });
 };
 
-svg.append("text")
-    .attr("class", "title")
-    .attr("x", 45)
-    .attr("y", 20)
-    .text("Snow Depth On Top Of Mt. Mansfield Since 1954");
 
 var makeSlider = function() {
     var sliderAxis = d3.svg.axis()
