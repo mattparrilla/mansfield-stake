@@ -49,7 +49,7 @@
         }
 
         .title {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 200;
             stroke: #353331;
             fill: #353331;
@@ -85,13 +85,15 @@ var margin = {top: 20, right: 80, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%m-%d").parse;
+var parseDate = d3.time.format("%m/%d").parse;
 
 var x = d3.time.scale()
     .range([0, width]);
 
 var y = d3.scale.linear()
     .range([height, 0]);
+
+var linearScale = d3.scale.linear();
 
 var color = d3.scale.linear()
     .rangeRound(['#e4e4e4', 'steelblue']);
@@ -110,7 +112,8 @@ var yAxis = d3.svg.axis()
 var line = d3.svg.line()
     .interpolate("basis")
     .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.depth); });
+    .y(function(d) { return y(d.depth); })
+    .defined(function(d) { return !isNaN(d.depth); });
 
 var svg = d3.select("#chart").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -118,60 +121,40 @@ var svg = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var snowData;
 
-d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, data) {
-    snowData = data.data;
+d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data) {
+    var snowData = data;
 
-    var currentYear = snowData[snowData.length - 1],
-        currentDate = currentYear.values[currentYear.values.length - 1],
-        sumForDate = [],
-        moreSnowOnDate = [],
-        monthNameFormat = d3.time.format("%B"),
-        currentMonth = monthNameFormat(parseDate(currentDate.date)),
-        dayNameFormat = d3.time.format("%e"),
-        currentDay = dayNameFormat(parseDate(currentDate.date)),
-        avgDepthOnDate,
-        season;
+    // each data row includes all seasons as keys, plus a date key
+    // below defines domain as array of all seasons (ignores "date")
+    linearScale.domain(d3.keys(snowData[0]).filter(function(key) { return key !== "date"; }));
 
+    snowData.forEach(function(d,i) {
+        // default year is 1900
+        d.date = parseDate(d.date);
+        // to get each season on same line, set second half of year to 1901
+        if (d.date.getMonth() < 7) {
+            d.date.setFullYear(1901)
+        }
+    });
 
-    snowData.forEach(function(d, i) {
-        d.year = new Date(d.season).getFullYear();
-        d.values.forEach(function(value) {
+    // for each season, create values object of date and depth
+    var seasons = linearScale.domain().map(function(season) {
+        return {
+            season: season,
+            values : data.map(function(d) {
+                return {date: d.date, depth: +d[season]};
+            })
+        };
+    });
 
-            // Get depth on current date for all years but current year
-            if ((value.date === currentDate.date) && (i !== snowData.length -1)) {
-                sumForDate.push(value.depth);
-                if (value.depth > currentDate.depth) {
-                    moreSnowOnDate.push(d.year);
-                }
-                console.log("year: " + d.year + "; depth: " + value.depth);
-            }
-            value.date = parseDate(value.date);
+    x.domain(d3.extent(data, function(d) { return d.date; }));
 
-            // Since I'm not providing a year, dates get a default year of
-            // 1900. As I'm using d3's time scale and want the graph to display
-            // by season and not by calendar year, I think give all dates in
-            // the second half of the season a year of 1901.
-            if (value.date.getMonth() < 8) {
-                value.date.setYear(1901);
-            }
+    // go through each season and find max depth
+    y.domain([0, d3.max(seasons, function(s) { return d3.max(s.values,
+        function(v) { return v.depth; });
         })
-    })
-
-    avgDepthOnDate = Math.round(sumForDate.reduce(function(runningSum, current) {
-        return runningSum + current;
-    }, 0) / sumForDate.length);
-
-    console.log(moreSnowOnDate);
-
-    x.domain(d3.extent(snowData[10].values, function(d) { return d.date; }))
-
-    y.domain([0,
-        d3.max(snowData, function(s) {
-            return d3.max(s.values, function(d) { return d.depth; })
-        })
-    ])
+    ]);;
 
     svg.append("g")
         .attr("class", "x axis")
@@ -188,16 +171,16 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
         .style("text-anchor", "end")
         .text("Depth (inches)");
 
-    season = svg.selectAll(".season")
-        .data(snowData, function(d) { return d.year; })
+    var season = svg.selectAll(".season")
+        .data(seasons)
         .enter().append("g")
-        .attr("class", "season");
+            .attr("class", "season");
 
     season.append("path")
         .attr("class", "line")
         .attr("d", function(d, i) { return line(d.values); })
         .style("stroke", function(d) {
-            if (d.year === 2015) {
+            if (parseInt(d.season) === 2015) {
                 return "#353331";
             } else {
                 return "#ddd";
@@ -207,7 +190,16 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
             console.log(d.season);
         });
 
+    var xText = 45,
+        yText = 20;
 
+    svg.append("text")
+        .attr("class", "title")
+        .attr("x", xText)
+        .attr("y", yText)
+        .text("Snow Depth On Top Of Mt. Mansfield Since 1954");
+
+    /*
     svg.append("text")
         .attr("class", "stat")
         .attr("x", 45)
@@ -244,7 +236,7 @@ d3.json("{{ url_for('static', filename='snowdepth.json') }}", function(error, da
         .attr("y", 99)
         .text("Number of winters with more snow");
 
-    makeSlider();
+    */
 })
 
 var updateChart = function(year) {
@@ -258,11 +250,6 @@ var updateChart = function(year) {
         });
 };
 
-svg.append("text")
-    .attr("class", "title")
-    .attr("x", 45)
-    .attr("y", 20)
-    .text("Snow Depth On Top Of Mt. Mansfield Since 1954");
 
 var makeSlider = function() {
     var sliderAxis = d3.svg.axis()
