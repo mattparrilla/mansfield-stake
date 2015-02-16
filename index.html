@@ -42,8 +42,8 @@
         }
 
         .wrapper {
-            width: 830px;
-            margin: 30px 80px 30px 50px;
+            width: 860px;
+            margin: 30px 50px 80px;
         }
 
         .wrapper div {
@@ -94,6 +94,29 @@
         #more-winters {
             padding-left: 9px;
         }
+
+        .about {
+            margin: 50px;
+        }
+        .about div {
+            display: inline-block;
+            width: 410px;
+        }
+        .about h2 {
+            font-size: 22px;
+        }
+        .about p {
+            font-size: 18px;
+            font-weight: 400;
+            color: #888;
+        }
+        div.discussion {
+            float: right;
+        }
+        .built-by {
+            margin: 50px;
+            text-align: right;
+        }
     </style>
 
 </head>
@@ -118,12 +141,25 @@
     <div id="slider"></div>
 </div>
 
+<div class="about">
+    <div class="data-source">
+        <h2>A Note On Methods</h2>
+        <p>Due to the complexities around measuring snow depth on the top of a mountain during the winter, there are some inconsistencies in the source data. In many cases, measurements were not made on a particular day, sometimes for a number of days. In other cases, inaccurate measurements were reported, such as a 5" measurement between a 54" and a 58" measurement. This data has been cleaned in an effort to reduce such inaccuracies.</p>
+    </div>
+    <div class="discussion">
+        <h2>About The Data</h2>
+        <p>This data is provided by the <a href="http://www.uvm.edu/~empact/" alt="data source">Burlington EcoInfo project</a> at the University of Vermont. The source data can be found on the <a href="http://www.uvm.edu/skivt-l/?Page=depths.php" alt="SkiVT-L homepage">SkiVt-L</a> website.</p>
+        <p>Many thanks to the dedicated folks who maintain this page and collect the measurements!</p>
+    </div>
+</div>
+
+<p class="built-by">This visualization was built by <a href="http://matthewparrilla.com">Matt Parrilla</a> on February 16, 2015. To see more more of his work, follow him on <a href="http://twitter.com/mattparrilla">Twitter</a> or <a href="http://github.com/mattparrilla">GitHub</a>.</p>
 <script src="http://d3js.org/d3.v3.js"></script>
 <script src="static/js/d3.slider.js"></script>
 
 <script>
 
-var margin = {top: 20, right: 80, bottom: 30, left: 50},
+var margin = {top: 20, right: 50, bottom: 30, left: 50},
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
