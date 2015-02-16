@@ -257,7 +257,6 @@ d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data
         .attr("x", xText + 9)
         .attr("y", yText + 79)
         .text(snowierWinters.length);
-    console.log(snowierWinters);
 
     svg.append("text")
         .attr("class", "stat-description")
