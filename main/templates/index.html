@@ -13,39 +13,39 @@
     <style>
 
         body {
-        font: 10px Helvetica Neue, Helvetica, Arial;
-        margin-left: 100px;
+            font: 10px Helvetica Neue, Helvetica, Arial;
+            margin-left: 100px;
         }
 
         .axis path,
         .axis line {
-        fill: none;
-        stroke: #000;
-        shape-rendering: crispEdges;
+            fill: none;
+            stroke: #000;
+            shape-rendering: crispEdges;
         }
 
         .x.axis path {
-        display: none;
+            display: none;
         }
 
         .line {
-        fill: none;
-        stroke: #d3d3d3;
-        stroke-width: 1.5px;
+            fill: none;
+            stroke: #d3d3d3;
+            stroke-width: 1.5px;
         }
 
         .season-14-15 {
-        stroke-width: 2.5px;
+            stroke-width: 2.5px;
         }
 
         .wrapper {
-        width: 830px;
-        margin-left: 50px;
-        margin-right: 80px;
+            width: 830px;
+            margin-left: 50px;
+            margin-right: 80px;
         }
 
         .wrapper div {
-        margin: 35px 0;
+            margin: 35px 0;
         }
 
         .title {
@@ -113,6 +113,7 @@ var line = d3.svg.line()
     .interpolate("basis")
     .x(function(d) { return x(d.date); })
     .y(function(d) { return y(d.depth); })
+    // ignore values that aren't numbers
     .defined(function(d) { return !isNaN(d.depth); });
 
 var svg = d3.select("#chart").append("svg")
@@ -123,11 +124,14 @@ var svg = d3.select("#chart").append("svg")
 
 
 d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data) {
-    var snowData = data;
+    var snowData = data,
+        mostRecentData;
 
     // each data row includes all seasons as keys, plus a date key
     // below defines domain as array of all seasons (ignores "date")
     linearScale.domain(d3.keys(snowData[0]).filter(function(key) { return key !== "date"; }));
+
+    var latestYear = linearScale.domain()[linearScale.domain().length - 1];
 
     snowData.forEach(function(d,i) {
         // default year is 1900
@@ -136,7 +140,32 @@ d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data
         if (d.date.getMonth() < 7) {
             d.date.setFullYear(1901)
         }
+        // get latest good data
+        if (d[latestYear] !== 'null') {
+            mostRecentData = d;
+        }
     });
+
+    // generate summary statistics
+    var currentDepth = parseInt(mostRecentData[latestYear]),
+        latestReading = mostRecentData.date,
+        latestReadingDay = d3.time.format("%e")(latestReading),
+        latestReadingMonth = d3.time.format("%B")(latestReading),
+        snowierWinters = [],
+        sumOfDepths = 0,
+        averageDepth;
+
+    linearScale.domain().forEach(function(season) {
+        var seasonDepth = parseInt(mostRecentData[season]);
+
+        sumOfDepths += seasonDepth;
+
+        if (seasonDepth > currentDepth) {
+            snowierWinters.push(season);
+        }
+    });
+
+    averageDepth = Math.floor(sumOfDepths / linearScale.domain().length);
 
     // for each season, create values object of date and depth
     var seasons = linearScale.domain().map(function(season) {
@@ -199,50 +228,49 @@ d3.csv("{{ url_for('static', filename='snowdepth.csv') }}", function(error, data
         .attr("y", yText)
         .text("Snow Depth On Top Of Mt. Mansfield Since 1954");
 
-    /*
     svg.append("text")
         .attr("class", "stat")
-        .attr("x", 45)
-        .attr("y", 55)
-        .text(currentDate.depth);
+        .attr("x", xText)
+        .attr("y", yText + 35)
+        .text(currentDepth);
 
     svg.append("text")
         .attr("class", "stat-description")
-        .attr("x", 73)
-        .attr("y", 55)
+        .attr("x", xText + 28)
+        .attr("y", yText + 35)
         .text("Current depth at the fabled stake (in inches)");
 
     svg.append("text")
         .attr("class", "stat")
-        .attr("x", 45)
-        .attr("y", 77)
-        .text(avgDepthOnDate);
+        .attr("x", xText)
+        .attr("y", yText + 57)
+        .text(averageDepth);
 
     svg.append("text")
         .attr("class", "stat-description")
-        .attr("x", 73)
-        .attr("y", 77)
-        .text("Average depth on " + currentMonth + " " + currentDay);
+        .attr("x", xText + 28)
+        .attr("y", yText + 57)
+        .text("Average depth on " + latestReadingMonth + " " + latestReadingDay);
 
     svg.append("text")
         .attr("class", "stat")
-        .attr("x", 54)
-        .attr("y", 99)
-        .text(moreSnowOnDate.length);
+        .attr("x", xText + 9)
+        .attr("y", yText + 79)
+        .text(snowierWinters.length);
+    console.log(snowierWinters);
 
     svg.append("text")
         .attr("class", "stat-description")
-        .attr("x", 73)
-        .attr("y", 99)
+        .attr("x", xText + 28)
+        .attr("y", yText + 79)
         .text("Number of winters with more snow");
 
-    */
 })
 
 var updateChart = function(year) {
     d3.selectAll('path.line')
         .style("stroke", function(d) {
-            if (d.year === year) {
+            if (d.season === year) {
                 return "#353331";
             } else {
                 return "#d3d3d3";
@@ -268,7 +296,9 @@ var makeSlider = function() {
 
     d3.select('#slider')
         .call(slider);
-}
+};
+
+makeSlider();
 
 </script>
 </body>
