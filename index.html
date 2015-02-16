@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 
     <title>Mt. Mansfield Snow Depth</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=960">
     <meta name="description" content="Snow depth from the top of Vermont">
 
     <!-- Styles -->
@@ -12,9 +12,12 @@
 
     <style>
 
+        html {
+        }
         body {
             font: 10px Helvetica Neue, Helvetica, Arial;
-            margin-left: 100px;
+            width: 960px;
+            margin: 0 auto;
         }
 
         .axis path,
@@ -40,29 +43,56 @@
 
         .wrapper {
             width: 830px;
-            margin-left: 50px;
-            margin-right: 80px;
+            margin: 30px 80px 30px 50px;
         }
 
         .wrapper div {
-            margin: 35px 0;
+            margin: 5px 0;
         }
 
-        .title {
-            font-size: 22px;
-            font-weight: 200;
-            stroke: #353331;
-            fill: #353331;
+        .wrapper p {
+            font-weight: 700;
+            font-size: 14px;
+            text-align: center;
         }
-        .stat, .stat-description {
-            font-size: 18px;
-            font-weight: 200;
-            font-family: Helvetica;
-            stroke: #777;
-            fill: #777;
+
+        .header {
+            margin-left: 95px;
+            margin-bottom: 20px;
         }
-        .stat {
-            stroke: #333;
+
+        h1 {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 2px;
+            text-decoration: underline;
+        }
+
+        #latest-measurement {
+            margin: 0;
+            font-size: 14px;
+            color: #888;
+        }
+
+        #chart {
+            position: relative;
+            height: 500px;
+        }
+
+        #context {
+            position: absolute;
+            top: 18px;
+            left: 95px;
+        }
+        #context p {
+            font-size: 16px;
+            margin: 0 0 3px;
+        }
+        .text {
+            color: #888;
+        }
+        #more-winters {
+            padding-left: 9px;
         }
     </style>
 
@@ -70,9 +100,21 @@
 
 <body>
 
-<div id="chart"></div>
+<div class="header">
+    <h1>Snow Depth On Mt. Mansfield Since 1954</h1>
+    <p id="latest-measurement"></p>
+</div>
+
+<div id="chart">
+    <div id="context">
+        <p><span id="current-depth"></span> <span class="text" id="current-depth-text"></span></p>
+        <p><span id="avg-depth"></span> <span class="text" id="avg-depth-text"></span></p>
+        <p><span id="more-winters"></span> <span class="text" id="more-winters-text"></span></p>
+    </div>
+</div>
 
 <div class="wrapper">
+    <p>Choose Year To Highlight</p>
     <div id="slider"></div>
 </div>
 
@@ -155,6 +197,8 @@ d3.csv("static/snowdepth.csv", function(error, data) {
         sumOfDepths = 0,
         averageDepth;
 
+    document.getElementById('latest-measurement').textContent = "Latest measurement: " + latestReadingMonth + " " + latestReadingDay;
+
     linearScale.domain().forEach(function(season) {
         var seasonDepth = parseInt(mostRecentData[season]);
 
@@ -219,50 +263,14 @@ d3.csv("static/snowdepth.csv", function(error, data) {
             console.log(d.season);
         });
 
-    var xText = 45,
-        yText = 20;
+    document.getElementById('current-depth').textContent = currentDepth;
+    document.getElementById('current-depth-text').textContent = "Current depth at the fabled stake (in inches)";
 
-    svg.append("text")
-        .attr("class", "title")
-        .attr("x", xText)
-        .attr("y", yText)
-        .text("Snow Depth On Top Of Mt. Mansfield Since 1954");
+    document.getElementById('avg-depth').textContent = averageDepth;
+    document.getElementById('avg-depth-text').textContent = "Average depth on " + latestReadingMonth + " " + latestReadingDay;
 
-    svg.append("text")
-        .attr("class", "stat")
-        .attr("x", xText)
-        .attr("y", yText + 35)
-        .text(currentDepth);
-
-    svg.append("text")
-        .attr("class", "stat-description")
-        .attr("x", xText + 28)
-        .attr("y", yText + 35)
-        .text("Current depth at the fabled stake (in inches)");
-
-    svg.append("text")
-        .attr("class", "stat")
-        .attr("x", xText)
-        .attr("y", yText + 57)
-        .text(averageDepth);
-
-    svg.append("text")
-        .attr("class", "stat-description")
-        .attr("x", xText + 28)
-        .attr("y", yText + 57)
-        .text("Average depth on " + latestReadingMonth + " " + latestReadingDay);
-
-    svg.append("text")
-        .attr("class", "stat")
-        .attr("x", xText + 9)
-        .attr("y", yText + 79)
-        .text(snowierWinters.length);
-
-    svg.append("text")
-        .attr("class", "stat-description")
-        .attr("x", xText + 28)
-        .attr("y", yText + 79)
-        .text("Number of winters with more snow");
+    document.getElementById('more-winters').textContent = snowierWinters.length;
+    document.getElementById('more-winters-text').textContent = "Number of winters with more snow";
 
 })
 
