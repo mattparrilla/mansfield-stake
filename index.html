@@ -119,6 +119,14 @@
         div.discussion {
             float: right;
         }
+        #year {
+            position: absolute;
+            top: 18px;
+            right: 50px;
+            color: #aaa;
+            font-size: 36px;
+            margin: 0;
+        }
     </style>
 
 </head>
@@ -136,6 +144,7 @@
         <p><span id="avg-depth"></span> <span class="text" id="avg-depth-text"></span></p>
         <p><span id="more-winters"></span> <span class="text" id="more-winters-text"></span></p>
     </div>
+    <p id="year"></p>
 </div>
 
 <div class="wrapper">
@@ -290,17 +299,9 @@ d3.csv("static/snowdepth.csv", function(error, data) {
 
     season.append("path")
         .attr("class", "line")
-        .attr("d", function(d, i) { return line(d.values); })
-        .style("stroke", function(d) {
-            if (parseInt(d.season) === 2015) {
-                return "#353331";
-            } else {
-                return "#ddd";
-            }
-        })
-        .on("click", function(d) {
-            console.log(d.season);
-        });
+        .attr("d", function(d, i) { return line(d.values); });
+
+    updateChart(latestYear);
 
     document.getElementById('current-depth').textContent = currentDepth;
     document.getElementById('current-depth-text').textContent = "Current depth at the fabled stake (in inches)";
@@ -314,6 +315,8 @@ d3.csv("static/snowdepth.csv", function(error, data) {
 })
 
 var updateChart = function(year) {
+    document.getElementById('year').textContent = year;
+
     d3.selectAll('path.line')
         .style("stroke", function(d) {
             if (d.season === year) {
