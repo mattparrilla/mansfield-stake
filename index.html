@@ -342,6 +342,20 @@ var updateChart = function(year) {
             } else {
                 return "#d3d3d3";
             }
+        })
+        .style("stroke-opacity", function(d) {
+            if (d.season === year) {
+                return 1;
+            } else {
+                return 0.5;
+            }
+        })
+        .style("stroke-width", function(d) {
+            if (d.season === year) {
+                return 2;
+            } else {
+                return 1.5;
+            }
         });
 };
 
