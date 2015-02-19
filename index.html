@@ -23,9 +23,6 @@
 
     <link rel="shortcut icon" href="static/favicon.ico">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="static/css/d3.slider.css">
-
     <style>
 
         html, body {
@@ -65,8 +62,8 @@
             margin: 30px 50px 80px;
         }
 
-        .wrapper div {
-            margin: 5px 0;
+        .wrapper input {
+            width: 100%;
         }
 
         .wrapper p {
@@ -165,7 +162,9 @@
 
 <div class="wrapper">
     <p>Choose Year To Highlight</p>
-    <div id="slider"></div>
+    <form>
+        <input id="season-range" type="range" name="season" min="1955" max="2015" step="1" value="2015">
+    </form>
 </div>
 
 <div class="about">
@@ -360,26 +359,9 @@ var updateChart = function(year) {
 };
 
 
-var makeSlider = function() {
-    var sliderAxis = d3.svg.axis()
-        .ticks(13)
-        .tickFormat(d3.format(".0"))
-        .orient("bottom");
+var slider = document.getElementById('season-range');
 
-    var slider = d3.slider()
-        .axis(sliderAxis)
-        .value(2015)
-        .min(1955)
-        .max(2015)
-        .on("slide", function(evt, value) {
-            updateChart(value);
-        });
-
-    d3.select('#slider')
-        .call(slider);
-};
-
-makeSlider();
+slider.onchange = function() { updateChart(parseInt(slider.value)) };
 
 </script>
 </body>
