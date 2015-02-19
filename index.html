@@ -360,7 +360,7 @@ var updateChart = function(year) {
 
 var slider = document.getElementById('season-range');
 
-slider.onchange = function() { updateChart(parseInt(slider.value)) };
+slider.oninput = function() { updateChart(parseInt(slider.value)) };
 
 </script>
 </body>
