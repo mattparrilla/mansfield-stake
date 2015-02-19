@@ -24,12 +24,6 @@
     <link rel="shortcut icon" href="static/favicon.ico">
 
     <style>
-
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
         body {
             font: 10px Helvetica Neue, Helvetica, Arial;
             width: 960px;
@@ -140,6 +134,32 @@
             font-size: 36px;
             margin: 0;
         }
+        .wrapper p.labels {
+            font-weight: 400;
+            margin-top: 5px;
+            position: relative;
+            height: 10px;
+            font-size: 12px;
+        }
+        p.labels span {
+            position: absolute;
+        }
+        #lower-bound {
+            left: -10px;
+        }
+        #left-1 {
+            left: 206px;
+        }
+        #right-1 {
+            right: 203px;
+        }
+        #upper-bound {
+            right: -10px;
+        }
+        #middle {
+            left: 418px;
+        }
+
     </style>
 
 </head>
@@ -164,6 +184,13 @@
     <p>Choose Year To Highlight</p>
     <form>
         <input id="season-range" type="range" name="season" min="1955" max="2015" step="1" value="2015">
+        <p class="labels">
+            <span id="lower-bound">1955</span>
+            <span id="left-1">1970</span>
+            <span id="middle">1985</span>
+            <span id="right-1">2000</span>
+            <span id="upper-bound">2015</span>
+        </p>
     </form>
 </div>
 
@@ -227,7 +254,6 @@ var svg = d3.select("#chart").append("svg")
     .attr("height", height + margin.top + margin.bottom)
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
 d3.csv("static/snowdepth.csv", function(error, data) {
     var snowData = data,
@@ -356,6 +382,9 @@ var updateChart = function(year) {
             }
         });
 };
+
+
+
 
 
 var slider = document.getElementById('season-range');
