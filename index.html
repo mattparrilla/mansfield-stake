@@ -372,11 +372,14 @@ d3.csv("static/snowdepth.csv", function(error, data) {
 })
 
 var updateChart = function(year) {
+    var highlightedLine;
+
     document.getElementById('year').textContent = year;
 
     d3.selectAll('path.line')
         .style("stroke", function(d) {
             if (d.season === year) {
+                highlightedLine = this.parentNode;
                 return "#353331";
             } else {
                 return "#d3d3d3";
@@ -395,7 +398,16 @@ var updateChart = function(year) {
             } else {
                 return 1.5;
             }
+        })
+        .attr("class", function(d) {
+            if (d.season === year) {
+                return "highlight line";
+            } else {
+                return "line";
+            }
         });
+
+    highlightedLine.parentNode.appendChild(highlightedLine);
 };
 
 
