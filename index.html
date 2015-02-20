@@ -398,13 +398,6 @@ var updateChart = function(year) {
             } else {
                 return 1.5;
             }
-        })
-        .attr("class", function(d) {
-            if (d.season === year) {
-                return "highlight line";
-            } else {
-                return "line";
-            }
         });
 
     highlightedLine.parentNode.appendChild(highlightedLine);
