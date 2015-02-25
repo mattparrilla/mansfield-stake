@@ -278,10 +278,12 @@ d3.csv("static/snowdepth.csv", function(error, data) {
     // below defines domain as array of all seasons (ignores "date")
     linearScale.domain(d3.keys(snowData[0]).filter(function(key) { return key !== "date"; }));
 
+    console.log(data);
     var latestYear = linearScale.domain()[linearScale.domain().length - 1];
 
     snowData.forEach(function(d,i) {
         // default year is 1900
+        console.log(d.date);
         d.date = parseDate(d.date);
         // to get each season on same line, set second half of year to 1901
         if (d.date.getMonth() < 7) {
