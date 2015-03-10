@@ -23,16 +23,7 @@
 
     <link rel="shortcut icon" href="static/favicon.ico">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="static/css/d3.slider.css">
-
     <style>
-
-        html, body {
-            max-width: 100%;
-            overflow-x: hidden;
-        }
-
         body {
             font: 10px Helvetica Neue, Helvetica, Arial;
             width: 960px;
@@ -62,11 +53,11 @@
 
         .wrapper {
             width: 860px;
-            margin: 30px 50px 80px;
+            margin: 40px 50px 80px;
         }
 
-        .wrapper div {
-            margin: 5px 0;
+        .wrapper input {
+            width: 100%;
         }
 
         .wrapper p {
@@ -143,6 +134,32 @@
             font-size: 36px;
             margin: 0;
         }
+        .wrapper p.labels {
+            font-weight: 400;
+            margin: 15px 0 8px;
+            position: relative;
+            height: 10px;
+            font-size: 12px;
+        }
+        p.labels span {
+            position: absolute;
+        }
+        #lower-bound {
+            left: -5px;
+        }
+        #left-1 {
+            left: 205px;
+        }
+        #right-1 {
+            right: 205px;
+        }
+        #upper-bound {
+            right: -8px;
+        }
+        #middle {
+            left: 418px;
+        }
+
     </style>
 
 </head>
@@ -165,7 +182,31 @@
 
 <div class="wrapper">
     <p>Choose Year To Highlight</p>
-    <div id="slider"></div>
+    <form>
+        <p class="labels">
+            <span id="lower-bound">1955</span>
+            <span id="left-1">1970</span>
+            <span id="middle">1985</span>
+            <span id="right-1">2000</span>
+            <span id="upper-bound">2015</span>
+        </p>
+        <input id="season-range" type="range" name="season" min="1955" max="2015" step="1" value="2015" list="ticks">
+        <datalist id="ticks">
+            <option>1955</option>
+            <option>1960</option>
+            <option>1965</option>
+            <option>1970</option>
+            <option>1975</option>
+            <option>1980</option>
+            <option>1985</option>
+            <option>1990</option>
+            <option>1995</option>
+            <option>2000</option>
+            <option>2005</option>
+            <option>2010</option>
+            <option>2015</option>
+        </datalist>
+    </form>
 </div>
 
 <div class="about">
@@ -185,7 +226,6 @@
 </div>
 
 <script src="http://d3js.org/d3.v3.js"></script>
-<script src="static/js/d3.slider.js"></script>
 
 <script>
 
@@ -230,7 +270,6 @@ var svg = d3.select("#chart").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-
 d3.csv("static/snowdepth.csv", function(error, data) {
     var snowData = data,
         mostRecentData;
@@ -239,10 +278,12 @@ d3.csv("static/snowdepth.csv", function(error, data) {
     // below defines domain as array of all seasons (ignores "date")
     linearScale.domain(d3.keys(snowData[0]).filter(function(key) { return key !== "date"; }));
 
+    console.log(data);
     var latestYear = linearScale.domain()[linearScale.domain().length - 1];
 
     snowData.forEach(function(d,i) {
         // default year is 1900
+        console.log(d.date);
         d.date = parseDate(d.date);
         // to get each season on same line, set second half of year to 1901
         if (d.date.getMonth() < 7) {
@@ -333,11 +374,14 @@ d3.csv("static/snowdepth.csv", function(error, data) {
 })
 
 var updateChart = function(year) {
+    var highlightedLine;
+
     document.getElementById('year').textContent = year;
 
     d3.selectAll('path.line')
         .style("stroke", function(d) {
             if (d.season === year) {
+                highlightedLine = this.parentNode;
                 return "#353331";
             } else {
                 return "#d3d3d3";
@@ -357,29 +401,27 @@ var updateChart = function(year) {
                 return 1.5;
             }
         });
+
+    highlightedLine.parentNode.appendChild(highlightedLine);
 };
 
 
-var makeSlider = function() {
-    var sliderAxis = d3.svg.axis()
-        .ticks(13)
-        .tickFormat(d3.format(".0"))
-        .orient("bottom");
 
-    var slider = d3.slider()
-        .axis(sliderAxis)
-        .value(2015)
-        .min(1955)
-        .max(2015)
-        .on("slide", function(evt, value) {
-            updateChart(value);
-        });
 
-    d3.select('#slider')
-        .call(slider);
-};
 
-makeSlider();
+var slider = document.getElementById('season-range');
+
+slider.oninput = function() { updateChart(parseInt(slider.value)) };
+
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-59962368-1', 'auto');
+  ga('send', 'pageview');
 
 </script>
 </body>
