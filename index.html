@@ -328,13 +328,15 @@ d3.csv("static/snowdepth.csv", function(error, data) {
 
     x.domain(d3.extent(data, function(d) { return d.date; }));
 
-    var maxDepths = {};
+    var maxDepths = [];
     var maxDepthSum = 0;
-    // go through each season and find max depth
+
+    // find max depth of dataset and build an object containing max depth for
+    // each year
     y.domain([0, d3.max(seasons, function(s) {
             var seasonMax = d3.max(s.values, function(v) { return v.depth; });
             maxDepthSum += seasonMax;
-            maxDepths[s.season] = seasonMax;
+            maxDepths.push({'season': s.season, 'depth': seasonMax});
             return seasonMax;
         })
     ]);
@@ -365,6 +367,19 @@ d3.csv("static/snowdepth.csv", function(error, data) {
         .attr("class", "line")
         .attr("d", function(d, i) { return line(d.values); });
 
+    var maxTicks = svg.selectAll('.max-ticks')
+        .data(maxDepths)
+        .enter().append('line')
+            .attr('x1', width - 20)
+            .attr('x2', width)
+            .attr('y1', function (d) {
+                return y(d.depth);
+            })
+            .attr('y2', function(d) {
+                return y(d.depth);
+            })
+            .attr('stroke-width', 1)
+            .attr('stroke', '#d3d3d3');
     updateChart(latestYear);
 
     document.getElementById('current-depth').textContent = currentDepth;
