@@ -78,7 +78,7 @@
             text-decoration: underline;
         }
 
-        #latest-measurement {
+        .latest-measurement {
             margin: 0;
             font-size: 14px;
             color: #888;
@@ -92,18 +92,18 @@
         #context {
             position: absolute;
             top: 18px;
-            left: 95px;
+            left: 125px;
         }
         #context p {
             font-size: 16px;
             margin: 0 0 3px;
-        }
-        .text {
             color: #888;
         }
-        #more-winters {
-            //padding-left: 9px;
-        }
+		#current-depth, #avg-depth {
+			color: #555;
+			position: absolute;
+			left: -30px;
+		}
 
         .about {
             margin: 50px;
@@ -123,6 +123,7 @@
             font-weight: 300;
             color: #888;
         }
+
         div.discussion {
             float: right;
         }
@@ -168,14 +169,13 @@
 
 <div class="header">
     <h1>Snow Depth On Mt. Mansfield Since 1954</h1>
-    <p id="latest-measurement"></p>
+    <p class="latest-measurement">Latest measurement: <span id="latest-measurement"></span></p>
 </div>
 
 <div id="chart">
     <div id="context">
-        <p><span id="current-depth"></span> <span class="text" id="current-depth-text"></span></p>
-        <p><span id="avg-depth"></span> <span class="text" id="avg-depth-text"></span></p>
-        <!--<p><span id="more-winters"></span> <span class="text" id="more-winters-text"></span></p>-->
+        <p><span id="current-depth"></span> Current depth at the fabled stake (in inches)</p>
+        <p><span id="avg-depth"></span> Average depth on <span id="avg-depth-date"></span></p>
     </div>
     <p id="year"></p>
 </div>
@@ -302,7 +302,6 @@ d3.csv("static/snowdepth.csv", function(error, data) {
         sumOfDepths = 0,
         averageDepth;
 
-    document.getElementById('latest-measurement').textContent = "Latest measurement: " + latestReadingMonth + " " + latestReadingDay;
 
     linearScale.domain().forEach(function(season) {
         var seasonDepth = parseInt(mostRecentData[season]);
@@ -396,19 +395,11 @@ d3.csv("static/snowdepth.csv", function(error, data) {
     updateChart(latestYear);
 
     // ** Write text **
-    // TODO: put most of this in HTML, only update statistics
     // TODO: consider new statistics
     document.getElementById('current-depth').textContent = currentDepth;
-    document.getElementById('current-depth-text').textContent = "Current depth at the fabled stake (in inches)";
-
     document.getElementById('avg-depth').textContent = averageDepth;
-    document.getElementById('avg-depth-text').textContent = "Average depth on " + latestReadingMonth + " " + latestReadingDay;
-
-    /* NOT USING ANYMORE
-    document.getElementById('more-winters').textContent = snowierWinters.length;
-    document.getElementById('more-winters-text').textContent = "Number of winters with more snow";
-    */
-
+    document.getElementById('avg-depth-date').textContent = latestReadingMonth + " " + latestReadingDay;
+    document.getElementById('latest-measurement').textContent = latestReadingMonth + " " + latestReadingDay;
 })
 
 var updateChart = function(year) {
@@ -416,7 +407,7 @@ var updateChart = function(year) {
 
     document.getElementById('year').textContent = year;
 
-    d3.selectAll('path.line')
+    svg.selectAll('path.line')
         .style("stroke", function(d) {
             if (d.season === year) {
                 highlightedLine = this.parentNode;
@@ -440,10 +431,9 @@ var updateChart = function(year) {
             }
         });
 
-    d3.selectAll('.max-ticks')
+    svg.selectAll('.max-ticks')
         .style('stroke', function (d) {
             if (d.season === year) {
-                highlightedLine = this.parentNode;
                 return "#353331";
             } else {
                 return "#d3d3d3";
