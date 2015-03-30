@@ -56,20 +56,6 @@ d3.csv("static/snowdepth.csv", function(error, data) {
         }
     });
 
-    var currentDepth = parseInt(mostRecentData[latestYear]),
-        latestReading = mostRecentData.date,
-        latestReadingDay = d3.time.format("%e")(latestReading),
-        latestReadingMonth = d3.time.format("%B")(latestReading),
-        sumOfDepths = 0,
-        averageDepth;
-
-    var snowierWinters = seasonList.filter(function(season) {
-        var seasonDepth = parseInt(mostRecentData[season]);
-        sumOfDepths += seasonDepth;
-        return seasonDepth > currentDepth;
-    });
-
-    averageDepth = Math.round(sumOfDepths / seasonList.length);
     // for each season, create values object of date and depth
     var seasons = seasonList.map(function(season) {
         return {
@@ -79,9 +65,28 @@ d3.csv("static/snowdepth.csv", function(error, data) {
             })
         };
     });
+
+    var currentDepth = parseInt(mostRecentData[latestYear]),
+        latestReading = mostRecentData.date,
+        latestReadingDay = d3.time.format("%e")(latestReading),
+        latestReadingMonth = d3.time.format("%B")(latestReading),
+        sumOfDepths = 0;
+
+    var snowierWinters = seasonList.filter(function(season) {
+        var seasonDepth = parseInt(mostRecentData[season]);
+        sumOfDepths += seasonDepth;
+
+        return seasonDepth > currentDepth;
+    });
+
+    var averageDepth = Math.round(sumOfDepths / seasonList.length);
+
+
     x.domain(d3.extent(data, function(d) { return d.date; }));
+
     var maxDepths = [];
     var maxDepthSum = 0;
+
     // ** Get maximum depth of dataset and each season **
     y.domain([0, d3.max(seasons, function(s) {
             var seasonMax = d3.max(s.values, function(v) { return v.depth; });
@@ -90,12 +95,15 @@ d3.csv("static/snowdepth.csv", function(error, data) {
             return seasonMax;
         })
     ]);
+
     var maxDepthAvg = Math.round(maxDepthSum / Object.keys(maxDepths).length);
+
     // ** Create axes **
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis);
+
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
@@ -114,7 +122,9 @@ d3.csv("static/snowdepth.csv", function(error, data) {
 
     season.append("path")
         .attr("class", "line")
-        .attr("d", function(d, i) { return line(d.values); });
+        .attr("d", function(d, i) {
+			return line(d.values);
+		});
 
     // ** Tick marks for max depth **
     var maxTicks = svg.selectAll('.max-ticks')
