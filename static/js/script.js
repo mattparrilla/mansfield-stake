@@ -50,7 +50,6 @@ d3.csv("static/snowdepth.csv", function(error, data) {
             d.date.setFullYear(1901)
         }
 
-        // get latest good data
         if (d[latestYear] !== 'null') {
             mostRecentData = d;
         }
@@ -123,6 +122,8 @@ d3.csv("static/snowdepth.csv", function(error, data) {
     season.append("path")
         .attr("class", "line")
         .attr("d", function(d, i) {
+            // passing the line function an array of {date, depth} objects
+            // that make up the lines for each season
 			return line(d.values);
 		});
 
@@ -131,8 +132,8 @@ d3.csv("static/snowdepth.csv", function(error, data) {
         .data(maxDepths)
         .enter().append('line')
             .attr('class', 'max-ticks')
-            .attr('x1', width - 20)
-            .attr('x2', width)
+            .attr('x1', 0)
+            .attr('x2', 15)
             .attr('y1', function (d) {
                 return y(d.depth);
             })
@@ -155,13 +156,13 @@ d3.csv("static/snowdepth.csv", function(error, data) {
     updateChart(latestYear);
 
     // ** Write text **
-    // TODO: consider new statistics
     document.getElementById('current-depth').textContent = currentDepth;
     document.getElementById('avg-depth').textContent = averageDepth;
     document.getElementById('avg-depth-date').textContent = latestReadingMonth + " " + latestReadingDay;
     document.getElementById('latest-measurement').textContent = latestReadingMonth + " " + latestReadingDay;
 })
 
+// *** updateChart draws the lines of the graph **
 var updateChart = function(year) {
     var highlightedLine;
 
