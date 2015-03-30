@@ -127,6 +127,7 @@ d3.csv("static/snowdepth.csv", function(error, data) {
 			return line(d.values);
 		});
 
+    /*
     // ** Tick marks for max depth **
     var maxTicks = svg.selectAll('.max-ticks')
         .data(maxDepths)
@@ -152,6 +153,7 @@ d3.csv("static/snowdepth.csv", function(error, data) {
         .attr('x', width - 10)
         .attr('y', 100)
         .text('maximum depth by year');
+    */
 
     updateChart(latestYear);
 
@@ -162,7 +164,6 @@ d3.csv("static/snowdepth.csv", function(error, data) {
     document.getElementById('latest-measurement').textContent = latestReadingMonth + " " + latestReadingDay;
 })
 
-// *** updateChart draws the lines of the graph **
 var updateChart = function(year) {
     var highlightedLine;
 
@@ -192,6 +193,7 @@ var updateChart = function(year) {
             }
         });
 
+    /*
     svg.selectAll('.max-ticks')
         .style('stroke', function (d) {
             if (d.season === year) {
@@ -200,6 +202,7 @@ var updateChart = function(year) {
                 return "#d3d3d3";
             }
         });
+        */
 
     highlightedLine.parentNode.appendChild(highlightedLine);
 };
