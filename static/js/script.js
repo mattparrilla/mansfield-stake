@@ -208,4 +208,4 @@ var updateChart = function(year) {
 };
 
 var slider = document.getElementById('season-range');
-slider.oninput = function() { updateChart(parseInt(slider.value)) };
+slider.oninput = function() { updateChart(slider.value) };
