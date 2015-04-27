@@ -72,7 +72,7 @@ d3.csv("static/snowdepth.csv", function(error, data) {
         sumOfDepths = 0;
 
     var snowierWinters = seasonList.filter(function(season) {
-        var seasonDepth = parseInt(mostRecentData[season]);
+        var seasonDepth = mostRecentData[season] != 'null' ? parseInt(mostRecentData[season]): 0;
         sumOfDepths += seasonDepth;
 
         return seasonDepth > currentDepth;
