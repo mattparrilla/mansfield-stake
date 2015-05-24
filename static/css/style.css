@@ -135,3 +135,7 @@ p.labels span {
 	left: 418px;
 }
 
+/* Hiding b/c year is over */
+.latest-measurement, #context {
+	display: none;
+}
