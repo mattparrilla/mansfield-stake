@@ -36,9 +36,9 @@ d3.csv("static/snowdepth.csv", function(error, data) {
     var mostRecentData;
 
     var seasonList = d3.keys(data[0])
-		.filter(function(key) {
-			return key !== "date";
-		});
+        .filter(function(key) {
+            return key !== "date";
+        });
 
     var latestYear = seasonList[seasonList.length - 1];
 
@@ -124,8 +124,8 @@ d3.csv("static/snowdepth.csv", function(error, data) {
         .attr("d", function(d, i) {
             // passing the line function an array of {date, depth} objects
             // that make up the lines for each season
-			return line(d.values);
-		});
+            return line(d.values);
+        });
 
     /*
     // ** Tick marks for max depth **
