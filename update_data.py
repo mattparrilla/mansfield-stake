@@ -120,7 +120,6 @@ def update_data():
             elif ((i == len(snowdepth_table) - 1)
                     and (month == int(last_reading_month))
                     and day >= int(last_reading_day)):
-                print 'testing'
                 snowdepth_table[i][j] = 'null'
 
             # else:
