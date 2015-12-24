@@ -73,10 +73,31 @@ d3.csv("static/snowdepth.csv", function(error, data) {
 
     var snowierWinters = seasonList.filter(function(season) {
         var seasonDepth = mostRecentData[season] != 'null' ? parseInt(mostRecentData[season]): 0;
+
+        // gross side effect below
         sumOfDepths += seasonDepth;
 
         return seasonDepth > currentDepth;
     });
+
+    // this filter business is crude, rewrite
+    var equalWinters = seasonList.filter(function(season) {
+        var seasonDepth = mostRecentData[season] != 'null' ? parseInt(mostRecentData[season]): 0;
+
+        return seasonDepth == currentDepth;
+    });
+
+    var lessSnowyWinters = seasonList.filter(function(season) {
+        var seasonDepth = mostRecentData[season] != 'null' ? parseInt(mostRecentData[season]): 0;
+
+        return seasonDepth < currentDepth;
+    });
+
+    console.log("Snowier Winters: " + snowierWinters);
+    console.log("\nWinters With Less Snow: " + lessSnowyWinters);
+    console.log("\nEqual Snow: " + equalWinters.filter(function(item) {
+        return item !== latestYear;
+    }));
 
     var averageDepth = Math.round(sumOfDepths / seasonList.length);
 
