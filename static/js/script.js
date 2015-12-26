@@ -185,7 +185,7 @@ d3.csv('static/snowdepth.csv', function(error, data) {
 var updateChart = function(year) {
     var highlightedLine;
 
-    document.getElementById('year').textContent = year;
+    document.getElementById('year').textContent = (year - 1) + '-' + year.toString().slice(2, 4);
 
     svg.selectAll('path.line')
         .style('stroke', function(d) {
