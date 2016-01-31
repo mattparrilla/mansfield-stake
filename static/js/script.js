@@ -93,11 +93,15 @@ d3.csv('static/snowdepth.csv', function(error, data) {
         }
     });
 
-    console.log('Snowier Winters: ' + snowierWinters);
-    console.log('\nWinters With Less Snow: ' + lessSnowyWinters);
-    console.log('\nEqual Snow: ' + equalSnowyWinters.filter(function(item) {
-        return item !== latestYear;
-    }));
+    console.log('Snowier Winters (' + snowierWinters.length + '): ' + snowierWinters);
+    console.log('\nWinters With Less Snow (' + lessSnowyWinters.length + '): ' + lessSnowyWinters);
+
+    // equalSnowyWinters array includes current season
+    if (equalSnowyWinters.length > 1) {
+        console.log('\nEqually Snowy Winters (' + (equalSnowyWinters.length - 1) + '): ' + equalSnowyWinters.filter(function(item) {
+            return item !== latestYear;
+        }));
+    }
 
     var averageDepth = Math.round(sumOfDepths / seasonList.length);
     x.domain(d3.extent(data, function(d) { return d.date; }));
@@ -145,33 +149,16 @@ d3.csv('static/snowdepth.csv', function(error, data) {
             return line(d.values);
         });
 
-    /*
-    // ** Tick marks for max depth **
-    var maxTicks = svg.selectAll('.max-ticks')
-        .data(maxDepths)
+    svg.select('.avg-depth-on-date')
+        .data(averageDepth)
         .enter().append('line')
-            .attr('class', 'max-ticks')
-            .attr('x1', 0)
-            .attr('x2', 15)
-            .attr('y1', function (d) {
-                return y(d.depth);
-            })
-            .attr('y2', function(d) {
-                return y(d.depth);
-            })
+            .attr('class', 'avg-depth-on-date')
+            .attr('x1', 100)
+            .attr('x2', 150)
+            .attr('y1', averageDepth)
+            .attr('y2', averageDepth)
             .attr('stroke-width', 1)
-            .attr('stroke', '#d3d3d3')
-            .on('mouseover', function(d) {
-                updateChart(d.season);
-            });
-
-    var maxTickLabels = svg.select('text.label')
-        .append('text')
-        .attr('class', 'label')
-        .attr('x', width - 10)
-        .attr('y', 100)
-        .text('maximum depth by year');
-    */
+            .attr('stroke', '#d3d3d3');
 
     updateChart(latestYear);
 
@@ -208,7 +195,6 @@ var updateChart = function(year) {
             return 1.5;
         });
 
-    /*
     svg.selectAll('.max-ticks')
         .style('stroke', function (d) {
             if (d.season === year) {
@@ -217,7 +203,6 @@ var updateChart = function(year) {
                 return '#d3d3d3';
             }
         });
-        */
 
     highlightedLine.parentNode.appendChild(highlightedLine);
 };
