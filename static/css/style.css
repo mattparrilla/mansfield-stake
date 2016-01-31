@@ -52,7 +52,7 @@ h1 {
     text-decoration: underline;
 }
 
-.latest-measurement {
+#latest-measurement {
     margin: 0;
     font-size: 14px;
     color: #888;
@@ -105,7 +105,7 @@ div.discussion {
     position: absolute;
     top: 12px;
     right: 50px;
-    color: #bbb;
+    color: #353331;
     font-size: 36px;
     margin: 0;
 }

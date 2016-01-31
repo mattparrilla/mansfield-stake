@@ -142,31 +142,35 @@ d3.csv('static/snowdepth.csv', function(error, data) {
             .attr('class', 'season');
 
     season.append('path')
-        .attr('class', 'line')
+       .attr('class', 'line')
         .attr('d', function(d) {
             // passing the line function an array of {date, depth} objects
             // that make up the lines for each season
             return line(d.values);
         });
 
-    svg.select('.avg-depth-on-date')
-        .data(averageDepth)
-        .enter().append('line')
-            .attr('class', 'avg-depth-on-date')
-            .attr('x1', 100)
-            .attr('x2', 150)
-            .attr('y1', averageDepth)
-            .attr('y2', averageDepth)
-            .attr('stroke-width', 1)
-            .attr('stroke', '#d3d3d3');
+    var avgDepthX = x(mostRecentData.date);
+    var avgDepthY = y(averageDepth);
+
+    svg.append('line')
+        .attr('class', 'avg-depth-on-date')
+        .attr('x1', avgDepthX - 3)
+        .attr('x2', avgDepthX + 3)
+        .attr('y1', avgDepthY - 3)
+        .attr('y2', avgDepthY - 3)
+        .attr('stroke-width', 2)
+        .attr('stroke', '#353331');
+
+    svg.append('text')
+        .attr('class', 'avg-depth-on-date-text')
+        .attr('x', avgDepthY < 400 ? avgDepthX + 10 : avgDepthX - 150)
+        .attr('y', avgDepthY)
+        .style('font-weight', 'bold')
+        .text('Average Depth On ' + [latestReadingMonth, latestReadingDay].join(' '));
 
     updateChart(latestYear);
 
-    // ** Write text **
-    document.getElementById('current-depth').textContent = currentDepth;
-    document.getElementById('avg-depth').textContent = averageDepth;
-    document.getElementById('avg-depth-date').textContent = latestReadingMonth + ' ' + latestReadingDay;
-    document.getElementById('latest-measurement').textContent = latestReadingMonth + ' ' + latestReadingDay;
+    document.getElementById('latest-measurement').textContent = 'Latest measurement: ' + latestReadingMonth + ' ' + latestReadingDay;
 });
 
 var updateChart = function(year) {
