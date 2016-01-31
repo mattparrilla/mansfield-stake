@@ -165,7 +165,7 @@ d3.csv('static/snowdepth.csv', function(error, data) {
         .attr('class', 'avg-depth-on-date-text')
         .attr('x', avgDepthY < 400 ? avgDepthX + 10 : avgDepthX - 150)
         .attr('y', avgDepthY)
-        .style('font-weight', 'bold')
+        .style('font-weight', '500')
         .text('Average Depth On ' + [latestReadingMonth, latestReadingDay].join(' '));
 
     updateChart(latestYear);
