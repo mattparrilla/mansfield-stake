@@ -199,15 +199,6 @@ var updateChart = function(year) {
             return 1.5;
         });
 
-    svg.selectAll('.max-ticks')
-        .style('stroke', function (d) {
-            if (d.season === year) {
-                return '#353331';
-            } else {
-                return '#d3d3d3';
-            }
-        });
-
     highlightedLine.parentNode.appendChild(highlightedLine);
 };
 
