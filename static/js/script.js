@@ -149,19 +149,20 @@ d3.csv('static/snowdepth.csv', function(error, data) {
             return line(d.values);
         });
 
-    var avgDepthX = x(mostRecentData.date);
-    var avgDepthY = y(averageDepth);
-
-    svg.append('line')
-        .attr('class', 'avg-depth-on-date')
-        .attr('x1', avgDepthX - 3)
-        .attr('x2', avgDepthX + 3)
-        .attr('y1', avgDepthY - 3)
-        .attr('y2', avgDepthY - 3)
-        .attr('stroke-width', 2)
-        .attr('stroke', '#353331');
 
     if (averageDepth > 10) {
+        var avgDepthX = x(mostRecentData.date);
+        var avgDepthY = y(averageDepth);
+
+        svg.append('line')
+            .attr('class', 'avg-depth-on-date')
+            .attr('x1', avgDepthX - 3)
+            .attr('x2', avgDepthX + 3)
+            .attr('y1', avgDepthY - 3)
+            .attr('y2', avgDepthY - 3)
+            .attr('stroke-width', 2)
+            .attr('stroke', '#353331');
+
         svg.append('text')
             .attr('class', 'avg-depth-on-date-text')
             .attr('x', avgDepthX + 10)
