@@ -46,6 +46,7 @@ d3.csv('static/snowdepth.csv', function(error, data) {
         .filter(function(key) {
             return key !== 'date';
         });
+    console.log(seasonList);
 
     var latestYear = seasonList[seasonList.length - 1];
 
