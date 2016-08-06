@@ -1,5 +1,7 @@
 /* global d3 */
 
+var slider = document.getElementById('season-range');
+
 var margin = {
     top: 20,
     right: 50,
@@ -46,9 +48,10 @@ d3.csv('static/snowdepth.csv', function(error, data) {
         .filter(function(key) {
             return key !== 'date';
         });
-    console.log(seasonList);
 
     var latestYear = seasonList[seasonList.length - 1];
+    slider.setAttribute('max', latestYear);
+    slider.setAttribute('value', latestYear);
 
     data.forEach(function(d) {
         d.date = parseDate(d.date);
@@ -206,5 +209,4 @@ var updateChart = function(year) {
     highlightedLine.parentNode.appendChild(highlightedLine);
 };
 
-var slider = document.getElementById('season-range');
 slider.oninput = function() { updateChart(slider.value); };
