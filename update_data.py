@@ -41,6 +41,7 @@ def update_data():
         date = "%d/%d" % (month, day)
 
         # Seasons will be defined by the year of the latter half of winter
+        # example 10/23/2016 is 2017
         if month < 10:
             season = year
         else:
@@ -73,7 +74,7 @@ def update_data():
     # parse every date in every year, even if no measurement
     for i, year in enumerate(snowdepth_table):
         # Skip first row (headers)
-        if not i:
+        if i == 0:
             continue
 
         # each year begins with a depth of 0
@@ -82,7 +83,7 @@ def update_data():
         for j, depth in enumerate(year):
 
             # Skip first iteration (since it's a label)
-            if not j:
+            if j == 0:
                 continue
 
             month, day = [int(x) for x in snowdepth_table[0][j].split('/')]
@@ -127,9 +128,11 @@ def update_data():
             elif depth - last_depth > 100:
                 snowdepth_table[i][j] = last_depth
 
+            # Make all future dates null
             elif ((i == len(snowdepth_table) - 1)
                     and (month == int(last_reading_month))
-                    and day >= int(last_reading_day)):
+                    and day >= int(last_reading_day)
+                    and snowdepth_table[i][j] == 0):
                 snowdepth_table[i][j] = 'null'
 
             # else:
