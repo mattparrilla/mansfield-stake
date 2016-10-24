@@ -35,6 +35,10 @@ def update_data():
     last_reading_month = last_reading[1]
     last_reading_day = last_reading[2]
 
+    print last_reading
+    print last_reading_month
+    print last_reading_day
+
     # parse CSV input
     for row in snow_csv[1:-1]:
         year, month, day = [int(i) for i in row[0].split('-')]
@@ -141,6 +145,7 @@ def update_data():
             #     print day, last_reading_day
             #     print day >= int(last_reading_day)
 
+            print last_depth
             # set last_depth for next loop
             last_depth = snowdepth_table[i][j]
 
