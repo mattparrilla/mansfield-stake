@@ -145,7 +145,6 @@ def update_data():
             #     print day, last_reading_day
             #     print day >= int(last_reading_day)
 
-            print last_depth
             # set last_depth for next loop
             last_depth = snowdepth_table[i][j]
 
