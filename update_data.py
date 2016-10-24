@@ -35,10 +35,6 @@ def update_data():
     last_reading_month = last_reading[1]
     last_reading_day = last_reading[2]
 
-    print last_reading
-    print last_reading_month
-    print last_reading_day
-
     # parse CSV input
     for row in snow_csv[1:-1]:
         year, month, day = [int(i) for i in row[0].split('-')]
