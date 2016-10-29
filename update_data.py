@@ -98,7 +98,8 @@ def update_data():
             # measurement, sometimes there are impossible measurements
             # like a 5" reading between a 50" and 55" readings.
             # The below code tries to eliminate this bad data
-            elif ((depth < 5 and last_depth > 10 or last_depth - depth > 20) and
+            elif (
+                (depth < 5 and last_depth >= 10 or last_depth - depth > 20) and
                     (month > 9 or month < 6)):
 
                 # setting depth = 0 allows us to throw away bad measurements
