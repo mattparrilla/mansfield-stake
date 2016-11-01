@@ -34,6 +34,7 @@ def update_data():
     last_reading = snow_csv[-2][0].split('-')
     last_reading_month = last_reading[1]
     last_reading_day = last_reading[2]
+    print last_reading
 
     # parse CSV input
     for row in snow_csv[1:-1]:
@@ -130,20 +131,28 @@ def update_data():
                 snowdepth_table[i][j] = last_depth
 
             # Make all future dates null
-            elif ((i == len(snowdepth_table) - 1)
-                    and (month == int(last_reading_month))
-                    and day >= int(last_reading_day)
-                    and snowdepth_table[i][j] == 0):
-                snowdepth_table[i][j] = 'null'
+            elif ((i == len(snowdepth_table) - 1)     # if last row in table
+                    and snowdepth_table[i][j] == 0):  # and no snow
 
-            # else:
-            #     print '- - - - \n'
-            #     print i, len(snowdepth_table) - 1
-            #     print i == len(snowdepth_table) - 1
-            #     print month, last_reading_month
-            #     print month == int(last_reading_month)
-            #     print day, last_reading_day
-            #     print day >= int(last_reading_day)
+                # if current month and greater than day or greater than month
+                if ((month == int(last_reading_month) and day >= int(last_reading_day))
+                        or month > int(last_reading_month)):
+                    snowdepth_table[i][j] = 'null'
+                else:
+                    print 'Not accounted for!'
+
+            else:
+                print '- - - - \n'
+                print month, day, snowdepth_table[i][j]
+                print i, len(snowdepth_table) - 1
+                print i == len(snowdepth_table) - 1
+                print month, last_reading_month
+                print month >= int(last_reading_month)
+                print day, last_reading_day
+                print day >= int(last_reading_day)
+                print year[0]
+                print last_reading
+                print snowdepth_table[i][j]
 
             # set last_depth for next loop
             last_depth = snowdepth_table[i][j]
