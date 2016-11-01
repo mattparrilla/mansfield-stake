@@ -141,18 +141,18 @@ def update_data():
                 else:
                     print 'Not accounted for!'
 
-            else:
-                print '- - - - \n'
-                print month, day, snowdepth_table[i][j]
-                print i, len(snowdepth_table) - 1
-                print i == len(snowdepth_table) - 1
-                print month, last_reading_month
-                print month >= int(last_reading_month)
-                print day, last_reading_day
-                print day >= int(last_reading_day)
-                print year[0]
-                print last_reading
-                print snowdepth_table[i][j]
+            # else:
+            #     print '- - - - \n'
+            #     print month, day, snowdepth_table[i][j]
+            #     print i, len(snowdepth_table) - 1
+            #     print i == len(snowdepth_table) - 1
+            #     print month, last_reading_month
+            #     print month >= int(last_reading_month)
+            #     print day, last_reading_day
+            #     print day >= int(last_reading_day)
+            #     print year[0]
+            #     print last_reading
+            #     print snowdepth_table[i][j]
 
             # set last_depth for next loop
             last_depth = snowdepth_table[i][j]
