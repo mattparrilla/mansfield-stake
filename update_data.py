@@ -22,7 +22,7 @@ def update_data():
     snow_csv = [l for l in data]
 
     # create header row of all dates
-    header_row = ['date']
+    header_row = ['year']
     for month in [9, 10, 11, 12, 1, 2, 3, 4, 5, 6]:
         number_of_days = calendar.monthrange(2012, month)[1]
         for date in range(number_of_days):
@@ -34,7 +34,6 @@ def update_data():
     last_reading = snow_csv[-2][0].split('-')
     last_reading_month = last_reading[1]
     last_reading_day = last_reading[2]
-    print last_reading
 
     # parse CSV input
     for row in snow_csv[1:-1]:
@@ -139,7 +138,7 @@ def update_data():
                         or month > int(last_reading_month)):
                     snowdepth_table[i][j] = 'null'
                 else:
-                    print 'Not accounted for!'
+                    print '%s/%s (%s season) Not accounted for!' % (month, day, year[0])
 
             # else:
             #     print '- - - - \n'
@@ -158,9 +157,9 @@ def update_data():
             last_depth = snowdepth_table[i][j]
 
     safe_path = os.path.join(os.path.dirname(__file__),
-        'static/snowdepth.csv')
+        'app/public/snowdepth.csv')
     with open(safe_path, 'wb') as f:
         write_csv = csv.writer(f)
-        write_csv.writerows(zip(*snowdepth_table))
+        write_csv.writerows(snowdepth_table)
 
 update_data()
