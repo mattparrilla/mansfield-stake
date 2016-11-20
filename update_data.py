@@ -54,8 +54,8 @@ def update_data():
             # create array for current year
             season_data = [0] * len(header_row)
 
-            # first entry in row is season label
-            season_data[0] = season
+            # first entry in row is season label (ex. 54-55)
+            season_data[0] = "%s-%s" % (str(season - 1)[2:], str(season)[2:])
             snowdepth_table.append(season_data)
 
         if month > 8 or month < 7:
@@ -91,7 +91,7 @@ def update_data():
             # null depth only happens at end of year, so if last depth is null
             # next depth will be as well
             if last_depth == 'null':
-                snowdepth_table[i][j] = 'null'
+                snowdepth_table[i][j] = 0
 
                 continue
             # the source data is ugly, sometimes large blocks of dates get
@@ -114,7 +114,7 @@ def update_data():
                         depth = snowdepth_table[i][j + steps]
                     # IndexError occurs when end of year
                     except IndexError:
-                        depth = 'null'
+                        depth = 0
                         snowdepth_table[i][j] = depth
                         break
 
@@ -136,7 +136,7 @@ def update_data():
                 # if current month and greater than day or greater than month
                 if ((month == int(last_reading_month) and day >= int(last_reading_day))
                         or month > int(last_reading_month)):
-                    snowdepth_table[i][j] = 'null'
+                    snowdepth_table[i][j] = 0
                 else:
                     print '%s/%s (%s season) Not accounted for!' % (month, day, year[0])
 
@@ -158,7 +158,7 @@ def update_data():
 
     safe_path = os.path.join(os.path.dirname(__file__),
         'app/public/snowdepth.csv')
-    with open(safe_path, 'wb') as f:
+    with open(safe_path, 'w') as f:
         write_csv = csv.writer(f)
         write_csv.writerows(snowdepth_table)
 

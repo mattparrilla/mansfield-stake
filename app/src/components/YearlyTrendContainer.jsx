@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
-import { csv } from 'd3';
+import { csv, timeParse } from 'd3';
+import YearlyTrend from './YearlyTrend';
 
-const transformRow = (d) => {
-  console.log(d);
-  return d;
+// TODO: get data from backend shaped this way
+const transformRow = (season) => {
+  const parseTime = timeParse('%0m/%0d');
+  return {
+    season: season.year,
+    values: Object.keys(season).slice(1).map(date => ({
+      date: parseTime(date),
+      snowDepth: season[date],
+    })),
+  };
 };
 
 class YearlyTrendContainer extends Component {
@@ -18,9 +26,12 @@ class YearlyTrendContainer extends Component {
 
   render() {
     return (
-      <pre>
-        {JSON.stringify(this.state.data, null, 2)}
-      </pre>
+      <div>
+        <YearlyTrend key="snowDepth" data={this.state.data} />
+        <pre>
+          {JSON.stringify(this.state.data, null, 2)}
+        </pre>
+      </div>
     );
   }
 }
