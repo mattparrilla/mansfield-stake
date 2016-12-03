@@ -34,6 +34,8 @@ def update_data():
     last_reading = snow_csv[-2][0].split('-')
     last_reading_month = last_reading[1]
     last_reading_day = last_reading[2]
+    print last_reading
+    print 'last reading day: %s/%s\n' % (last_reading_month, last_reading_day)
 
     # parse CSV input
     for row in snow_csv[1:-1]:
@@ -70,6 +72,7 @@ def update_data():
             # ignore non-numeric values
             except ValueError:
                 continue
+    print snowdepth_table[-1]
 
     # parse every date in every year, even if no measurement
     for i, year in enumerate(snowdepth_table):
@@ -94,6 +97,18 @@ def update_data():
                 snowdepth_table[i][j] = 0
 
                 continue
+
+            # Make all future dates null
+            elif ((i == len(snowdepth_table) - 1)     # if last row in table
+                    and snowdepth_table[i][j] == 0):  # and no snow
+
+                # if current month and greater than day or greater than month
+                if ((month == int(last_reading_month) and day >= int(last_reading_day))
+                        or month > int(last_reading_month)):
+                    snowdepth_table[i][j] = 'null'
+                else:
+                    print '%s/%s (%s season) Not accounted for!' % (month, day, year[0])
+
             # the source data is ugly, sometimes large blocks of dates get
             # skipped, sometimes there are 0s where there should be no
             # measurement, sometimes there are impossible measurements
@@ -136,9 +151,12 @@ def update_data():
                 # if current month and greater than day or greater than month
                 if ((month == int(last_reading_month) and day >= int(last_reading_day))
                         or month > int(last_reading_month)):
-                    snowdepth_table[i][j] = 0
+                    snowdepth_table[i][j] = 'null'
                 else:
                     print '%s/%s (%s season) Not accounted for!' % (month, day, year[0])
+
+            elif (i == len(snowdepth_table) - 1):     # if last row in table
+                print '%d, %d' % (month, day)
 
             # else:
             #     print '- - - - \n'
