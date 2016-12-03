@@ -4,11 +4,11 @@
 
 .yearly-trend .line {
   fill: none;
-  stroke: steelblue;
-  stroke-width: 1.5px;
+  stroke: #d3d3d3;
+  stroke-width: 1px;
 }
 
 .highlight .line {
-  stroke-width: 5px;
-  stroke: black;
+  stroke-width: 2px;
+  stroke: #1a1a1a;
 }
