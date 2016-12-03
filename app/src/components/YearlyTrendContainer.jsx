@@ -11,10 +11,13 @@ const transformRow = (season) => {
 
   return {
     season: season.year,
-    values: Object.keys(season).slice(1).map(date => ({
-      date: parseTime(date),
-      snowDepth: parseInt(season[date], 10),
-    })),
+    values: Object.keys(season)
+      .slice(1) // remove header label
+      .filter(date => season[date])
+      .map(date => ({
+        date: parseTime(date),
+        snowDepth: parseInt(season[date], 10),
+      })),
   };
 };
 
