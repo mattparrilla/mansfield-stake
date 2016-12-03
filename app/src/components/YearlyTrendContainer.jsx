@@ -8,6 +8,7 @@ const transformRow = (season) => {
     const year = date.split('/')[0] > 7 ? 1900 : 1901;
     return timeParse('%0m/%0d/%Y')(`${date}/${year}`);
   };
+
   return {
     season: season.year,
     values: Object.keys(season).slice(1).map(date => ({
@@ -29,12 +30,7 @@ class YearlyTrendContainer extends Component {
 
   render() {
     return (
-      <div>
-        <YearlyTrend key="snowDepth" data={this.state.data} />
-        <pre>
-          {JSON.stringify(this.state.data, null, 2)}
-        </pre>
-      </div>
+      <YearlyTrend key="snowDepth" data={this.state.data} />
     );
   }
 }

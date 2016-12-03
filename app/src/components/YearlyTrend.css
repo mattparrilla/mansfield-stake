@@ -7,3 +7,8 @@
   stroke: steelblue;
   stroke-width: 1.5px;
 }
+
+.highlight .line {
+  stroke-width: 5px;
+  stroke: black;
+}

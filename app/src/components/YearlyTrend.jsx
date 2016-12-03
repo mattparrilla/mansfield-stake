@@ -60,30 +60,36 @@ class YearlyTrend extends Component {
       .enter().append('g')
         .attr('class', 'season');
 
+    d3.select('.season:last-child').attr('class', 'season highlight');
+
     season.append('path')
       .attr('class', 'line')
-      .attr('d', d => line(d.values))
-      .style('stroke', d => z(d.season));
+      .attr('d', d => line(d.values));
 
-    season.append('text')
-      .datum(d => ({ season: d.season, value: d.values[d.values.length - 1] }))
-      .attr('transform', d => (
-        `translate(${x(d.value.date)},${y(d.value.snowDepth) || 0})`
-      ))
-      .attr('x', 3)
-      .attr('dy', '0.35em')
-      .style('font', '10px sans-serif')
-      .text(d => d.season);
+    // season.append('text')
+    //   .datum(d => ({ season: d.season, value: d.values[d.values.length - 1] }))
+    //   .attr('transform', d => (
+    //     `translate(${x(d.value.date)},${y(d.value.snowDepth) || 0})`
+    //   ))
+    //   .attr('x', 3)
+    //   .attr('dy', '0.35em')
+    //   .style('font', '10px sans-serif')
+    //   .text(d => d.season);
   }
 
   render() {
+    const { data = [] } = this.props;
     return (
-      <svg
-        className="yearly-trend"
-        ref={(ref) => { this.chart = ref; }}
-        width="960"
-        height="500"
-      />
+      <div>
+        <svg
+          className="yearly-trend"
+          ref={(ref) => { this.chart = ref; }}
+          width="960"
+          height="500"
+        />
+        <pre>{JSON.stringify(data[data.length - 1], null, 2)}</pre>
+      </div>
+
     );
   }
 }
