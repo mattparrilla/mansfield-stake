@@ -4,12 +4,15 @@ import YearlyTrend from './YearlyTrend';
 
 // TODO: get data from backend shaped this way
 const transformRow = (season) => {
-  const parseTime = timeParse('%0m/%0d');
+  const parseTime = (date) => {
+    const year = date.split('/')[0] > 7 ? 1900 : 1901;
+    return timeParse('%0m/%0d/%Y')(`${date}/${year}`);
+  };
   return {
     season: season.year,
     values: Object.keys(season).slice(1).map(date => ({
       date: parseTime(date),
-      snowDepth: season[date],
+      snowDepth: parseInt(season[date], 10),
     })),
   };
 };
