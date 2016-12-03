@@ -78,17 +78,13 @@ class YearlyTrend extends Component {
   }
 
   render() {
-    const { data = [] } = this.props;
     return (
-      <div>
-        <svg
-          className="yearly-trend"
-          ref={(ref) => { this.chart = ref; }}
-          width="960"
-          height="500"
-        />
-        <pre>{JSON.stringify(data[data.length - 1], null, 2)}</pre>
-      </div>
+      <svg
+        className="yearly-trend"
+        ref={(ref) => { this.chart = ref; }}
+        width="960"
+        height="500"
+      />
 
     );
   }
