@@ -89,18 +89,17 @@ def update_data():
 
         for j, depth in enumerate(year):
 
-            # Skip first iteration (since it's a label)
+            # Skip label row
             if j == 0:
                 continue
 
             month, day = [int(x) for x in snowdepth_table[0][j].split('/')]
 
-            # if future date
+            # if later date in calendar year of
             if ((i == len(snowdepth_table) - 1) and is_later_in_calendar(month, day)):
                 snowdepth_table[i][j] = None
 
-            # null depth only happens at end of year, so if last depth is null
-            # next depth will be as well
+            # last_depth is None when season is over
             elif last_depth is None:
                 snowdepth_table[i][j] = None
 
@@ -111,14 +110,15 @@ def update_data():
             # The below code tries to eliminate this bad data
             elif (
                 (depth < 5 and last_depth >= 10 or last_depth - depth > 20) and
-                    (month > 9 or month < 6)):
+                (month > 9 or month < 6)
+            ):
 
                 # setting depth = 0 allows us to throw away bad measurements
                 depth = 0
 
                 # if a bad measurment, find the next good measurement
                 steps = 0
-                while not depth:
+                while depth == 0:
                     steps += 1
                     try:
                         depth = snowdepth_table[i][j + steps]
@@ -138,29 +138,6 @@ def update_data():
             # In 1956 there's an extra zero (120 instead of 12) for depth
             elif depth - last_depth > 100:
                 snowdepth_table[i][j] = last_depth
-
-            # Make all future dates null
-            elif ((i == len(snowdepth_table) - 1)     # if last row in table
-                    and snowdepth_table[i][j] == 0):  # and no snow
-
-                # if current month and greater than day or greater than month
-                if is_later_in_calendar(month, day):
-                    snowdepth_table[i][j] = None
-                else:
-                    print '%s/%s (%s season) Not accounted for!' % (month, day, year[0])
-
-            # else:
-            #     print '- - - - \n'
-            #     print month, day, snowdepth_table[i][j]
-            #     print i, len(snowdepth_table) - 1
-            #     print i == len(snowdepth_table) - 1
-            #     print month, last_reading_month
-            #     print month >= int(last_reading_month)
-            #     print day, last_reading_day
-            #     print day >= int(last_reading_day)
-            #     print year[0]
-            #     print last_reading
-            #     print snowdepth_table[i][j]
 
             # set last_depth for next loop
             last_depth = snowdepth_table[i][j]
