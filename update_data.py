@@ -32,8 +32,15 @@ def update_data():
     snowdepth_table = [header_row]
     season_list = []
     last_reading = snow_csv[-2][0].split('-')
-    last_reading_month = last_reading[1]
-    last_reading_day = last_reading[2]
+    last_reading_year, last_reading_month, last_reading_day = last_reading
+
+    def is_later_in_calendar(month, day):
+        return (
+            # if day in current month > today
+            (month == int(last_reading_month) and day > int(last_reading_day))
+            # if first day of next month
+            or month > int(last_reading_month)
+        )
 
     # parse CSV input
     for row in snow_csv[1:-1]:
@@ -55,7 +62,7 @@ def update_data():
             season_data = [0] * len(header_row)
 
             # first entry in row is season label (ex. 54-55)
-            season_data[0] = "%s-%s" % (str(season - 1)[2:], str(season)[2:])
+            season_data[0] = "%s-%s" % (str(season - 1), str(season))
             snowdepth_table.append(season_data)
 
         if month > 8 or month < 7:
@@ -88,23 +95,14 @@ def update_data():
 
             month, day = [int(x) for x in snowdepth_table[0][j].split('/')]
 
-            # null depth only happens at end of year, so if last depth is null
-            # next depth will be as well
-            if last_depth is None:
+            # if future date
+            if ((i == len(snowdepth_table) - 1) and is_later_in_calendar(month, day)):
                 snowdepth_table[i][j] = None
 
-                continue
-
-            # Make all future dates null
-            elif ((i == len(snowdepth_table) - 1)     # if last row in table
-                    and snowdepth_table[i][j] == 0):  # and no snow
-
-                # if current month and greater than day or greater than month
-                if ((month == int(last_reading_month) and day >= int(last_reading_day))
-                        or month > int(last_reading_month)):
-                    snowdepth_table[i][j] = None
-                else:
-                    print '%s/%s (%s season) Not accounted for!' % (month, day, year[0])
+            # null depth only happens at end of year, so if last depth is null
+            # next depth will be as well
+            elif last_depth is None:
+                snowdepth_table[i][j] = None
 
             # the source data is ugly, sometimes large blocks of dates get
             # skipped, sometimes there are 0s where there should be no
@@ -132,7 +130,7 @@ def update_data():
 
                 # take last depth and next good measurement and the number of
                 # steps in between and assign current depth
-                if depth != 'null':
+                if depth is not None:
                     delta = (depth - last_depth) / (steps + 1)
                     depth = last_depth + delta
                     snowdepth_table[i][j] = depth
@@ -146,8 +144,7 @@ def update_data():
                     and snowdepth_table[i][j] == 0):  # and no snow
 
                 # if current month and greater than day or greater than month
-                if ((month == int(last_reading_month) and day >= int(last_reading_day))
-                        or month > int(last_reading_month)):
+                if is_later_in_calendar(month, day):
                     snowdepth_table[i][j] = None
                 else:
                     print '%s/%s (%s season) Not accounted for!' % (month, day, year[0])
