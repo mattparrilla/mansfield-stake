@@ -33,7 +33,12 @@ class YearlyTrendContainer extends Component {
 
   render() {
     return (
-      <YearlyTrend key="snowDepth" data={this.state.data} />
+      <YearlyTrend
+        key="snowDepth"
+        data={this.state.data}
+        width={960}
+        height={500}
+      />
     );
   }
 }

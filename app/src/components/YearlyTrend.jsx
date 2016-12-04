@@ -15,8 +15,8 @@ class YearlyTrend extends Component {
     const margin = {
       top: 20, right: 80, bottom: 30, left: 50,
     };
-    const width = svg.attr('width') - margin.left - margin.right;
-    const height = svg.attr('height') - margin.top - margin.bottom;
+    const width = this.props.width - margin.left - margin.right;
+    const height = this.props.height - margin.top - margin.bottom;
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
     const x = d3.scaleTime().range([0, width]);
@@ -82,8 +82,8 @@ class YearlyTrend extends Component {
       <svg
         className="yearly-trend"
         ref={(ref) => { this.chart = ref; }}
-        width="960"
-        height="500"
+        width={this.props.width}
+        height={this.props.height}
       />
 
     );
@@ -92,6 +92,8 @@ class YearlyTrend extends Component {
 
 YearlyTrend.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
+  width: PropTypes.number,
+  height: PropTypes.number,
 };
 
 export default YearlyTrend;

@@ -1,3 +1,8 @@
+.yearly-trend {
+  display: block;
+  margin: 0 auto;
+}
+
 .yearly-trend .axis--x path {
   display: none;
 }
