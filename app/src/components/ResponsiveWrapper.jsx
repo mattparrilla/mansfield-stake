@@ -11,7 +11,7 @@ class ResponsiveWrapper extends Component {
 
   componentDidMount() {
     this.update();
-    let win = window;
+    const win = window;
     if (win.addEventListener) {
       win.addEventListener('resize', this.onResize, false);
     } else if (win.attachEvent) {
@@ -28,8 +28,7 @@ class ResponsiveWrapper extends Component {
 
   update() {
     const win = window;
-
-    const widthOffset = win.innerWidth < 680 ? 0 : 240;
+    const widthOffset = win.innerWidth < 680 ? 0 : 100;
     const width = win.innerWidth - widthOffset;
 
     this.setState({
