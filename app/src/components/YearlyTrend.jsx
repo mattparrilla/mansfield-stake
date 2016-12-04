@@ -41,19 +41,19 @@ class YearlyTrend extends Component {
     z.domain(data.map(c => c.season));
 
     g.append('g')
-        .attr('class', 'axis axis--x')
-        .attr('transform', `translate(0,${height})`)
-        .call(d3.axisBottom(x));
+      .attr('class', 'axis axis--x')
+      .attr('transform', `translate(0,${height})`)
+      .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%B')));
 
     g.append('g')
-        .attr('class', 'axis axis--y')
-        .call(d3.axisLeft(y))
-      .append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 6)
-        .attr('dy', '0.71em')
-        .attr('fill', '#000')
-        .text('Snow Depth, inches');
+      .attr('class', 'axis axis--y')
+      .call(d3.axisLeft(y))
+    .append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', 6)
+      .attr('dy', '0.71em')
+      .attr('fill', '#000')
+      .text('Snow Depth, inches');
 
     const season = g.selectAll('.season')
       .data(data)
@@ -65,16 +65,6 @@ class YearlyTrend extends Component {
     season.append('path')
       .attr('class', 'line')
       .attr('d', d => line(d.values));
-
-    // season.append('text')
-    //   .datum(d => ({ season: d.season, value: d.values[d.values.length - 1] }))
-    //   .attr('transform', d => (
-    //     `translate(${x(d.value.date)},${y(d.value.snowDepth) || 0})`
-    //   ))
-    //   .attr('x', 3)
-    //   .attr('dy', '0.35em')
-    //   .style('font', '10px sans-serif')
-    //   .text(d => d.season);
   }
 
   render() {
