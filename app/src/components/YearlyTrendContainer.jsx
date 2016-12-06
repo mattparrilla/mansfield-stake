@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { csv, timeParse } from 'd3';
 import YearlyTrend from './YearlyTrend';
-import ResponsiveWrapper from './ResponsiveWrapper';
 
 // TODO: get data from backend shaped this way
 const transformRow = (season) => {
@@ -34,12 +33,14 @@ class YearlyTrendContainer extends Component {
 
   render() {
     return (
-      <ResponsiveWrapper>
+      <div>
         <YearlyTrend
           key="snowDepth"
           data={this.state.data}
+          width={900}
+          height={500}
         />
-      </ResponsiveWrapper>
+      </div>
     );
   }
 }
