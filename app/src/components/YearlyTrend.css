@@ -22,3 +22,8 @@
   stroke-width: 2px;
   stroke: #e3624f;
 }
+
+.grid-line {
+  stroke-width: 1px;
+  stroke: white;
+}

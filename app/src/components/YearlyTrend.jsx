@@ -6,15 +6,15 @@ import './YearlyTrend.css';
 class YearlyTrend extends Component {
   componentDidMount() {
     const { data } = this.props;
-    const svg = d3.select(this.chart);
     const margin = {
-      top: 20, right: 80, bottom: 30, left: 50,
+      top: 10, right: 40, bottom: 20, left: 25,
     };
-
     const width = this.props.width - margin.left - margin.right;
     const height = this.props.height - margin.top - margin.bottom;
 
-    this.g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
+    const g = d3.select(this.chart)
+      .append('g')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
 
     const x = d3.scaleTime().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
@@ -31,18 +31,35 @@ class YearlyTrend extends Component {
     ]);
 
     y.domain([
-      d3.min(data, season => d3.min(season.values, date => date.snowDepth)),
+      0,
       d3.max(data, season => d3.max(season.values, date => date.snowDepth)),
     ]);
 
     z.domain(data.map(c => c.season));
 
-    this.g.append('g')
+    this.seasonContainer = g.append('g').attr('class', 'season-container');
+
+    // create grid lines for y-axis
+    g.append('g')
+      .attr('class', 'grid-lines')
+        .selectAll('g.grid-line')
+        .data([20, 40, 60, 80, 100, 120, 140])
+        .enter()
+          .append('line')
+            .attr('class', 'grid-line')
+            .attr('x1', 0)
+            .attr('x2', width)
+            .attr('y1', d => y(d))
+            .attr('y2', d => y(d));
+
+    g.append('g')
       .attr('class', 'axis axis--x')
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%B')));
 
-    this.g.append('g')
+    // needs to be after grid lines are created so axis label isn't cut off
+    // by grid line
+    g.append('g')
       .attr('class', 'axis axis--y')
       .attr('transform', `translate(${width}, 0)`)
       .call(d3.axisRight(y))
@@ -54,6 +71,7 @@ class YearlyTrend extends Component {
       .attr('fill', '#000')
       .text('Snow Depth, inches');
 
+
     this.updateChart();
   }
 
@@ -64,7 +82,7 @@ class YearlyTrend extends Component {
   updateChart() {
     const { data = [], comparisonYear } = this.props;
 
-    const season = this.g.selectAll('.season')
+    const season = this.seasonContainer.selectAll('.season')
       .data(
         data.filter(d => d.season !== comparisonYear),
         d => d.season,
@@ -78,7 +96,7 @@ class YearlyTrend extends Component {
           .attr('class', 'line')
           .attr('d', d => this.line(d.values));
 
-    const currentSeason = this.g.select('.season:last-child')
+    const currentSeason = this.seasonContainer.select('.season:last-child')
       .attr('class', 'season current');
 
     // comparison season
