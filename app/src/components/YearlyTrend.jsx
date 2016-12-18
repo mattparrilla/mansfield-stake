@@ -37,7 +37,9 @@ class YearlyTrend extends Component {
 
     z.domain(data.map(c => c.season));
 
-    this.seasonContainer = g.append('g').attr('class', 'season-container');
+    // exposing this to componentDidUpdate, not exposing g directly in case
+    // I want to go back to putting seasons in their own container
+    this.seasonContainer = g;
 
     // create grid lines for y-axis
     g.append('g')
@@ -98,6 +100,9 @@ class YearlyTrend extends Component {
 
     const currentSeason = this.seasonContainer.select('.season:last-child')
       .attr('class', 'season current');
+
+    // put gridlines on top of all provious years, behind comparison and current
+    this.seasonContainer.select('.grid-lines').raise();
 
     // comparison season
     season.exit()
