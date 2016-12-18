@@ -44,11 +44,13 @@ class YearlyTrend extends Component {
 
     this.g.append('g')
       .attr('class', 'axis axis--y')
-      .call(d3.axisLeft(y))
+      .attr('transform', `translate(${width}, 0)`)
+      .call(d3.axisRight(y))
     .append('text')
       .attr('transform', 'rotate(-90)')
-      .attr('y', 6)
+      .attr('y', -15)
       .attr('dy', '0.71em')
+      .attr('x', -90)
       .attr('fill', '#000')
       .text('Snow Depth, inches');
 

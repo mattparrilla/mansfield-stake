@@ -34,25 +34,42 @@ class YearlyTrendContainer extends Component {
 
   render() {
     const { data, comparisonYear } = this.state;
+    const styles = {
+      container: {
+        display: 'flex',
+        flexDirection: 'row',
+      },
+      infoPane: {
+      },
+    };
     return (
-      <div>
-        {data &&
-          <YearlyTrend
-            key="snowDepth"
-            data={data}
-            width={900}
-            height={500}
-            comparisonYear={comparisonYear}
-          />
-        }
-        <select
-          value={comparisonYear}
-          onChange={(e) => { this.setState({ comparisonYear: e.target.value }); }}
+      <div style={styles.container}>
+        <div
+          style={styles.infoPane}
         >
-          {data && data.map(({ season }) => (
-            <option key={season} value={season}>{season}</option>
-          ))}
-        </select>
+          <h1>Snow Depth On Mt. Mansfield Since 1954</h1>
+          <select
+            value={comparisonYear}
+            onChange={(e) => { this.setState({ comparisonYear: e.target.value }); }}
+          >
+            {data && data.map(({ season }) => (
+              <option key={season} value={season}>{season}</option>
+            ))}
+          </select>
+        </div>
+        {data &&
+          <div
+            style={{ borderRight: '1px solid red' }}
+          >
+            <YearlyTrend
+              key="snowDepth"
+              data={data}
+              width={900}
+              height={500}
+              comparisonYear={comparisonYear}
+            />
+          </div>
+        }
       </div>
     );
   }
