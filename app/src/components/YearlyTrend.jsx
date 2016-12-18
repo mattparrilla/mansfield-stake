@@ -18,7 +18,6 @@ class YearlyTrend extends Component {
 
     const x = d3.scaleTime().range([0, width]);
     const y = d3.scaleLinear().range([height, 0]);
-    const z = d3.scaleOrdinal(d3.schemeCategory10);
 
     this.line = d3.line()
       .curve(d3.curveBasis)
@@ -34,8 +33,6 @@ class YearlyTrend extends Component {
       0,
       d3.max(data, season => d3.max(season.values, date => date.snowDepth)),
     ]);
-
-    z.domain(data.map(c => c.season));
 
     // exposing this to componentDidUpdate, not exposing g directly in case
     // I want to go back to putting seasons in their own container
@@ -73,6 +70,20 @@ class YearlyTrend extends Component {
       .attr('fill', '#000')
       .text('Snow Depth, inches');
 
+    // add label for current year
+    g.append('text')
+      .attr('fill', '#000')
+      .attr('dy', '1em')
+      .attr('font-size', '24px')
+      .text(data[data.length - 1].season);
+
+    // add label for comparison year
+    g.append('text')
+      .attr('class', 'comparison-label')
+      .attr('fill', '#e3624f')
+      .attr('y', '30px')
+      .attr('dy', '1em')
+      .attr('font-size', '24px');
 
     this.updateChart();
   }
@@ -83,6 +94,9 @@ class YearlyTrend extends Component {
 
   updateChart() {
     const { data = [], comparisonYear } = this.props;
+
+    this.seasonContainer.select('.comparison-label')
+      .text(comparisonYear);
 
     const season = this.seasonContainer.selectAll('.season')
       .data(
