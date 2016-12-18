@@ -36,13 +36,15 @@ class YearlyTrendContainer extends Component {
     const { data, comparisonYear } = this.state;
     return (
       <div>
-        <YearlyTrend
-          key="snowDepth"
-          data={data}
-          width={900}
-          height={500}
-          comparisonYear={comparisonYear}
-        />
+        {data &&
+          <YearlyTrend
+            key="snowDepth"
+            data={data}
+            width={900}
+            height={500}
+            comparisonYear={comparisonYear}
+          />
+        }
         <select
           value={comparisonYear}
           onChange={(e) => { this.setState({ comparisonYear: e.target.value }); }}
