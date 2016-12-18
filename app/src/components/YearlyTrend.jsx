@@ -41,7 +41,8 @@ class YearlyTrend extends Component {
   }
 
   componentDidUpdate() {
-    const { data = [] } = this.props;
+    const { data = [], comparisonYear } = this.props;
+
     this.x.domain([
       d3.min(data, season => d3.min(season.values, date => date.date)),
       d3.max(data, season => d3.max(season.values, date => date.date)),
@@ -55,15 +56,21 @@ class YearlyTrend extends Component {
     this.z.domain(data.map(c => c.season));
 
     const season = this.g.selectAll('.season')
-      .data(data)
+      .data(data.filter(d => d.season !== comparisonYear), d => d.season);
+
+    season
       .enter().append('g')
-        .attr('class', 'season');
+      .merge(season)
+        .attr('class', d => `season ${d.season}`)
+        .append('path')
+          .attr('class', 'line')
+          .attr('d', d => this.line(d.values));
 
-    d3.select('.season:last-child').attr('class', 'season highlight');
+    season.exit()
+      .attr('class', 'season highlight')
+      .raise();
 
-    season.append('path')
-      .attr('class', 'line')
-      .attr('d', d => this.line(d.values));
+    // TODO get current season highlighting
   }
 
   render() {
@@ -83,6 +90,7 @@ YearlyTrend.propTypes = {
   data: PropTypes.arrayOf(PropTypes.object),
   width: PropTypes.number,
   height: PropTypes.number,
+  comparisonYear: PropTypes.string,
 };
 
 export default YearlyTrend;

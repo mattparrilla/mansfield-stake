@@ -27,19 +27,30 @@ class YearlyTrendContainer extends Component {
     this.state = {};
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    // TODO: add average season
     csv('snowdepth.csv', transformRow, data => this.setState({ data }));
   }
 
   render() {
+    const { data, comparisonYear } = this.state;
     return (
       <div>
         <YearlyTrend
           key="snowDepth"
-          data={this.state.data}
+          data={data}
           width={900}
           height={500}
+          comparisonYear={comparisonYear}
         />
+        <select
+          value={comparisonYear}
+          onChange={(e) => { this.setState({ comparisonYear: e.target.value }); }}
+        >
+          {data && data.map(({ season }) => (
+            <option key={season} value={season}>{season}</option>
+          ))}
+        </select>
       </div>
     );
   }
