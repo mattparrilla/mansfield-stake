@@ -13,7 +13,12 @@
   stroke-width: 1px;
 }
 
-.highlight .line {
+.current .line {
   stroke-width: 2px;
   stroke: #1a1a1a;
+}
+
+.comparison .line {
+  stroke-width: 2px;
+  stroke: #e3624f;
 }

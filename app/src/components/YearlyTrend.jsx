@@ -56,7 +56,10 @@ class YearlyTrend extends Component {
     this.z.domain(data.map(c => c.season));
 
     const season = this.g.selectAll('.season')
-      .data(data.filter(d => d.season !== comparisonYear), d => d.season);
+      .data(
+        data.filter(d => d.season !== comparisonYear),
+        d => d.season,
+      );
 
     season
       .enter().append('g')
@@ -66,11 +69,15 @@ class YearlyTrend extends Component {
           .attr('class', 'line')
           .attr('d', d => this.line(d.values));
 
+    const currentSeason = this.g.select('.season:last-child')
+      .attr('class', 'season current');
+
+    // comparison season
     season.exit()
-      .attr('class', 'season highlight')
+      .attr('class', 'season comparison')
       .raise();
 
-    // TODO get current season highlighting
+    currentSeason.raise();
   }
 
   render() {
