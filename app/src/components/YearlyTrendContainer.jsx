@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { csv, timeParse } from 'd3';
 import YearlyTrend from './YearlyTrend';
+import InfoPane from './InfoPane';
 
 // TODO: get data from backend shaped this way
 const transformRow = (season) => {
@@ -25,11 +26,16 @@ class YearlyTrendContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.updateComparisonYear = this.updateComparisonYear.bind(this);
   }
 
   componentDidMount() {
     // TODO: add average season
     csv('snowdepth.csv', transformRow, data => this.setState({ data }));
+  }
+
+  updateComparisonYear(comparisonYear) {
+    this.setState({ comparisonYear });
   }
 
   render() {
@@ -40,36 +46,33 @@ class YearlyTrendContainer extends Component {
         flexDirection: 'row',
       },
       infoPane: {
+        flex: '1 0 400px',
+        margin: '0 auto',
+      },
+      chartContainer: {
+        flex: '0 0 800px',
       },
     };
     return (
       <div style={styles.container}>
-        <div
-          style={styles.infoPane}
-        >
-          <h1>Snow Depth On Mt. Mansfield Since 1954</h1>
-          <select
-            value={comparisonYear}
-            onChange={(e) => { this.setState({ comparisonYear: e.target.value }); }}
-          >
-            {data && data.map(({ season }) => (
-              <option key={season} value={season}>{season}</option>
-            ))}
-          </select>
+        <div style={styles.infoPane}>
+          <InfoPane
+            data={data}
+            comparisonYear={comparisonYear}
+            updateComparisonYear={this.updateComparisonYear}
+          />
         </div>
-        {data &&
-          <div
-            style={{ borderRight: '1px solid red' }}
-          >
+        <div style={styles.chartContainer}>
+          {data &&
             <YearlyTrend
               key="snowDepth"
               data={data}
-              width={900}
-              height={500}
+              width={800}
+              height={400}
               comparisonYear={comparisonYear}
             />
-          </div>
-        }
+          }
+        </div>
       </div>
     );
   }

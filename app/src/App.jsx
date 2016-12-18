@@ -5,6 +5,13 @@ import './App.css';
 const App = () => (
   <div className="app">
     <div className="top-border" />
+    <h1
+      style={{
+        fontWeight: 200,
+        textAlign: 'center',
+        marginBottom: '50px',
+      }}
+    >Snow Depth On Mt. Mansfield Since 1954</h1>
     <YearlyTrendContainer />
   </div>
 );
