@@ -2,6 +2,7 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "http://mattparrilla.github.io/mansfield-stake",
   "devDependencies": {
     "react-scripts": "0.7.0"
   },
