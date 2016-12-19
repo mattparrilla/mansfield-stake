@@ -3,7 +3,7 @@ import YearlyTrendContainer from './components/YearlyTrendContainer';
 import './App.css';
 
 const App = () => (
-  <div className="app">
+  <div style={{ marginBottom: '20px' }} className="app">
     <div className="top-border" />
     <h1
       style={{

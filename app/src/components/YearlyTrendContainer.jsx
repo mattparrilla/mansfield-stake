@@ -48,11 +48,12 @@ class YearlyTrendContainer extends Component {
       },
       infoPane: {
         flex: '1 0 300px',
-        margin: '0 auto',
+        margin: '0 10px 20px',
+        padding: '0 10px',
       },
       chartContainer: {
         flex: '0 0 800px',
-        margin: '0 auto 20px',
+        margin: 'auto',
       },
     };
     return (

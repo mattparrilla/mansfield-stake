@@ -58,17 +58,17 @@ class YearlyTrend extends Component {
       .attr('fill', '#000')
       .attr('dy', '1em')
       .attr('font-weight', 200)
-      .attr('font-size', '36px')
+      .attr('font-size', '24px')
       .text(data[data.length - 1].season);
 
     // add label for comparison year
     g.append('text')
       .attr('class', 'comparison-label')
       .attr('fill', '#e3624f')
-      .attr('y', '40px')
+      .attr('y', '30px')
       .attr('dy', '1em')
       .attr('font-weight', 200)
-      .attr('font-size', '36px');
+      .attr('font-size', '24px');
 
     // create grid lines for y-axis
     this.seasonContainer.append('g')
