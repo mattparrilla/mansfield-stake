@@ -34,30 +34,13 @@ class YearlyTrend extends Component {
       d3.max(data, season => d3.max(season.values, date => date.snowDepth)),
     ]);
 
-    // exposing this to componentDidUpdate, not exposing g directly in case
-    // I want to go back to putting seasons in their own container
-    this.seasonContainer = g;
-
-    // create grid lines for y-axis
-    g.append('g')
-      .attr('class', 'grid-lines')
-        .selectAll('g.grid-line')
-        .data([20, 40, 60, 80, 100, 120, 140])
-        .enter()
-          .append('line')
-            .attr('class', 'grid-line')
-            .attr('x1', 0)
-            .attr('x2', width)
-            .attr('y1', d => y(d))
-            .attr('y2', d => y(d));
+    this.seasonContainer = g.append('g').attr('class', 'season-container');
 
     g.append('g')
       .attr('class', 'axis axis--x')
       .attr('transform', `translate(0,${height})`)
       .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%B')));
 
-    // needs to be after grid lines are created so axis label isn't cut off
-    // by grid line
     g.append('g')
       .attr('class', 'axis axis--y')
       .attr('transform', `translate(${width}, 0)`)
@@ -74,16 +57,29 @@ class YearlyTrend extends Component {
     g.append('text')
       .attr('fill', '#000')
       .attr('dy', '1em')
-      .attr('font-size', '24px')
+      .attr('font-size', '36px')
       .text(data[data.length - 1].season);
 
     // add label for comparison year
     g.append('text')
       .attr('class', 'comparison-label')
       .attr('fill', '#e3624f')
-      .attr('y', '30px')
+      .attr('y', '40px')
       .attr('dy', '1em')
-      .attr('font-size', '24px');
+      .attr('font-size', '36px');
+
+    // create grid lines for y-axis
+    this.seasonContainer.append('g')
+      .attr('class', 'grid-lines')
+        .selectAll('g.grid-line')
+        .data([20, 40, 60, 80, 100, 120, 140])
+        .enter()
+          .append('line')
+            .attr('class', 'grid-line')
+            .attr('x1', 0)
+            .attr('x2', width)
+            .attr('y1', d => y(d))
+            .attr('y2', d => y(d));
 
     this.updateChart();
   }
@@ -95,7 +91,7 @@ class YearlyTrend extends Component {
   updateChart() {
     const { data = [], comparisonYear } = this.props;
 
-    this.seasonContainer.select('.comparison-label')
+    d3.select('.comparison-label')
       .text(comparisonYear);
 
     const season = this.seasonContainer.selectAll('.season')
