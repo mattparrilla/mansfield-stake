@@ -57,6 +57,7 @@ class YearlyTrend extends Component {
     g.append('text')
       .attr('fill', '#000')
       .attr('dy', '1em')
+      .attr('font-weight', 200)
       .attr('font-size', '36px')
       .text(data[data.length - 1].season);
 
@@ -66,6 +67,7 @@ class YearlyTrend extends Component {
       .attr('fill', '#e3624f')
       .attr('y', '40px')
       .attr('dy', '1em')
+      .attr('font-weight', 200)
       .attr('font-size', '36px');
 
     // create grid lines for y-axis
@@ -111,7 +113,7 @@ class YearlyTrend extends Component {
     const currentSeason = this.seasonContainer.select('.season:last-child')
       .attr('class', 'season current');
 
-    // put gridlines on top of all provious years, behind comparison and current
+    // put gridlines on top of all provious years, but behind comparison and current
     this.seasonContainer.select('.grid-lines').raise();
 
     // comparison season

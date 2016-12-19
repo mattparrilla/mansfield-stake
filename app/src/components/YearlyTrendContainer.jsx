@@ -44,13 +44,15 @@ class YearlyTrendContainer extends Component {
       container: {
         display: 'flex',
         flexDirection: 'row',
+        flexWrap: 'wrap',
       },
       infoPane: {
-        flex: '1 0 400px',
+        flex: '1 0 300px',
         margin: '0 auto',
       },
       chartContainer: {
         flex: '0 0 800px',
+        margin: '0 auto 20px',
       },
     };
     return (

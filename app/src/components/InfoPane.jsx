@@ -5,40 +5,71 @@ import 'react-select/dist/react-select.css';
 const styles = {
   container: {
     padding: 10,
+    fontWeight: 200,
+    display: 'flex',
+    flexWrap: 'wrap',
   },
   value: {
     fontWeight: 700,
-    fontSize: '18px',
+    color: '#333',
   },
   select: {
     maxWidth: 300,
+  },
+  table: {
+    fontSize: '18px',
+    color: '#777',
+  },
+  header: {
+    fontSize: '24px',
+    marginBottom: '10px',
+  },
+  latestMeasurement: {
+    color: '#777',
+    fontSize: '12px',
+  },
+  section: {
+    marginBottom: '30px',
+    flex: '1 1 300px',
   },
 };
 
 // TODO: get these metrics
 const InfoPane = ({ data = [], comparisonYear, updateComparisonYear }) => (
   <div style={styles.container}>
-    <h3>Latest Measurement</h3>
-    <p>Taken on: December 15, 2016</p>
-    <div>
-      <span style={styles.value}>54</span>
-      <span style={styles.label}>at the stake</span>
-    </div>
-    <div>
-      <span style={styles.value}>12</span>
-      <span style={styles.label}>above average</span>
-    </div>
-    <h3>Compare To Season</h3>
-    <div style={styles.select}>
-      <Select
-        name="select-comparison-year"
-        value={comparisonYear}
-        options={data.map(({ season }) => ({ value: season, label: season }))}
-        onChange={updateComparisonYear}
-        placeholder="Select season to compare..."
-        simpleValue
-      />
-    </div>
+    <section style={styles.section}>
+      <div style={styles.header}>Latest Measurement</div>
+      <table style={styles.table}>
+        <tbody>
+          <tr>
+            <td style={styles.value}>54&#34;</td>
+            <td>at the stake</td>
+          </tr>
+          <tr>
+            <td style={styles.value}>12&#34;</td>
+            <td>above average</td>
+          </tr>
+          <tr>
+            <td style={styles.value}>on</td>
+            <td>December 15, 2016</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section style={styles.section}>
+      <div style={styles.header}>Compare To Previous Winter</div>
+      <div style={styles.select}>
+        <Select
+          name="select-comparison-year"
+          value={comparisonYear}
+          options={data.map(({ season }) => ({ value: season, label: season }))}
+          onChange={updateComparisonYear}
+          placeholder="Select season to compare..."
+          simpleValue
+        />
+      </div>
+    </section>
   </div>
 );
 
