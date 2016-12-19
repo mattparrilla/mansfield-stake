@@ -143,7 +143,7 @@ def update_data():
             last_depth = snowdepth_table[i][j]
 
     safe_path = os.path.join(os.path.dirname(__file__),
-        'app/public/snowdepth.csv')
+        '../public/snowdepth.csv')
     with open(safe_path, 'w') as f:
         write_csv = csv.writer(f)
         write_csv.writerows(snowdepth_table)
