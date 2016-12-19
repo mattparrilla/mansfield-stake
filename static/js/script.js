@@ -54,6 +54,7 @@ d3.csv('static/snowdepth.csv', function(error, data) {
     slider.setAttribute('value', latestYear);
 
     data.forEach(function(d) {
+        console.log(d);
         d.date = parseDate(d.date);
 
         // to get each season on same line, set second half of year to 1901
