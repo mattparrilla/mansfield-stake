@@ -79,7 +79,8 @@ const InfoPane = ({ data = [], comparisonYear, updateComparisonYear }) => {
         <div style={styles.header}>About The Data</div>
         <p>
           This data is provided by the Burlington EcoInfo project at the University of Vermont.
-          The source data can be found on the SkiVt-L website.
+          The source data can be found on the
+          &nbsp;<a href="http://www.uvm.edu/skivt-l/?Page=depths.php">SkiVt-L website</a>.
         </p>
         <p>
           Many thanks to the dedicated folks who maintain that page and collect the measurements!
