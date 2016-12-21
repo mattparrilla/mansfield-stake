@@ -39,7 +39,7 @@ class YearlyTrend extends Component {
     g.append('g')
       .attr('class', 'axis axis--x')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%B')));
+      .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
 
     g.append('g')
       .attr('class', 'axis axis--y')
