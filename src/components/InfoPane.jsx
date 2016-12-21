@@ -4,20 +4,33 @@ import 'react-select/dist/react-select.css';
 
 const styles = {
   container: {
-    backgroundColor: '#f1f1f1',
-    padding: 10,
-    fontWeight: 200,
     display: 'flex',
-    flexWrap: 'wrap',
-    border: '1px solid #ddd',
+  },
+  notes: {
+    display: 'flex',
+    maxWidth: '1000px',
+    margin: '0 auto',
+  },
+  comparison: {
+    textAlign: 'center',
+    marginBottom: '30px',
+  },
+  comparisonLabel: {
+    fontSize: '18px',
+    padding: '6px 15px',
+    display: 'inline-block',
+    verticalAlign: 'top',
+    fontWeight: 200,
   },
   value: {
     fontWeight: 700,
     color: '#333',
   },
   select: {
-    maxWidth: 300,
-    marginBottom: '20px',
+    width: '250px',
+    display: 'inline-block',
+    textAlign: 'left',
+    fontWeight: 200,
   },
   header: {
     fontSize: '24px',
@@ -30,51 +43,30 @@ const styles = {
   section: {
     flex: '1 1 320px',
     padding: '10px',
+    fontWeight: 200,
   },
 };
 
 // TODO: get these metrics
-const InfoPane = ({ data = [], comparisonYear, updateComparisonYear }) => {
-  const currentSeason = data[data.length - 1];
-  const { snowDepth, date } = currentSeason
-    ? currentSeason.values[currentSeason.values.length - 1]
-    : {};
-
-  const properDate = currentSeason
-    ? new Date(
-        date.getUTCMonth() > 7
-          ? currentSeason.season.split('-')[0]
-          : currentSeason.season.split('-')[1],
-        date.getUTCMonth(),
-        date.getDate(),
-    )
-    : new Date();
-
-  return (
-    <div style={styles.container}>
-      <section style={styles.section}>
-        <div style={styles.header}>Compare To Previous Winter</div>
-        <div style={styles.select}>
-          <Select
-            name="select-comparison-year"
-            value={comparisonYear}
-            options={data.map(({ season }) => ({
-              value: season,
-              label: season,
-            })).reverse().slice(1)}
-            onChange={updateComparisonYear}
-            placeholder="Select season to compare..."
-            simpleValue
-          />
-        </div>
-      </section>
-      <section style={styles.section}>
-        <div style={styles.header}>Latest Measurement</div>
-        {currentSeason
-          ? <p>{snowDepth}&#34; on {properDate.toLocaleDateString()}</p>
-          : <p>&nbsp;</p>
-        }
-      </section>
+const InfoPane = ({ data = [], comparisonYear, updateComparisonYear }) => (
+  <div>
+    <div style={styles.comparison}>
+      <div style={styles.comparisonLabel}>Compare To Previous Winter:</div>
+      <div style={styles.select}>
+        <Select
+          name="select-comparison-year"
+          value={comparisonYear}
+          options={data.map(({ season }) => ({
+            value: season,
+            label: season,
+          })).reverse().slice(1)}
+          onChange={updateComparisonYear}
+          placeholder="Select season to compare..."
+          simpleValue
+        />
+      </div>
+    </div>
+    <div style={styles.notes}>
       <section style={styles.section}>
         <div style={styles.header}>About The Data</div>
         <p>
@@ -95,8 +87,8 @@ const InfoPane = ({ data = [], comparisonYear, updateComparisonYear }) => {
         </p>
       </section>
     </div>
-  );
-};
+  </div>
+);
 
 InfoPane.propTypes = {
   comparisonYear: PropTypes.string,

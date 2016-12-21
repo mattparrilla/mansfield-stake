@@ -22,16 +22,39 @@ const transformRow = (season) => {
   };
 };
 
+const defineWidth = (width, height) => {
+  if (width < height) {
+    return {
+      width: width - 50,
+      height: width * 0.5,
+    };
+  }
+  return {
+    width: 0.8 * width,
+    height: 0.65 * height,
+  };
+};
+
 class YearlyTrendContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      width: 800,
+      height: 400,
+    };
     this.updateComparisonYear = this.updateComparisonYear.bind(this);
+    this.calculateWidth = this.calculateWidth.bind(this);
   }
 
   componentDidMount() {
     // TODO: add average season
     csv('snowdepth.csv', transformRow, data => this.setState({ data }));
+    this.calculateWidth();
+  }
+
+  calculateWidth() {
+    const { innerWidth, innerHeight } = window;
+    this.setState(defineWidth(innerWidth, innerHeight));
   }
 
   updateComparisonYear(comparisonYear) {
@@ -39,42 +62,47 @@ class YearlyTrendContainer extends Component {
   }
 
   render() {
-    const { data, comparisonYear } = this.state;
+    const { data, comparisonYear, width, height } = this.state;
     const styles = {
-      container: {
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-      },
-      infoPane: {
-        flex: '1 0 300px',
-        margin: '0 10px 20px',
-        padding: '0 10px',
-      },
       chartContainer: {
-        flex: '0 0 800px',
-        margin: 'auto',
+        margin: '0 auto 20px',
       },
     };
+
+    // const currentSeason = data[data.length - 1];
+    // const { snowDepth, date } = currentSeason
+    //   ? currentSeason.values[currentSeason.values.length - 1]
+    //   : {};
+
+    // const properDate = currentSeason
+    //   ? new Date(
+    //       date.getUTCMonth() > 7
+    //         ? currentSeason.season.split('-')[0]
+    //         : currentSeason.season.split('-')[1],
+    //       date.getUTCMonth(),
+    //       date.getDate(),
+    //   )
+    //   : new Date();
+
     return (
       <div style={styles.container}>
+        <div style={styles.chartContainer}>
+          {data &&
+            <YearlyTrend
+              key="snowDepth"
+              data={data}
+              width={width}
+              height={height}
+              comparisonYear={comparisonYear}
+            />
+          }
+        </div>
         <div style={styles.infoPane}>
           <InfoPane
             data={data}
             comparisonYear={comparisonYear}
             updateComparisonYear={this.updateComparisonYear}
           />
-        </div>
-        <div style={styles.chartContainer}>
-          {data &&
-            <YearlyTrend
-              key="snowDepth"
-              data={data}
-              width={800}
-              height={400}
-              comparisonYear={comparisonYear}
-            />
-          }
         </div>
       </div>
     );
