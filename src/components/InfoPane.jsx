@@ -10,6 +10,7 @@ const styles = {
     display: 'flex',
     maxWidth: '1000px',
     margin: '0 auto',
+    flexWrap: 'wrap',
   },
   comparison: {
     textAlign: 'center',
@@ -41,7 +42,7 @@ const styles = {
     fontSize: '12px',
   },
   section: {
-    flex: '1 1 320px',
+    flex: '1 0 320px',
     padding: '10px',
     fontWeight: 200,
   },
