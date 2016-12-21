@@ -23,15 +23,20 @@ const transformRow = (season) => {
 };
 
 const defineWidth = (width, height) => {
-  if (width < height) {
+  if (width > 1500) {
+    return {
+      width: 1200,
+      height: 800,
+    };
+  } else if (width < height) {
     return {
       width: width - 50,
       height: width * 0.5,
     };
   }
   return {
-    width: 0.8 * width,
-    height: 0.65 * height,
+    width: 0.75 * width,
+    height: 0.35 * width,
   };
 };
 
@@ -66,6 +71,10 @@ class YearlyTrendContainer extends Component {
     const styles = {
       chartContainer: {
         margin: '0 auto 20px',
+      },
+      infoPane: {
+        margin: '0 auto',
+        maxWidth: `${width - 20}px`,
       },
     };
 
