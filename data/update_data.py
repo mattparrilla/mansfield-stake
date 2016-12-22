@@ -154,5 +154,6 @@ def update_data():
     with open(safe_path, 'w') as f:
         write_csv = csv.writer(f)
         write_csv.writerows(snowdepth_table)
+    print "update_data.py has completed running"
 
 update_data()
