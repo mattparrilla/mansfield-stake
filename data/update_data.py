@@ -142,6 +142,13 @@ def update_data():
             # set last_depth for next loop
             last_depth = snowdepth_table[i][j]
 
+    # find average season
+    transposed = zip(*snowdepth_table[1:])
+    avg = lambda items: int(sum([x if type(x) is int else 0 for x in items])) / len(items)
+    averages = map(avg, transposed[1:])
+    averages.insert(0, 'Average Season')
+    snowdepth_table.insert(-1, averages)
+
     safe_path = os.path.join(os.path.dirname(__file__),
         '../public/snowdepth.csv')
     with open(safe_path, 'w') as f:
