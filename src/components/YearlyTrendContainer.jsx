@@ -46,7 +46,6 @@ class YearlyTrendContainer extends Component {
     this.state = {
       width: 800,
       height: 400,
-      comparisonYear: 'Average Season',
     };
     this.updateComparisonYear = this.updateComparisonYear.bind(this);
     this.calculateWidth = this.calculateWidth.bind(this);
