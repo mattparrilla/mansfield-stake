@@ -1,4 +1,5 @@
 #!/bin/bash
+. /home/mattparrilla/.bash_profile
 
 cd /home/mattparrilla/git/mansfield-stake \
 && git pull \
