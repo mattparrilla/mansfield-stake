@@ -26,7 +26,7 @@ const defineWidth = (width, height) => {
   if (width > 1500) {
     return {
       width: 1200,
-      height: 800,
+      height: height > 800 ? 800 : height * 0.7,
     };
   } else if (width < height) {
     return {
@@ -77,21 +77,6 @@ class YearlyTrendContainer extends Component {
         maxWidth: `${width - 20}px`,
       },
     };
-
-    // const currentSeason = data[data.length - 1];
-    // const { snowDepth, date } = currentSeason
-    //   ? currentSeason.values[currentSeason.values.length - 1]
-    //   : {};
-
-    // const properDate = currentSeason
-    //   ? new Date(
-    //       date.getUTCMonth() > 7
-    //         ? currentSeason.season.split('-')[0]
-    //         : currentSeason.season.split('-')[1],
-    //       date.getUTCMonth(),
-    //       date.getDate(),
-    //   )
-    //   : new Date();
 
     return (
       <div style={styles.container}>

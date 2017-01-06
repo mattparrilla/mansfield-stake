@@ -4,6 +4,7 @@ import requests
 import csv
 import calendar
 from datetime import datetime
+import arrow
 
 
 def update_data():
@@ -34,13 +35,18 @@ def update_data():
     last_reading = snow_csv[-2][0].split('-')
     last_reading_year, last_reading_month, last_reading_day = last_reading
 
-    def is_later_in_calendar(month, day):
-        return (
-            # if day in current month > today
-            (month == int(last_reading_month) and day > int(last_reading_day))
-            # if first day of next month
-            or month > int(last_reading_month)
-        )
+    def is_later_in_calendar(year, month, day):
+        if int(month) > 6:
+            year = int(year) - 1
+        if int(year) < arrow.now().year:
+            return False
+        print year, month, day
+        try:
+            reading_date = arrow.get('%s-%s-%s' % (year, int(month), int(day)), 'YYYY-M-D')
+        except ValueError:
+            day = day - 1
+            reading_date = arrow.get('%s-%s-%s' % (year, int(month), int(day)), 'YYYY-M-D')
+        return reading_date > arrow.now()
 
     # parse CSV input
     for row in snow_csv[1:-1]:
@@ -95,8 +101,9 @@ def update_data():
 
             month, day = [int(x) for x in snowdepth_table[0][j].split('/')]
 
-            # if later date in calendar year of
-            if ((i == len(snowdepth_table) - 1) and is_later_in_calendar(month, day)):
+            # if later date in calendar year of last year
+            if ((i == len(snowdepth_table) - 1) and is_later_in_calendar(year[0].split('-')[1], month, day)):
+                print year[0].split('-')[1]
                 snowdepth_table[i][j] = None
 
             # last_depth is None when season is over
