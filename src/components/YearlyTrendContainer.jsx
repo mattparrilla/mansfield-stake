@@ -78,7 +78,6 @@ class YearlyTrendContainer extends Component {
       },
     };
 
-    console.log(data);
     // const currentSeason = data[data.length - 1];
     // const { snowDepth, date } = currentSeason
     //   ? currentSeason.values[currentSeason.values.length - 1]
