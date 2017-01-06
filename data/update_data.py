@@ -40,7 +40,6 @@ def update_data():
             year = int(year) - 1
         if int(year) < arrow.now().year:
             return False
-        print year, month, day
         try:
             reading_date = arrow.get('%s-%s-%s' % (year, int(month), int(day)), 'YYYY-M-D')
         except ValueError:
@@ -103,7 +102,6 @@ def update_data():
 
             # if later date in calendar year of last year
             if ((i == len(snowdepth_table) - 1) and is_later_in_calendar(year[0].split('-')[1], month, day)):
-                print year[0].split('-')[1]
                 snowdepth_table[i][j] = None
 
             # last_depth is None when season is over
