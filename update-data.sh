@@ -9,6 +9,7 @@ cd /home/mattparrilla/git/mansfield-stake \
 && deactivate \
 && git commit -am "update data by cron" \
 && git checkout gh-pages \
-&& git checkout master public/snowdepth.csv > test.csv \
+&& git checkout master public/snowdepth.csv
+&& mv public/snowdepth.csv ./ \
 && git commit -am "update data by cron" \
 && git push
