@@ -22,21 +22,20 @@ const transformRow = (season) => {
   };
 };
 
-const defineWidth = (width, height) => {
+const maxWidth = (width, height) => {
   if (width > 1500) {
-    return {
-      width: 1200,
-      height: height > 800 ? 800 : height * 0.7,
-    };
+    return 1200;
   } else if (width < height) {
-    return {
-      width: width - 50,
-      height: width * 0.5,
-    };
+    return width - 50;
   }
+  return width * 0.75;
+};
+
+const defineWidth = (width, height) => {
+  const svgWidth = maxWidth(width, height);
   return {
-    width: 0.75 * width,
-    height: 0.35 * width,
+    width: svgWidth,
+    height: svgWidth / 2,
   };
 };
 
@@ -59,7 +58,8 @@ class YearlyTrendContainer extends Component {
 
   calculateWidth() {
     const { innerWidth, innerHeight } = window;
-    this.setState(defineWidth(innerWidth, innerHeight));
+    const headerHeight = document.getElementsByTagName('h1')[0].clientHeight;
+    this.setState(defineWidth(innerWidth, innerHeight - headerHeight));
   }
 
   updateComparisonYear(comparisonYear) {
