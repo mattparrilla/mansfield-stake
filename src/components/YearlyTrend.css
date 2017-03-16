@@ -27,3 +27,13 @@
   stroke-width: 1px;
   stroke: white;
 }
+
+svg text {
+  font-family: Helvetica Neue;
+  font-size: 16px;
+}
+
+.year-label {
+  font-size: 32px;
+  font-weight: 300;
+}

@@ -7,7 +7,7 @@ class YearlyTrend extends Component {
   componentDidMount() {
     const { data } = this.props;
     const margin = {
-      top: 10, right: 40, bottom: 20, left: 25,
+      top: 10, right: 40, bottom: 30, left: 25,
     };
     const width = this.props.width - margin.left - margin.right;
     const height = this.props.height - margin.top - margin.bottom;
@@ -47,14 +47,15 @@ class YearlyTrend extends Component {
       .call(d3.axisRight(y))
     .append('text')
       .attr('transform', 'rotate(-90)')
-      .attr('y', -15)
+      .attr('y', -20)
       .attr('dy', '0.71em')
-      .attr('x', -90)
+      .attr('x', -150)
       .attr('fill', '#000')
       .text('Snow Depth, inches');
 
     // add label for current year
     g.append('text')
+      .attr('class', 'year-label')
       .attr('fill', '#000')
       .attr('dy', '1em')
       .attr('font-weight', 200)
@@ -63,12 +64,10 @@ class YearlyTrend extends Component {
 
     // add label for comparison year
     g.append('text')
-      .attr('class', 'comparison-label')
+      .attr('class', 'year-label comparison-label')
       .attr('fill', '#e3624f')
-      .attr('y', '30px')
-      .attr('dy', '1em')
-      .attr('font-weight', 200)
-      .attr('font-size', '24px');
+      .attr('y', '35px')
+      .attr('dy', '1em');
 
     // create grid lines for y-axis
     this.seasonContainer.append('g')
