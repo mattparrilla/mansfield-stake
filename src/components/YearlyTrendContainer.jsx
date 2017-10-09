@@ -52,7 +52,7 @@ class YearlyTrendContainer extends Component {
 
   componentDidMount() {
     // TODO: add average season
-    csv('snowdepth.csv', transformRow, data => this.setState({ data }));
+    csv('https://s3.amazonaws.com/mp-interesting-data/snowdepth.csv', transformRow, data => this.setState({ data }));
     this.calculateWidth();
   }
 
