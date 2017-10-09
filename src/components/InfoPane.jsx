@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
@@ -95,6 +96,10 @@ InfoPane.propTypes = {
   comparisonYear: PropTypes.string,
   data: PropTypes.arrayOf(PropTypes.object),
   updateComparisonYear: PropTypes.func,
+};
+
+InfoPane.defaultProps = {
+  data: [],
 };
 
 export default InfoPane;
