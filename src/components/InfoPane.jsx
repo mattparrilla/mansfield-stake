@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+import getCurrentSeason from '../utilities/getCurrentSeason';
 
 const styles = {
   container: {
@@ -58,10 +59,14 @@ const InfoPane = ({ data = [], comparisonYear, updateComparisonYear }) => (
         <Select
           name="select-comparison-year"
           value={comparisonYear}
-          options={data.map(({ season }) => ({
-            value: season,
-            label: season,
-          })).reverse().slice(1)}
+          options={data
+            .map(({ season }) => season)
+            .filter(season => season !== getCurrentSeason())
+            .map(season => ({
+              value: season,
+              label: season,
+            })).reverse()
+          }
           onChange={updateComparisonYear}
           placeholder="Select season to compare..."
           simpleValue

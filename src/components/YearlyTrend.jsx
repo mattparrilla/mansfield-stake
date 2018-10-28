@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
+import getCurrentSeason from '../utilities/getCurrentSeason';
 
 import './YearlyTrend.css';
 
@@ -54,6 +55,7 @@ class YearlyTrend extends Component {
       .attr('fill', '#000')
       .text('Snow Depth, inches');
 
+
     // add label for current year
     g.append('text')
       .attr('class', 'year-label')
@@ -61,7 +63,7 @@ class YearlyTrend extends Component {
       .attr('dy', '1em')
       .attr('font-weight', 200)
       .attr('font-size', '24px')
-      .text(data[data.length - 1].season);
+      .text(getCurrentSeason);
 
     // add label for comparison year
     g.append('text')
@@ -105,12 +107,13 @@ class YearlyTrend extends Component {
     season
       .enter().append('g')
       .merge(season)
-        .attr('class', d => `season ${d.season}`)
+        .attr('class', d => `season x${d.season}`)
         .append('path')
           .attr('class', 'line')
           .attr('d', d => this.line(d.values));
 
-    const currentSeason = this.seasonContainer.select('.season:last-child')
+    // TODO: need to remove and append current season to get it to be on top
+    const currentSeason = this.seasonContainer.select(`.x${getCurrentSeason()}`)
       .attr('class', 'season current');
 
     // put gridlines on top of all provious years, but behind comparison and current
