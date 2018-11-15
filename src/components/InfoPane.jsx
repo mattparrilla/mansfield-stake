@@ -54,7 +54,7 @@ const styles = {
 const InfoPane = ({ data = [], comparisonYear, updateComparisonYear }) => (
   <div>
     <div style={styles.comparison}>
-      <div style={styles.comparisonLabel}>Compare To Previous Winter:</div>
+      <div style={styles.comparisonLabel}>Compare to a historical winter:</div>
       <div style={styles.select}>
         <Select
           name="select-comparison-year"

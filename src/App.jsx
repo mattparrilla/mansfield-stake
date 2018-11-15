@@ -5,7 +5,7 @@ import './App.css';
 const App = () => (
   <div style={{ marginBottom: '20px' }} className="app">
     <div className="top-border" />
-    <h1>Snow Depth On Mt. Mansfield Since 1954</h1>
+    <h1>Mt. Mansfield Snow Depth</h1>
     <YearlyTrendContainer />
   </div>
 );
