@@ -61,7 +61,7 @@ const InfoPane = ({ data = [], comparisonYear, updateComparisonYear }) => (
           value={comparisonYear}
           options={data
             .map(({ season }) => season)
-            .filter(season => season !== getCurrentSeason())
+            .filter(season => season && season !== getCurrentSeason())
             .map(season => ({
               value: season,
               label: season,
