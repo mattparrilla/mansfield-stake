@@ -30,7 +30,7 @@ h1 {
 
 .yearly-trend {
   display: block;
-  margin: 0 auto;
+  margin: 0 auto 20px;
 }
 
 .yearly-trend .axis--x path {
@@ -70,4 +70,29 @@ svg text {
 
 .app {
   margin-bottom: 20px;
+}
+
+
+.year-label {
+  font-size: 32px;
+  font-weight: 300;
+}
+
+.form-control {
+  display: inline-block;
+  width: auto;
+  min-width: 150px;
+}
+
+#select-season {
+  margin-left: 30px;
+}
+
+#select-season-group {
+  text-align: center;
+}
+
+#select-season-group label {
+  font-size: 18px;
+  font-weight: 200;
 }

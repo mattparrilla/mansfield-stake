@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=1280">
     <link rel="shortcut icon" href="/favicon.ico">
-    <link href="static/base.css" rel="stylesheet">
     <link href="static/bootstrap.min.css" rel="stylesheet">
+    <link href="static/base.css" rel="stylesheet">
     <title>Mt. Mansfield Snow Depth</title>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -23,14 +23,14 @@
       <div class="row">
         <div class="col-sm-10 col-sm-offset-1">
           <h1>Mt. Mansfield Snow Depth</h1>
-          <div class="visualization">
+          <div id="visualization">
             <svg id="chart" class="yearly-trend"></svg>
           </div>
           <div class="info-pane">
-            <div class="form-group">
-              <label for="select-comparison-year">Compare to a historical winter:</label>
-              <select id="select-comparison-year form-control">
-                <option value="None">None</option>
+            <div id="select-season-group" class="form-group">
+              <label for="select-season">Compare to a historical winter:</label>
+              <select id="select-season" class="form-control">
+                <option disabled selected value>Select a season</option>
               </select>
             </div>
             <div class="row">
