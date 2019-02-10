@@ -7,7 +7,7 @@
     <link href="static/base.css" rel="stylesheet">
     <link href="static/bootstrap.min.css" rel="stylesheet">
     <title>Mt. Mansfield Snow Depth</title>
-
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-31358980-1"></script>
     <script>
@@ -24,7 +24,7 @@
         <div class="col-sm-10 col-sm-offset-1">
           <h1>Mt. Mansfield Snow Depth</h1>
           <div class="visualization">
-            <svg class="yearly-trend"></svg>
+            <svg id="chart" class="yearly-trend"></svg>
           </div>
           <div class="info-pane">
             <div class="form-group">
@@ -45,6 +45,8 @@
             </div>
           </div>
         </div>
+      </div>
     </div>
+    <script type="text/javascript" src="script.js"></script>
   </body>
 </html>
