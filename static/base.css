@@ -68,10 +68,9 @@ svg text {
   font-weight: 300;
 }
 
-.app {
-  margin-bottom: 20px;
+#info_pane {
+  margin: 40px 0;
 }
-
 
 .year-label {
   font-size: 32px;
@@ -89,10 +88,55 @@ svg text {
 }
 
 #select-season-group {
+  width: 100%;
   text-align: center;
+  margin-bottom: 40px;
 }
 
-#select-season-group label {
+#select-season-group label, #select-season-group p {
   font-size: 18px;
   font-weight: 200;
+}
+
+#select-season-group p {
+  float: right;
+}
+
+/* LEGEND STYLING */
+#visualization {
+  position: relative;
+}
+
+#legend {
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+#legend h3 {
+  display: inline-block;
+  margin: 0;
+  width: 280px;
+}
+
+#legend .depth_value {
+  display: inline-block;
+  width: 50px;
+  text-align: right;
+  font-size: 24px;
+}
+
+#comparisonSeason h3, #comparisonSeason .depth_value {
+  color: #e3624f;
+}
+
+#legend p {
+  position: absolute;
+  top: 420px;
+  right: 0;
+  font-size: 10px;
+  color: grey;
+  margin-top: 10px;
 }

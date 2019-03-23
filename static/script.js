@@ -25,7 +25,7 @@ const transformRow = (season) => {
   };
 };
 
-const updateChart = ({ data, comparisonYear = '', line, seasonContainer }) => {
+const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonContainer }) => {
   d3.select('.comparison-label')
     .text(comparisonYear);
 
@@ -43,36 +43,45 @@ const updateChart = ({ data, comparisonYear = '', line, seasonContainer }) => {
         .attr('class', 'line')
         .attr('d', d => line(d.values));
 
-  // TODO: need to remove and append current season to get it to be on top
   const currentSeason = seasonContainer.select(`.x${getCurrentSeason()}`)
     .attr('class', 'season current');
+
 
   // put gridlines on top of all provious years, but behind comparison and current
   seasonContainer.select('.grid-lines').raise();
 
-  // comparison season
-  season.exit()
-    .attr('class', 'season comparison')
-    .raise();
+  let comparisonSeason;
+  // exit is empty if it's our first time through, in that case, append comparisonYear
+  if (season.exit().empty()) {
+    comparisonSeason = seasonContainer.select('.season');
+
+    comparisonSeason
+      .datum(data.find(d => d.season === comparisonYear))
+      .append('g')
+      .attr('class', 'season comparison')
+      .append('path')
+        .attr('class', 'line')
+        .attr('d', d => line(d.values));
+
+    comparisonSeason.raise();
+  } else {
+    comparisonSeason = season.exit();
+    comparisonSeason
+      .attr('class', 'season comparison')
+      .raise();
+  }
+  const currentSeasonData = currentSeason.data()[0].values;
+  const latestData = currentSeasonData[currentSeasonData.length - 1];
+  const latestDepth = latestData.snowDepth;
+  const latestDepthEl = document.getElementById('currentDepth');
+  d3.select('#currentDepth').text(latestDepth);
+  const comparisonDataOnDate = comparisonSeason.data()[0].values[currentSeasonData.length - 1];
+  const comparisonDepth = comparisonDataOnDate.snowDepth;
+  d3.select('#comparisonDepth').text(comparisonDepth);
 
   // need to call raise after raising comparison season
   currentSeason.raise();
 }
-
-const chartDimensions = (width, height) => {
-  // if width is more than double height, restrict width
-  if (width > 2 * height) {
-    return {
-      width: height * 2,
-      height
-    };
-  }
-  // otherwise height should be half of width
-  return {
-    width,
-    height: width / 2
-  };
-};
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -80,19 +89,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const seasonSelect = document.getElementById('select-season');
 
   const margin = {
-    top: 10, right: 40, bottom: 30, left: 25,
+    top: 10, right: 45, bottom: 30, left: 25,
   };
   // TODO: get height + width dynamically
-  const { height, width } = chartDimensions(
-    document.getElementById('visualization').offsetWidth - 100,
-    window.innerHeight - 100
-  );
+  const height = 400;
+  const containerWidth = document.getElementById('visualization').clientWidth;
+  const width = containerWidth - margin.right;
 
   const g = d3.select("#chart")
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-    .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+    .attr('width', containerWidth)
+    .attr('height', height + margin.top + margin.bottom);
 
   const seasonContainer = g.append('g').attr('class', 'season-container');
 
@@ -110,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const xAxis = g.append('g')
     .attr('class', 'axis axis--x')
-    .attr('transform', `translate(0,${height})`)
+    .attr('transform', `translate(${margin.left},${height})`)
     .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
 
   const yAxis = g.append('g')
@@ -121,18 +127,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .attr('transform', 'rotate(-90)')
       .attr('y', -20)
       .attr('dy', '0.71em')
-      .attr('x', -150)
-      .attr('fill', '#000')
+      .attr('x', -165)
+      .attr('style', 'fill: #000')
       .text('Snow Depth, inches');
-
-  // add label for current year
-  g.append('text')
-    .attr('class', 'year-label')
-    .attr('fill', '#000')
-    .attr('dy', '1em')
-    .attr('font-weight', 200)
-    .attr('font-size', '24px')
-    .text(getCurrentSeason);
 
   /* REQUEST DATA, DRAW CHART AND AXIS */
   d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, d => {
@@ -149,13 +146,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ]);
     xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
     yAxis.call(d3.axisRight(y));
-
-    // add label for comparison year
-    g.append('text')
-      .attr('class', 'year-label comparison-label')
-      .attr('fill', '#e3624f')
-      .attr('y', '35px')
-      .attr('dy', '1em');
 
     // create grid lines for y-axis
     seasonContainer.append('g')
@@ -176,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     data
       .map(({ season }) => season)
       .filter(season => season && season !== getCurrentSeason())
+      .sort((a, b) => a < b) // reverse order, so alphabet then reverse 9, 8 etc
       .map(season => ({
         value: season,
         label: season,
