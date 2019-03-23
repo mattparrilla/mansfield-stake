@@ -59,40 +59,22 @@ const updateChart = ({ data, comparisonYear = '', line, seasonContainer }) => {
   currentSeason.raise();
 }
 
-const chartDimensions = (width, height) => {
-  // if width is more than double height, restrict width
-  if (width > 2 * height) {
-    return {
-      width: height * 2,
-      height
-    };
-  }
-  // otherwise height should be half of width
-  return {
-    width,
-    height: width / 2
-  };
-};
-
 document.addEventListener('DOMContentLoaded', () => {
 
   /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
   const seasonSelect = document.getElementById('select-season');
 
   const margin = {
-    top: 10, right: 40, bottom: 30, left: 25,
+    top: 10, right: 45, bottom: 30, left: 25,
   };
   // TODO: get height + width dynamically
-  const { height, width } = chartDimensions(
-    document.getElementById('visualization').offsetWidth - 100,
-    window.innerHeight - 100
-  );
+  const height = 400;
+  const containerWidth = document.getElementById('visualization').clientWidth;
+  const width = containerWidth - margin.right;
 
   const g = d3.select("#chart")
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-    .append('g')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
+    .attr('width', containerWidth)
+    .attr('height', height + margin.top + margin.bottom);
 
   const seasonContainer = g.append('g').attr('class', 'season-container');
 
@@ -110,7 +92,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const xAxis = g.append('g')
     .attr('class', 'axis axis--x')
-    .attr('transform', `translate(0,${height})`)
+    .attr('transform', `translate(${margin.left},${height})`)
     .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
 
   const yAxis = g.append('g')
@@ -121,18 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
       .attr('transform', 'rotate(-90)')
       .attr('y', -20)
       .attr('dy', '0.71em')
-      .attr('x', -150)
-      .attr('fill', '#000')
+      .attr('x', -165)
+      .attr('style', 'fill: #000')
       .text('Snow Depth, inches');
-
-  // add label for current year
-  g.append('text')
-    .attr('class', 'year-label')
-    .attr('fill', '#000')
-    .attr('dy', '1em')
-    .attr('font-weight', 200)
-    .attr('font-size', '24px')
-    .text(getCurrentSeason);
 
   /* REQUEST DATA, DRAW CHART AND AXIS */
   d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, d => {
