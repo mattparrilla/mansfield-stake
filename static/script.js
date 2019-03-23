@@ -25,7 +25,7 @@ const transformRow = (season) => {
   };
 };
 
-const updateChart = ({ data, comparisonYear = '', line, seasonContainer }) => {
+const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonContainer }) => {
   d3.select('.comparison-label')
     .text(comparisonYear);
 
@@ -43,17 +43,41 @@ const updateChart = ({ data, comparisonYear = '', line, seasonContainer }) => {
         .attr('class', 'line')
         .attr('d', d => line(d.values));
 
-  // TODO: need to remove and append current season to get it to be on top
   const currentSeason = seasonContainer.select(`.x${getCurrentSeason()}`)
     .attr('class', 'season current');
+
 
   // put gridlines on top of all provious years, but behind comparison and current
   seasonContainer.select('.grid-lines').raise();
 
-  // comparison season
-  season.exit()
-    .attr('class', 'season comparison')
-    .raise();
+  let comparisonSeason;
+  // exit is empty if it's our first time through, in that case, append comparisonYear
+  if (season.exit().empty()) {
+    comparisonSeason = seasonContainer.select('.season');
+
+    comparisonSeason
+      .datum(data.find(d => d.season === comparisonYear))
+      .append('g')
+      .attr('class', 'season comparison')
+      .append('path')
+        .attr('class', 'line')
+        .attr('d', d => line(d.values));
+
+    comparisonSeason.raise();
+  } else {
+    comparisonSeason = season.exit();
+    comparisonSeason
+      .attr('class', 'season comparison')
+      .raise();
+  }
+  const currentSeasonData = currentSeason.data()[0].values;
+  const latestData = currentSeasonData[currentSeasonData.length - 1];
+  const latestDepth = latestData.snowDepth;
+  const latestDepthEl = document.getElementById('currentDepth');
+  d3.select('#currentDepth').text(latestDepth);
+  const comparisonDataOnDate = comparisonSeason.data()[0].values[currentSeasonData.length - 1];
+  const comparisonDepth = comparisonDataOnDate.snowDepth;
+  d3.select('#comparisonDepth').text(comparisonDepth);
 
   // need to call raise after raising comparison season
   currentSeason.raise();
@@ -123,13 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
     xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
     yAxis.call(d3.axisRight(y));
 
-    // add label for comparison year
-    g.append('text')
-      .attr('class', 'year-label comparison-label')
-      .attr('fill', '#e3624f')
-      .attr('y', '35px')
-      .attr('dy', '1em');
-
     // create grid lines for y-axis
     seasonContainer.append('g')
       .attr('class', 'grid-lines')
@@ -149,6 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
     data
       .map(({ season }) => season)
       .filter(season => season && season !== getCurrentSeason())
+      .sort((a, b) => a < b) // reverse order, so alphabet then reverse 9, 8 etc
       .map(season => ({
         value: season,
         label: season,

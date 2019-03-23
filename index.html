@@ -7,7 +7,6 @@
     <link href="static/bootstrap.min.css" rel="stylesheet">
     <link href="static/base.css" rel="stylesheet">
     <title>Mt. Mansfield Snow Depth</title>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.3.0/d3.min.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-31358980-1"></script>
     <script>
@@ -27,11 +26,11 @@
             <div id="legend">
               <div id="currentSeason">
                 <h3>Current Snowdepth</h3>
-                <div class="depth_value">124</div>
+                <div id="currentDepth" class="depth_value"></div>
               </div>
               <div id="comparisonSeason">
                 <h3>Average on Date</h3>
-                <div class="depth_value">78</div>
+                <div id="comparisonDepth" class="depth_value"></div>
               </div>
             </div>
             <svg id="chart" class="yearly-trend"></svg>
@@ -50,6 +49,7 @@
         </div>
       </div>
     </div>
+    <script type="text/javascript" src="static/d3.min.js"></script>
     <script type="text/javascript" src="static/script.js"></script>
   </body>
 </html>
