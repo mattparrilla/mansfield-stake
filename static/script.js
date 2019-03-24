@@ -62,6 +62,10 @@ const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonCont
   d3.select('#comparisonDepth').text(comparisonData.values[currentSeasonData.length - 1].snowDepth);
   d3.select('#comparisonLabel').text(comparisonData.season);
 
+  // upate last updated
+  const lastUpdated = latestData.date;
+  lastUpdated.setYear((new Date()).getFullYear());
+  d3.select('#last_updated').text(lastUpdated.toLocaleDateString());
 
   // need to call raise after raising comparison season
   currentSeason.raise();
@@ -75,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const margin = {
     top: 10, right: 45, bottom: 30, left: 25,
   };
-  // TODO: get height + width dynamically
   const containerWidth = document.getElementById('visualization').clientWidth;
   const height = containerWidth > 800 ? 400 : containerWidth / 2;
   const width = containerWidth - margin.right;
