@@ -133,6 +133,21 @@ svg text {
 }
 
 
+@media (max-width: 992px) {
+  #legend h3 {
+    font-size: 18px;
+    width: 180px;
+  }
+  #legend .depth_value {
+    font-size: 18px;
+    width: 30px;
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+}
+  
 @media (max-width: 768px) {
   #legend h3 {
     font-size: 12px;
