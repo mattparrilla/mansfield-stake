@@ -76,8 +76,8 @@ document.addEventListener('DOMContentLoaded', () => {
     top: 10, right: 45, bottom: 30, left: 25,
   };
   // TODO: get height + width dynamically
-  const height = 400;
   const containerWidth = document.getElementById('visualization').clientWidth;
+  const height = containerWidth > 800 ? 400 : containerWidth / 2;
   const width = containerWidth - margin.right;
 
   const g = d3.select("#chart")
