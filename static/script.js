@@ -46,38 +46,22 @@ const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonCont
   const currentSeason = seasonContainer.select(`.x${getCurrentSeason()}`)
     .attr('class', 'season current');
 
+  console.log(season.exit());
+  comparisonSeason = season.exit();
+  season.exit()
+    .attr('class', 'season comparison')
+    .raise();
 
-  // put gridlines on top of all provious years, but behind comparison and current
-  seasonContainer.select('.grid-lines').raise();
-
-  let comparisonSeason;
-  // exit is empty if it's our first time through, in that case, append comparisonYear
-  if (season.exit().empty()) {
-    comparisonSeason = seasonContainer.select('.season');
-
-    comparisonSeason
-      .datum(data.find(d => d.season === comparisonYear))
-      .append('g')
-      .attr('class', 'season comparison')
-      .append('path')
-        .attr('class', 'line')
-        .attr('d', d => line(d.values));
-
-    comparisonSeason.raise();
-  } else {
-    comparisonSeason = season.exit();
-    comparisonSeason
-      .attr('class', 'season comparison')
-      .raise();
-  }
+  // update legend with snow depths and comparison season
   const currentSeasonData = currentSeason.data()[0].values;
   const latestData = currentSeasonData[currentSeasonData.length - 1];
   const latestDepth = latestData.snowDepth;
   const latestDepthEl = document.getElementById('currentDepth');
   d3.select('#currentDepth').text(latestDepth);
-  const comparisonDataOnDate = comparisonSeason.data()[0].values[currentSeasonData.length - 1];
-  const comparisonDepth = comparisonDataOnDate.snowDepth;
-  d3.select('#comparisonDepth').text(comparisonDepth);
+  const comparisonData = comparisonSeason.data()[0];
+  d3.select('#comparisonDepth').text(comparisonData.values[currentSeasonData.length - 1].snowDepth);
+  d3.select('#comparisonLabel').text(comparisonData.season);
+
 
   // need to call raise after raising comparison season
   currentSeason.raise();
@@ -160,6 +144,20 @@ document.addEventListener('DOMContentLoaded', () => {
             .attr('y1', d => y(d))
             .attr('y2', d => y(d));
 
+    const season = seasonContainer.selectAll('.season')
+      .data(
+        data,
+        d => d.season,
+      );
+
+    season
+      .enter().append('g')
+      .merge(season)
+        .attr('class', d => `season x${d.season}`)
+        .append('path')
+          .attr('class', 'line')
+          .attr('d', d => line(d.values));
+
     updateChart({ data, line, seasonContainer });
 
     // Add seasons to dropdown options
@@ -170,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .map(season => ({
         value: season,
         label: season,
-      })).reverse()
+      }))
       .forEach(season => {
         const option = document.createElement('option');
         option.value = season.value;
