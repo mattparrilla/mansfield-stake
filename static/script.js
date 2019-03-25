@@ -1,4 +1,4 @@
-/* global d3, window, document */
+/* global d3, document */
 
 const getCurrentSeason = () => {
     const date = new Date();
@@ -32,35 +32,33 @@ const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonCont
   const season = seasonContainer.selectAll('.season')
     .data(
       data.filter(d => d.season !== comparisonYear),
-      d => d.season,
+      d => d.season
     );
 
   season
     .enter().append('g')
     .merge(season)
       .attr('class', d => `season x${d.season}`)
-      .append('path')
+      .select('path')
         .attr('class', 'line')
         .attr('d', d => line(d.values));
 
   const currentSeason = seasonContainer.select(`.x${getCurrentSeason()}`)
     .attr('class', 'season current');
 
-  comparisonSeason = season.exit();
-  season.exit()
+  const comparisonSeason = season.exit();
+  comparisonSeason
     .attr('class', 'season comparison')
     .raise();
-
 
   // update legend with currnet snow depth
   const currentSeasonData = currentSeason.data()[0].values;
   const latestData = currentSeasonData[currentSeasonData.length - 1];
   const latestDepth = latestData.snowDepth;
-  const latestDepthEl = document.getElementById('currentDepth');
   d3.select('#currentDepth').text(latestDepth);
 
   // upate last updated
-  const lastUpdated = latestData.date;
+  const lastUpdated = new Date(latestData.date);
   lastUpdated.setYear((new Date()).getFullYear());
   d3.select('#last_updated').text(lastUpdated.toLocaleDateString());
 
@@ -71,7 +69,6 @@ const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonCont
     && d.date.getDate() === lastUpdated.getDate());
   d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
   d3.select('#comparisonLabel').text(comparisonData.season);
-
 
   // need to call raise after raising comparison season
   currentSeason.raise();
@@ -153,15 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .attr('y1', d => y(d))
             .attr('y2', d => y(d));
 
-    const season = seasonContainer.selectAll('.season')
+    seasonContainer.selectAll('.season')
       .data(
         data,
-        d => d.season,
-      );
-
-    season
+        d => d.season
+      )
       .enter().append('g')
-      .merge(season)
         .attr('class', d => `season x${d.season}`)
         .append('path')
           .attr('class', 'line')
