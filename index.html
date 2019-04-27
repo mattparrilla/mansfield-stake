@@ -21,7 +21,7 @@
     <div class="container">
       <div class="row">
         <div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
-          <h1>Mt. Mansfield Snow Depth</h1>
+          <h1>Mt. Mansfield Weather Station</h1>
           <div id="visualization">
             <div id="legend">
               <div id="currentSeason">
@@ -34,14 +34,19 @@
               </div>
             </div>
             <svg id="chart" class="yearly-trend"></svg>
-          </div>
-          <div id="info_pane">
             <div id="select-season-group" class="form-group">
               <label for="select-season">Compare to a historical winter:</label>
               <select id="select-season" class="form-control">
                 <option disabled selected value>Select a season</option>
               </select>
             </div>
+          </div>
+          <hr>
+          <div>
+            <h2>Max and Min Temperature</h2>
+            <svg id="temp_chart"></svg>
+          </div>
+          <div id="info_pane">
             <h3>About the data</h3>
             <p>Last updated: <span id="last_updated"></span></p>
             <p>The latest data is provided by the NWS Burlington office. The source data can be found in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. This plot is updated within the hour of new data being published in the report.</p>
@@ -53,5 +58,6 @@
     </div>
     <script type="text/javascript" src="static/d3.min.js"></script>
     <script type="text/javascript" src="static/script.js"></script>
+    <script type="text/javascript" src="static/tempScript.js"></script>
   </body>
 </html>

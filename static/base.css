@@ -19,6 +19,10 @@ h1 {
   font-size: 48px;
 }
 
+h2 {
+  text-align: center;
+}
+
 .yearly-trend {
   display: block;
   margin: 0 auto 20px;
@@ -42,6 +46,11 @@ h1 {
 .comparison .line {
   stroke-width: 2px;
   stroke: #e3624f;
+}
+
+.fat-grid-line {
+  stroke-width: 3px;
+  stroke: white;
 }
 
 .grid-line {
