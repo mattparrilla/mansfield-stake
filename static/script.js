@@ -51,27 +51,35 @@ const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonCont
     .attr('class', 'season comparison')
     .raise();
 
-  // update legend with currnet snow depth
-  const currentSeasonData = currentSeason.data()[0].values;
-  const latestData = currentSeasonData[currentSeasonData.length - 1];
-  const latestDepth = latestData.snowDepth;
-  d3.select('#currentDepth').text(latestDepth);
+  // if we have data, update legend and last updated
+  if (currentSeason.data().length > 0) {
+    // update legend with current snow depth
+    const currentSeasonData = currentSeason.data()[0].values;
+    const latestData = currentSeasonData[currentSeasonData.length - 1];
+    const latestDepth = latestData.snowDepth;
+    d3.select('#currentDepth').text(latestDepth);
 
-  // upate last updated
-  const lastUpdated = new Date(latestData.date);
-  lastUpdated.setYear((new Date()).getFullYear());
-  d3.select('#last_updated').text(lastUpdated.toLocaleDateString());
+    // upate last updated
+    const lastUpdated = new Date(latestData.date);
+    lastUpdated.setYear((new Date()).getFullYear());
+    d3.select('#last_updated').text(lastUpdated.toLocaleDateString());
 
-  // update legend with comparison season
-  const comparisonData = comparisonSeason.data()[0];
-  const comparisonDay = comparisonData.values.find(d => 
-    d.date.getMonth() === lastUpdated.getMonth()
-    && d.date.getDate() === lastUpdated.getDate());
-  d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
-  d3.select('#comparisonLabel').text(comparisonData.season);
+    // update legend with comparison season
+    const comparisonData = comparisonSeason.data()[0];
+    const comparisonDay = comparisonData.values.find(d => 
+      d.date.getMonth() === lastUpdated.getMonth()
+      && d.date.getDate() === lastUpdated.getDate());
+    d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
+    d3.select('#comparisonLabel').text(comparisonData.season);
 
-  // need to call raise after raising comparison season
-  currentSeason.raise();
+    // need to call raise after raising comparison season
+    currentSeason.raise();
+  } else {
+    d3.select('#currentDepth').text(0);
+    d3.select('#last_updated').text("No data yet for season!");
+  }
+
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {
