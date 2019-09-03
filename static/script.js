@@ -68,7 +68,7 @@ const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonCont
     const comparisonData = comparisonSeason.data()[0];
     const comparisonDay = comparisonData.values.find(d => 
       d.date.getMonth() === lastUpdated.getMonth()
-      && d.date.getDate() === lastUpdated.getDate());
+      && d.date.getDate() === lastUpdated.getDate()) || { snowDepth: 0 };
     d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
     d3.select('#comparisonLabel').text(comparisonData.season);
 
