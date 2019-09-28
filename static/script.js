@@ -248,7 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const transformDate = row => ({
       ...row,
-      timestamp: new Date(row.timestamp)
+      timestamp: new Date(row.timestamp),
+      wind_direction: row.wind_direction >= 0 ? row.wind_direction : null,
     });
 
     const addChart = (data, key, order) => {
@@ -267,7 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
         d3.max(values) + 2,
       ]);
 
-      line.y((d) => y(d[key]));
+      line
+        .y((d) => y(d[key]))
+        .defined(d => d[key] !== null);
 
       g.append('g')
         .attr('class', 'y axis')
@@ -297,5 +300,5 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   initSnowDepthChart();
-  initPrev10Charts(['temperature', 'wind_speed']);
+  initPrev10Charts(['temperature', 'wind_speed', 'wind_direction']);
 });
