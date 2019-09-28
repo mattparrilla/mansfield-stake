@@ -25,357 +25,362 @@ const transformRow = (season) => {
   };
 };
 
-const updateSnowDepthChart = ({
-  data, comparisonYear = 'Average Season', line, seasonContainer,
-}) => {
-  d3.select('.comparison-label')
-    .text(comparisonYear);
-
-  const season = seasonContainer.selectAll('.season')
-    .data(
-      data.filter((d) => d.season !== comparisonYear),
-      (d) => d.season,
-    );
-
-  season
-    .enter().append('g')
-    .merge(season)
-    .attr('class', (d) => `season x${d.season}`)
-    .select('path')
-    .attr('class', 'line')
-    .attr('d', (d) => line(d.values));
-
-  const currentSeason = seasonContainer.select(`.x${getCurrentSeason()}`)
-    .attr('class', 'season current');
-
-  const comparisonSeason = season.exit();
-  comparisonSeason
-    .attr('class', 'season comparison')
-    .raise();
-
-  // if we have data, update legend and last updated
-  if (currentSeason.data().length > 0) {
-    // update legend with current snow depth
-    const currentSeasonData = currentSeason.data()[0].values;
-    const latestData = currentSeasonData[currentSeasonData.length - 1];
-    const latestDepth = latestData.snowDepth;
-    d3.select('#currentDepth').text(latestDepth);
-
-    // upate last updated
-    const lastUpdated = new Date(latestData.date);
-    lastUpdated.setYear((new Date()).getFullYear());
-    d3.select('#last_updated').text(lastUpdated.toLocaleDateString());
-
-    // update legend with comparison season
-    const comparisonData = comparisonSeason.data()[0];
-    const comparisonDay = comparisonData.values.find(
-      d => d.date.getMonth() === lastUpdated.getMonth()
-      && d.date.getDate() === lastUpdated.getDate()
-    ) || { snowDepth: 0 };
-    d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
-    d3.select('#comparisonLabel').text(comparisonData.season);
-
-    // need to call raise after raising comparison season
-    currentSeason.raise();
-  } else {
-    d3.select('#currentDepth').text(0);
-    d3.select('#last_updated').text('No data yet for season!');
-  }
-};
-
-
-const initSnowDepthChart = () => {
-  /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
-  const seasonSelect = document.getElementById('select-season');
-
+document.addEventListener('DOMContentLoaded', () => {
+  ///////////////////////////////////////////////////
+  ///////// GLOBALS FOR USE BY CHARTS ///////////////
+  ///////////////////////////////////////////////////
   const margin = {
-    top: 10, right: 45, bottom: 30, left: 25,
+    top: 10, right: 45, bottom: 30, left: 35,
   };
-  const containerWidth = document.getElementById('visualization').clientWidth;
-  const height = containerWidth > 800 ? 400 : containerWidth / 2;
-  const width = containerWidth - margin.right;
+  const width = document.getElementById('visualization').clientWidth;
+  ///////////////////////////////////////////////////
+  //////////////// END GLOBALS //////////////////////
+  ///////////////////////////////////////////////////
 
-  const g = d3.select('#snow_depth_chart')
-    .attr('width', containerWidth)
-    .attr('height', height + margin.top + margin.bottom);
+  const updateSnowDepthChart = ({
+    data, comparisonYear = 'Average Season', line, seasonContainer,
+  }) => {
+    d3.select('.comparison-label')
+      .text(comparisonYear);
 
-  const seasonContainer = g.append('g').attr('class', 'season-container');
-
-  const x = d3.scaleTime().range([0, width]);
-  const y = d3.scaleLinear().range([height, 0]);
-
-  // hard coded values
-  x.domain([new Date(2000, 8, 1), new Date(2001, 5, 30)]);
-  y.domain([0, 149]);
-
-  const line = d3.line()
-    .curve(d3.curveBasis)
-    .x((d) => x(d.date))
-    .y((d) => y(d.snowDepth));
-
-  const xAxis = g.append('g')
-    .attr('class', 'axis axis--x')
-    .attr('transform', `translate(${margin.left},${height})`)
-    .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
-
-  const yAxis = g.append('g')
-    .attr('class', 'axis axis--y')
-    .attr('transform', `translate(${width}, 0)`)
-    .call(d3.axisRight(y))
-    .append('text')
-    .attr('transform', 'rotate(-90)')
-    .attr('y', -20)
-    .attr('dy', '0.71em')
-    .attr('x', -165)
-    .attr('style', 'fill: #000')
-    .text('Snow Depth, inches');
-
-  /* REQUEST DATA, DRAW CHART AND AXIS */
-  d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, csv => {
-    const data = csv.filter((season) => season.season !== '');
-
-    // update axes values with actual data
-    x.domain([
-      d3.min(data, (season) => d3.min(season.values, (date) => date.date)),
-      d3.max(data, (season) => d3.max(season.values, (date) => date.date)),
-    ]);
-    y.domain([
-      0,
-      d3.max(data, (season) => d3.max(season.values, (date) => date.snowDepth)),
-    ]);
-    xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
-    yAxis.call(d3.axisRight(y));
-
-    // create grid lines for y-axis
-    seasonContainer.append('g')
-      .attr('class', 'grid-lines')
-      .selectAll('g.grid-line')
-      .data([20, 40, 60, 80, 100, 120, 140])
-      .enter()
-      .append('line')
-      .attr('class', 'grid-line')
-      .attr('x1', 0)
-      .attr('x2', width)
-      .attr('y1', (d) => y(d))
-      .attr('y2', (d) => y(d));
-
-    seasonContainer.selectAll('.season')
+    const season = seasonContainer.selectAll('.season')
       .data(
-        data,
+        data.filter((d) => d.season !== comparisonYear),
         (d) => d.season,
-      )
+      );
+
+    season
       .enter().append('g')
+      .merge(season)
       .attr('class', (d) => `season x${d.season}`)
-      .append('path')
+      .select('path')
       .attr('class', 'line')
       .attr('d', (d) => line(d.values));
 
-    updateSnowDepthChart({ data, line, seasonContainer });
+    const currentSeason = seasonContainer.select(`.x${getCurrentSeason()}`)
+      .attr('class', 'season current');
 
-    // Add seasons to dropdown options
-    data
-      .map(({ season }) => season)
-      .filter((season) => season && season !== getCurrentSeason())
-      .sort((a, b) => a < b) // reverse order, so alphabet then reverse 9, 8 etc
-      .map((season) => ({
-        value: season,
-        label: season,
-      }))
-      .forEach((season) => {
-        const option = document.createElement('option');
-        option.value = season.value;
-        option.text = season.label;
-        seasonSelect.add(option, null);
-      });
+    const comparisonSeason = season.exit();
+    comparisonSeason
+      .attr('class', 'season comparison')
+      .raise();
 
-    // add event listener to select season
-    seasonSelect.onchange = ({ target: { value: comparisonYear } }) => {
-      updateSnowDepthChart({
-        data, line, seasonContainer, comparisonYear,
-      });
-    };
-  });
-};
+    // if we have data, update legend and last updated
+    if (currentSeason.data().length > 0) {
+      // update legend with current snow depth
+      const currentSeasonData = currentSeason.data()[0].values;
+      const latestData = currentSeasonData[currentSeasonData.length - 1];
+      const latestDepth = latestData.snowDepth;
+      d3.select('#currentDepth').text(latestDepth);
 
+      // upate last updated
+      const lastUpdated = new Date(latestData.date);
+      lastUpdated.setYear((new Date()).getFullYear());
+      d3.select('#last_updated').text(lastUpdated.toLocaleDateString());
 
-// TODO: make this more performant (maybe reverse and find, then slice)
-// or consider slicing in lambda (better)
-const filterToLast10 = data => {
-  const today = new Date();
-  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+      // update legend with comparison season
+      const comparisonData = comparisonSeason.data()[0];
+      const comparisonDay = comparisonData.values.find(
+        d => d.date.getMonth() === lastUpdated.getMonth()
+        && d.date.getDate() === lastUpdated.getDate()
+      ) || { snowDepth: 0 };
+      d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
+      d3.select('#comparisonLabel').text(comparisonData.season);
 
-  // filter to last 10 days and repeat values
-  return data
-    .filter(({ timestamp }) => Math.round((today - timestamp) / millisecondsPerDay) < 10)
-    .filter(({ temperature }, i) => i > 0 && temperature !== data[i - 1].temperature);
-};
-
-// Line chart with hover based on https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91
-const initTemperatureChart = () => {
-  const margin = {
-    top: 20,
-    right: 80,
-    bottom: 30,
-    left: 50,
-  };
-  const width = 900 - margin.left - margin.right;
-  const height = 300 - margin.top - margin.bottom;
-
-  const x = d3.scaleTime()
-    .range([0, width]);
-
-  const y = d3.scaleLinear()
-    .range([height, 0]);
-
-  const xAxis = d3.axisBottom()
-    .scale(x);
-
-  const yAxis = d3.axisLeft()
-    .scale(y);
-
-  const line = d3.line()
-    .x((d) => x(d.timestamp))
-    .y((d) => y(d.temperature))
-    .curve(d3.curveBasis);
-
-  const svg = d3.select('#prev_10_charts')
-    .attr('width', width + margin.left + margin.right)
-    .attr('height', height + margin.top + margin.bottom)
-    .select('#temperature')
-      .attr('transform', `translate(${margin.left},${margin.top})`);
-
-  const transformDate = row => ({
-    ...row,
-    timestamp: new Date(row.timestamp)
-  });
-
-  // Download data, filter it, and render chart
-  d3.csv(
-    'https://s3.amazonaws.com/matthewparrilla.com/mansfield_observations.csv',
-    transformDate,
-    unfilteredData => {
-      const data = filterToLast10(unfilteredData);
-      const temperatures = data.map(d => d.temperature);
-
-      x.domain(d3.extent(data, (d) => d.timestamp));
-      y.domain([
-        d3.min(temperatures) - 2,
-        d3.max(temperatures),
-      ]);
-
-      svg.append('g')
-        .attr('class', 'x axis')
-        .attr('transform', `translate(0,${height})`)
-        .call(xAxis);
-
-      svg.append('g')
-        .attr('class', 'y axis')
-        .call(yAxis)
-        .append('text')
-        .attr('transform', 'rotate(-90)')
-        .attr('y', 6)
-        .attr('dy', '.71em')
-        .style('text-anchor', 'end')
-        .text('Temperature (ºF)');
-
-      const tempLineColor = '#333';
-      svg.append('path')
-          .attr('class', 'line')
-          .attr('d', line(data))
-          .style('fill-opacity', 0)
-          .style('stroke', tempLineColor);
-
-      // const mouseG = svg.append('g')
-      //   .attr('class', 'mouse-over-effects');
-
-      // mouseG.append('path') // this is the black vertical line to follow mouse
-      //   .attr('class', 'mouse-line')
-      //   .style('stroke', 'black')
-      //   .style('stroke-width', '1px')
-      //   .style('opacity', '0');
-
-      // const lines = document.getElementsByClassName('line');
-
-      // const mousePerLine = mouseG.selectAll('.mouse-per-line')
-      //   .data(data)
-      //   .enter()
-      //   .append('g')
-      //   .attr('class', 'mouse-per-line');
-
-      // mousePerLine.append('circle')
-      //   .attr('r', 7)
-      //   .style('stroke', tempLineColor)
-      //   .style('fill', 'none')
-      //   .style('stroke-width', '1px')
-      //   .style('opacity', '0');
-
-      // mousePerLine.append('text')
-      //   .attr('transform', 'translate(10,3)');
-
-      // mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-      //   .attr('width', width) // can't catch mouse events on a g element
-      //   .attr('height', height)
-      //   .attr('fill', 'none')
-      //   .attr('pointer-events', 'all')
-      //   .on('mouseout', () => { // on mouse out hide line, circles and text
-      //     d3.select('.mouse-line')
-      //       .style('opacity', '0');
-      //     d3.selectAll('.mouse-per-line circle')
-      //       .style('opacity', '0');
-      //     d3.selectAll('.mouse-per-line text')
-      //       .style('opacity', '0');
-      //   })
-      //   .on('mouseover', () => { // on mouse in show line, circles and text
-      //     d3.select('.mouse-line')
-      //       .style('opacity', '1');
-      //     d3.selectAll('.mouse-per-line circle')
-      //       .style('opacity', '1');
-      //     d3.selectAll('.mouse-per-line text')
-      //       .style('opacity', '1');
-      //   })
-      //   .on('mousemove', () => { // mouse moving over canvas
-      //     const mouse = d3.mouse(this);
-      //     d3.select('.mouse-line')
-      //       .attr('d', () => {
-      //         let d = `M${mouse[0]},${height}`;
-      //         d += ` ${mouse[0]},${0}`;
-      //         return d;
-      //       });
-
-      //     d3.selectAll('.mouse-per-line')
-      //       .attr('transform', (_, i) => {
-      //         console.log(width / mouse[0]);
-      //         const xDate = x.invert(mouse[0]);
-      //         const bisect = d3.bisector((d) => d.timestamp).right;
-      //         bisect(data, xDate);
-
-      //         let beginning = 0;
-      //         let end = lines[i].getTotalLength();
-      //         let target = null;
-      //         let pos;
-
-      //         while (true) {
-      //           target = Math.floor((beginning + end) / 2);
-      //           pos = lines[i].getPointAtLength(target);
-      //           if ((target === end || target === beginning) && pos.x !== mouse[0]) {
-      //             break;
-      //           }
-      //           if (pos.x > mouse[0]) end = target;
-      //           else if (pos.x < mouse[0]) beginning = target;
-      //           else break; // position found
-      //         }
-
-      //         d3.select(this).select('text')
-      //           .text(y.invert(pos.y).toFixed(2));
-
-      //         return `translate(${mouse[0]},${pos.y})`;
-      //       });
-      //   });
+      // need to call raise after raising comparison season
+      currentSeason.raise();
+    } else {
+      d3.select('#currentDepth').text(0);
+      d3.select('#last_updated').text('No data yet for season!');
     }
-  );
-};
+  };
 
-document.addEventListener('DOMContentLoaded', () => {
+
+  const initSnowDepthChart = () => {
+    /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
+    const seasonSelect = document.getElementById('select-season');
+    const height = width > 800 ? 400 : width / 2;
+
+    const g = d3.select('#snow_depth_chart')
+      .attr('width', width)
+      .attr('height', height);
+
+    const seasonContainer = g.append('g').attr('class', 'season-container');
+
+    const x = d3.scaleTime().range([margin.left, width - margin.right - margin.left]);
+    const y = d3.scaleLinear().range([height - margin.bottom, margin.top]);
+
+    // hard coded values
+    x.domain([new Date(2000, 8, 1), new Date(2001, 5, 30)]);
+    y.domain([0, 150]);
+
+    const line = d3.line()
+      .curve(d3.curveBasis)
+      .x((d) => x(d.date))
+      .y((d) => y(d.snowDepth));
+
+    const xAxis = g.append('g')
+      .attr('class', 'axis axis--x')
+      .attr('transform', `translate(${margin.left},${height - margin.bottom})`)
+      .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
+
+    const yAxis = g.append('g')
+      .attr('class', 'axis axis--y')
+      .attr('transform', `translate(${width - margin.right}, 0)`)
+      .call(d3.axisRight(y))
+      .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', -20)
+        .attr('dy', '0.71em')
+        .attr('x', -165)
+        .attr('style', 'fill: #000')
+        .text('Snow Depth, inches');
+
+    /* REQUEST DATA, DRAW CHART AND AXIS */
+    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, csv => {
+      const data = csv.filter((season) => season.season !== '');
+
+      // update axes values with actual data
+      x.domain([
+        d3.min(data, (season) => d3.min(season.values, (date) => date.date)),
+        d3.max(data, (season) => d3.max(season.values, (date) => date.date)),
+      ]);
+      y.domain([
+        0,
+        d3.max(data, (season) => d3.max(season.values, (date) => date.snowDepth)),
+      ]);
+      xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
+      yAxis.call(d3.axisRight(y));
+
+      // create grid lines for y-axis
+      seasonContainer.append('g')
+        .attr('class', 'grid-lines')
+        .selectAll('g.grid-line')
+        .data([20, 40, 60, 80, 100, 120, 140])
+        .enter()
+        .append('line')
+        .attr('class', 'grid-line')
+        .attr('x1', 0)
+        .attr('x2', width)
+        .attr('y1', (d) => y(d))
+        .attr('y2', (d) => y(d));
+
+      seasonContainer.selectAll('.season')
+        .data(
+          data,
+          (d) => d.season,
+        )
+        .enter().append('g')
+        .attr('class', (d) => `season x${d.season}`)
+        .append('path')
+        .attr('class', 'line')
+        .attr('d', (d) => line(d.values));
+
+      updateSnowDepthChart({ data, line, seasonContainer });
+
+      // Add seasons to dropdown options
+      data
+        .map(({ season }) => season)
+        .filter((season) => season && season !== getCurrentSeason())
+        .sort((a, b) => a < b) // reverse order, so alphabet then reverse 9, 8 etc
+        .map((season) => ({
+          value: season,
+          label: season,
+        }))
+        .forEach((season) => {
+          const option = document.createElement('option');
+          option.value = season.value;
+          option.text = season.label;
+          seasonSelect.add(option, null);
+        });
+
+      // add event listener to select season
+      seasonSelect.onchange = ({ target: { value: comparisonYear } }) => {
+        updateSnowDepthChart({
+          data, line, seasonContainer, comparisonYear,
+        });
+      };
+    });
+  };
+
+
+  // TODO: make this more performant (maybe reverse and find, then slice)
+  // or consider slicing in lambda (better)
+  const filterToLast10 = data => {
+    const today = new Date();
+    const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+    // filter to last 10 days and repeat values
+    return data
+      .filter(({ timestamp }) => Math.round((today - timestamp) / millisecondsPerDay) < 10)
+      .filter(({ temperature }, i) => i > 0 && temperature !== data[i - 1].temperature);
+  };
+
+  // Line chart with hover based on https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91
+  const initTemperatureChart = () => {
+    // const margin = {
+    //   top: 20,
+    //   right: 80,
+    //   bottom: 30,
+    //   left: 50,
+    // };
+    // const width = 900 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
+
+    const x = d3.scaleTime()
+      .range([0, width - margin.left - margin.right]);
+
+    const y = d3.scaleLinear()
+      .range([height, 0]);
+
+    const xAxis = d3.axisBottom()
+      .scale(x);
+
+    const yAxis = d3.axisLeft()
+      .scale(y);
+
+    const line = d3.line()
+      .x((d) => x(d.timestamp))
+      .y((d) => y(d.temperature))
+      .curve(d3.curveBasis);
+
+    const svg = d3.select('#prev_10_charts')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .select('#temperature')
+        .attr('transform', `translate(${margin.left},${margin.top})`);
+
+    const transformDate = row => ({
+      ...row,
+      timestamp: new Date(row.timestamp)
+    });
+
+    // Download data, filter it, and render chart
+    d3.csv(
+      'https://s3.amazonaws.com/matthewparrilla.com/mansfield_observations.csv',
+      transformDate,
+      unfilteredData => {
+        const data = filterToLast10(unfilteredData);
+        const temperatures = data.map(d => d.temperature);
+
+        x.domain(d3.extent(data, (d) => d.timestamp));
+        y.domain([
+          d3.min(temperatures) - 2,
+          d3.max(temperatures),
+        ]);
+
+        svg.append('g')
+          .attr('class', 'x axis')
+          .attr('transform', `translate(0,${height})`)
+          .call(xAxis);
+
+        svg.append('g')
+          .attr('class', 'y axis')
+          .call(yAxis)
+          .append('text')
+          .attr('transform', 'rotate(-90)')
+          .attr('y', 6)
+          .attr('dy', '.71em')
+          .style('text-anchor', 'end')
+          .text('Temperature (ºF)');
+
+        const tempLineColor = '#333';
+        svg.append('path')
+            .attr('class', 'line')
+            .attr('d', line(data))
+            .style('fill-opacity', 0)
+            .style('stroke', tempLineColor);
+
+        // const mouseG = svg.append('g')
+        //   .attr('class', 'mouse-over-effects');
+
+        // mouseG.append('path') // this is the black vertical line to follow mouse
+        //   .attr('class', 'mouse-line')
+        //   .style('stroke', 'black')
+        //   .style('stroke-width', '1px')
+        //   .style('opacity', '0');
+
+        // const lines = document.getElementsByClassName('line');
+
+        // const mousePerLine = mouseG.selectAll('.mouse-per-line')
+        //   .data(data)
+        //   .enter()
+        //   .append('g')
+        //   .attr('class', 'mouse-per-line');
+
+        // mousePerLine.append('circle')
+        //   .attr('r', 7)
+        //   .style('stroke', tempLineColor)
+        //   .style('fill', 'none')
+        //   .style('stroke-width', '1px')
+        //   .style('opacity', '0');
+
+        // mousePerLine.append('text')
+        //   .attr('transform', 'translate(10,3)');
+
+        // mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+        //   .attr('width', width) // can't catch mouse events on a g element
+        //   .attr('height', height)
+        //   .attr('fill', 'none')
+        //   .attr('pointer-events', 'all')
+        //   .on('mouseout', () => { // on mouse out hide line, circles and text
+        //     d3.select('.mouse-line')
+        //       .style('opacity', '0');
+        //     d3.selectAll('.mouse-per-line circle')
+        //       .style('opacity', '0');
+        //     d3.selectAll('.mouse-per-line text')
+        //       .style('opacity', '0');
+        //   })
+        //   .on('mouseover', () => { // on mouse in show line, circles and text
+        //     d3.select('.mouse-line')
+        //       .style('opacity', '1');
+        //     d3.selectAll('.mouse-per-line circle')
+        //       .style('opacity', '1');
+        //     d3.selectAll('.mouse-per-line text')
+        //       .style('opacity', '1');
+        //   })
+        //   .on('mousemove', () => { // mouse moving over canvas
+        //     const mouse = d3.mouse(this);
+        //     d3.select('.mouse-line')
+        //       .attr('d', () => {
+        //         let d = `M${mouse[0]},${height}`;
+        //         d += ` ${mouse[0]},${0}`;
+        //         return d;
+        //       });
+
+        //     d3.selectAll('.mouse-per-line')
+        //       .attr('transform', (_, i) => {
+        //         console.log(width / mouse[0]);
+        //         const xDate = x.invert(mouse[0]);
+        //         const bisect = d3.bisector((d) => d.timestamp).right;
+        //         bisect(data, xDate);
+
+        //         let beginning = 0;
+        //         let end = lines[i].getTotalLength();
+        //         let target = null;
+        //         let pos;
+
+        //         while (true) {
+        //           target = Math.floor((beginning + end) / 2);
+        //           pos = lines[i].getPointAtLength(target);
+        //           if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+        //             break;
+        //           }
+        //           if (pos.x > mouse[0]) end = target;
+        //           else if (pos.x < mouse[0]) beginning = target;
+        //           else break; // position found
+        //         }
+
+        //         d3.select(this).select('text')
+        //           .text(y.invert(pos.y).toFixed(2));
+
+        //         return `translate(${mouse[0]},${pos.y})`;
+        //       });
+        //   });
+      }
+    );
+  };
+
   initSnowDepthChart();
   initTemperatureChart();
 });
