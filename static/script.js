@@ -1,11 +1,11 @@
-/* global d3, document */
+/* global d3 */
 
 const getCurrentSeason = () => {
-    const date = new Date();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return month < 9 ? `${year - 1}-${year}` : `${year}-${year + 1}`;
-}
+  const date = new Date();
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+  return month < 9 ? `${year - 1}-${year}` : `${year}-${year + 1}`;
+};
 
 const transformRow = (season) => {
   const parseTime = (date) => {
@@ -17,31 +17,33 @@ const transformRow = (season) => {
     season: season.year,
     values: Object.keys(season)
       .slice(1) // remove header label
-      .filter(date => season[date])
-      .map(date => ({
+      .filter((date) => season[date])
+      .map((date) => ({
         date: parseTime(date),
         snowDepth: parseInt(season[date], 10),
       })),
   };
 };
 
-const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonContainer }) => {
+const updateSnowDepthChart = ({
+  data, comparisonYear = 'Average Season', line, seasonContainer,
+}) => {
   d3.select('.comparison-label')
     .text(comparisonYear);
 
   const season = seasonContainer.selectAll('.season')
     .data(
-      data.filter(d => d.season !== comparisonYear),
-      d => d.season
+      data.filter((d) => d.season !== comparisonYear),
+      (d) => d.season,
     );
 
   season
     .enter().append('g')
     .merge(season)
-      .attr('class', d => `season x${d.season}`)
-      .select('path')
-        .attr('class', 'line')
-        .attr('d', d => line(d.values));
+    .attr('class', (d) => `season x${d.season}`)
+    .select('path')
+    .attr('class', 'line')
+    .attr('d', (d) => line(d.values));
 
   const currentSeason = seasonContainer.select(`.x${getCurrentSeason()}`)
     .attr('class', 'season current');
@@ -66,9 +68,10 @@ const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonCont
 
     // update legend with comparison season
     const comparisonData = comparisonSeason.data()[0];
-    const comparisonDay = comparisonData.values.find(d => 
-      d.date.getMonth() === lastUpdated.getMonth()
-      && d.date.getDate() === lastUpdated.getDate()) || { snowDepth: 0 };
+    const comparisonDay = comparisonData.values.find(
+      d => d.date.getMonth() === lastUpdated.getMonth()
+      && d.date.getDate() === lastUpdated.getDate()
+    ) || { snowDepth: 0 };
     d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
     d3.select('#comparisonLabel').text(comparisonData.season);
 
@@ -76,14 +79,12 @@ const updateChart = ({ data, comparisonYear = 'Average Season', line, seasonCont
     currentSeason.raise();
   } else {
     d3.select('#currentDepth').text(0);
-    d3.select('#last_updated').text("No data yet for season!");
+    d3.select('#last_updated').text('No data yet for season!');
   }
+};
 
 
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-
+const initSnowDepthChart = () => {
   /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
   const seasonSelect = document.getElementById('select-season');
 
@@ -94,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const height = containerWidth > 800 ? 400 : containerWidth / 2;
   const width = containerWidth - margin.right;
 
-  const g = d3.select("#chart")
+  const g = d3.select('#snow_depth_chart')
     .attr('width', containerWidth)
     .attr('height', height + margin.top + margin.bottom);
 
@@ -109,8 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const line = d3.line()
     .curve(d3.curveBasis)
-    .x(d => x(d.date))
-    .y(d => y(d.snowDepth));
+    .x((d) => x(d.date))
+    .y((d) => y(d.snowDepth));
 
   const xAxis = g.append('g')
     .attr('class', 'axis axis--x')
@@ -122,25 +123,25 @@ document.addEventListener('DOMContentLoaded', () => {
     .attr('transform', `translate(${width}, 0)`)
     .call(d3.axisRight(y))
     .append('text')
-      .attr('transform', 'rotate(-90)')
-      .attr('y', -20)
-      .attr('dy', '0.71em')
-      .attr('x', -165)
-      .attr('style', 'fill: #000')
-      .text('Snow Depth, inches');
+    .attr('transform', 'rotate(-90)')
+    .attr('y', -20)
+    .attr('dy', '0.71em')
+    .attr('x', -165)
+    .attr('style', 'fill: #000')
+    .text('Snow Depth, inches');
 
   /* REQUEST DATA, DRAW CHART AND AXIS */
-  d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, d => {
-    const data = d.filter(season => season['season'] !== "");
+  d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, csv => {
+    const data = csv.filter((season) => season.season !== '');
 
     // update axes values with actual data
     x.domain([
-      d3.min(data, season => d3.min(season.values, date => date.date)),
-      d3.max(data, season => d3.max(season.values, date => date.date)),
+      d3.min(data, (season) => d3.min(season.values, (date) => date.date)),
+      d3.max(data, (season) => d3.max(season.values, (date) => date.date)),
     ]);
     y.domain([
       0,
-      d3.max(data, season => d3.max(season.values, date => date.snowDepth)),
+      d3.max(data, (season) => d3.max(season.values, (date) => date.snowDepth)),
     ]);
     xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
     yAxis.call(d3.axisRight(y));
@@ -148,50 +149,54 @@ document.addEventListener('DOMContentLoaded', () => {
     // create grid lines for y-axis
     seasonContainer.append('g')
       .attr('class', 'grid-lines')
-        .selectAll('g.grid-line')
-        .data([20, 40, 60, 80, 100, 120, 140])
-        .enter()
-          .append('line')
-            .attr('class', 'grid-line')
-            .attr('x1', 0)
-            .attr('x2', width)
-            .attr('y1', d => y(d))
-            .attr('y2', d => y(d));
+      .selectAll('g.grid-line')
+      .data([20, 40, 60, 80, 100, 120, 140])
+      .enter()
+      .append('line')
+      .attr('class', 'grid-line')
+      .attr('x1', 0)
+      .attr('x2', width)
+      .attr('y1', (d) => y(d))
+      .attr('y2', (d) => y(d));
 
     seasonContainer.selectAll('.season')
       .data(
         data,
-        d => d.season
+        (d) => d.season,
       )
       .enter().append('g')
-        .attr('class', d => `season x${d.season}`)
-        .append('path')
-          .attr('class', 'line')
-          .attr('d', d => line(d.values));
+      .attr('class', (d) => `season x${d.season}`)
+      .append('path')
+      .attr('class', 'line')
+      .attr('d', (d) => line(d.values));
 
-    updateChart({ data, line, seasonContainer });
+    updateSnowDepthChart({ data, line, seasonContainer });
 
     // Add seasons to dropdown options
     data
       .map(({ season }) => season)
-      .filter(season => season && season !== getCurrentSeason())
+      .filter((season) => season && season !== getCurrentSeason())
       .sort((a, b) => a < b) // reverse order, so alphabet then reverse 9, 8 etc
-      .map(season => ({
+      .map((season) => ({
         value: season,
         label: season,
       }))
-      .forEach(season => {
+      .forEach((season) => {
         const option = document.createElement('option');
         option.value = season.value;
         option.text = season.label;
         seasonSelect.add(option, null);
-      })
+      });
 
     // add event listener to select season
     seasonSelect.onchange = ({ target: { value: comparisonYear } }) => {
-      updateChart({ data, line, seasonContainer, comparisonYear });
+      updateSnowDepthChart({
+        data, line, seasonContainer, comparisonYear,
+      });
     };
   });
+};
 
+document.addEventListener('DOMContentLoaded', () => {
+  initSnowDepthChart();
 });
-
