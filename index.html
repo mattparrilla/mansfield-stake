@@ -33,15 +33,23 @@
                 <div id="comparisonDepth" class="depth_value"></div>
               </div>
             </div>
-            <svg id="chart" class="yearly-trend"></svg>
-          </div>
-          <div id="info_pane">
+            <svg id="snow_depth_chart" class="yearly-trend"></svg>
             <div id="select-season-group" class="form-group">
               <label for="select-season">Compare to a historical winter:</label>
               <select id="select-season" class="form-control">
                 <option disabled selected value>Select a season</option>
               </select>
             </div>
+            <div id="prev_10_weather">
+              <h3>Last 10 Days Weather</h3>
+              <svg id="prev_10_charts">
+                <g id="temperature"></g>
+                <g id="wind"></g>
+                <g id="snow"></g>
+              </svg>
+            </div>
+          </div>
+          <div id="info_pane">
             <h3>About the data</h3>
             <p>Last updated: <span id="last_updated"></span></p>
             <p>The latest data is provided by the NWS Burlington office. The source data can be found in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. This plot is updated within the hour of new data being published in the report.</p>

@@ -197,6 +197,185 @@ const initSnowDepthChart = () => {
   });
 };
 
+
+// TODO: make this more performant (maybe reverse and find, then slice)
+// or consider slicing in lambda (better)
+const filterToLast10 = data => {
+  const today = new Date();
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+
+  // filter to last 10 days and repeat values
+  return data
+    .filter(({ timestamp }) => Math.round((today - timestamp) / millisecondsPerDay) < 10)
+    .filter(({ temperature }, i) => i > 0 && temperature !== data[i - 1].temperature);
+};
+
+// Line chart with hover based on https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91
+const initTemperatureChart = () => {
+  const margin = {
+    top: 20,
+    right: 80,
+    bottom: 30,
+    left: 50,
+  };
+  const width = 900 - margin.left - margin.right;
+  const height = 300 - margin.top - margin.bottom;
+
+  const x = d3.scaleTime()
+    .range([0, width]);
+
+  const y = d3.scaleLinear()
+    .range([height, 0]);
+
+  const xAxis = d3.axisBottom()
+    .scale(x);
+
+  const yAxis = d3.axisLeft()
+    .scale(y);
+
+  const line = d3.line()
+    .x((d) => x(d.timestamp))
+    .y((d) => y(d.temperature))
+    .curve(d3.curveBasis);
+
+  const svg = d3.select('#prev_10_charts')
+    .attr('width', width + margin.left + margin.right)
+    .attr('height', height + margin.top + margin.bottom)
+    .select('#temperature')
+      .attr('transform', `translate(${margin.left},${margin.top})`);
+
+  const transformDate = row => ({
+    ...row,
+    timestamp: new Date(row.timestamp)
+  });
+
+  // Download data, filter it, and render chart
+  d3.csv(
+    'https://s3.amazonaws.com/matthewparrilla.com/mansfield_observations.csv',
+    transformDate,
+    unfilteredData => {
+      const data = filterToLast10(unfilteredData);
+      const temperatures = data.map(d => d.temperature);
+
+      x.domain(d3.extent(data, (d) => d.timestamp));
+      y.domain([
+        d3.min(temperatures) - 2,
+        d3.max(temperatures),
+      ]);
+
+      svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', `translate(0,${height})`)
+        .call(xAxis);
+
+      svg.append('g')
+        .attr('class', 'y axis')
+        .call(yAxis)
+        .append('text')
+        .attr('transform', 'rotate(-90)')
+        .attr('y', 6)
+        .attr('dy', '.71em')
+        .style('text-anchor', 'end')
+        .text('Temperature (ºF)');
+
+      const tempLineColor = '#333';
+      svg.append('path')
+          .attr('class', 'line')
+          .attr('d', line(data))
+          .style('fill-opacity', 0)
+          .style('stroke', tempLineColor);
+
+      // const mouseG = svg.append('g')
+      //   .attr('class', 'mouse-over-effects');
+
+      // mouseG.append('path') // this is the black vertical line to follow mouse
+      //   .attr('class', 'mouse-line')
+      //   .style('stroke', 'black')
+      //   .style('stroke-width', '1px')
+      //   .style('opacity', '0');
+
+      // const lines = document.getElementsByClassName('line');
+
+      // const mousePerLine = mouseG.selectAll('.mouse-per-line')
+      //   .data(data)
+      //   .enter()
+      //   .append('g')
+      //   .attr('class', 'mouse-per-line');
+
+      // mousePerLine.append('circle')
+      //   .attr('r', 7)
+      //   .style('stroke', tempLineColor)
+      //   .style('fill', 'none')
+      //   .style('stroke-width', '1px')
+      //   .style('opacity', '0');
+
+      // mousePerLine.append('text')
+      //   .attr('transform', 'translate(10,3)');
+
+      // mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+      //   .attr('width', width) // can't catch mouse events on a g element
+      //   .attr('height', height)
+      //   .attr('fill', 'none')
+      //   .attr('pointer-events', 'all')
+      //   .on('mouseout', () => { // on mouse out hide line, circles and text
+      //     d3.select('.mouse-line')
+      //       .style('opacity', '0');
+      //     d3.selectAll('.mouse-per-line circle')
+      //       .style('opacity', '0');
+      //     d3.selectAll('.mouse-per-line text')
+      //       .style('opacity', '0');
+      //   })
+      //   .on('mouseover', () => { // on mouse in show line, circles and text
+      //     d3.select('.mouse-line')
+      //       .style('opacity', '1');
+      //     d3.selectAll('.mouse-per-line circle')
+      //       .style('opacity', '1');
+      //     d3.selectAll('.mouse-per-line text')
+      //       .style('opacity', '1');
+      //   })
+      //   .on('mousemove', () => { // mouse moving over canvas
+      //     const mouse = d3.mouse(this);
+      //     d3.select('.mouse-line')
+      //       .attr('d', () => {
+      //         let d = `M${mouse[0]},${height}`;
+      //         d += ` ${mouse[0]},${0}`;
+      //         return d;
+      //       });
+
+      //     d3.selectAll('.mouse-per-line')
+      //       .attr('transform', (_, i) => {
+      //         console.log(width / mouse[0]);
+      //         const xDate = x.invert(mouse[0]);
+      //         const bisect = d3.bisector((d) => d.timestamp).right;
+      //         bisect(data, xDate);
+
+      //         let beginning = 0;
+      //         let end = lines[i].getTotalLength();
+      //         let target = null;
+      //         let pos;
+
+      //         while (true) {
+      //           target = Math.floor((beginning + end) / 2);
+      //           pos = lines[i].getPointAtLength(target);
+      //           if ((target === end || target === beginning) && pos.x !== mouse[0]) {
+      //             break;
+      //           }
+      //           if (pos.x > mouse[0]) end = target;
+      //           else if (pos.x < mouse[0]) beginning = target;
+      //           else break; // position found
+      //         }
+
+      //         d3.select(this).select('text')
+      //           .text(y.invert(pos.y).toFixed(2));
+
+      //         return `translate(${mouse[0]},${pos.y})`;
+      //       });
+      //   });
+    }
+  );
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   initSnowDepthChart();
+  initTemperatureChart();
 });
