@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ///////// GLOBALS FOR USE BY CHARTS ///////////////
   ///////////////////////////////////////////////////
   const margin = {
-    top: 10, right: 45, bottom: 30, left: 35,
+    top: 40, right: 45, bottom: 30, left: 45,
   };
   const width = document.getElementById('visualization').clientWidth;
   ///////////////////////////////////////////////////
@@ -225,7 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
     //   left: 50,
     // };
     // const width = 900 - margin.left - margin.right;
-    const height = (300 * metrics.length);
+
+    const chartHeight = 250;
+    const height = (chartHeight + margin.top) * metrics.length;
 
     const x = d3.scaleTime()
       .range([0, width - margin.left - margin.right]);
@@ -252,11 +254,10 @@ document.addEventListener('DOMContentLoaded', () => {
       wind_direction: row.wind_direction >= 0 ? row.wind_direction : null,
     });
 
-    const addChart = (data, key, order) => {
-      const chartHeight = 300;
+    const addChart = (data, key, order, chartHeight) => {
       const g = d3.select('#prev_10_charts')
         .select(`#${key}`)
-          .attr('transform', `translate(${margin.left},${chartHeight * order + margin.top})`);
+          .attr('transform', `translate(${margin.left},${(chartHeight + margin.top) * order + margin.top})`);
 
       y.range([chartHeight, 0]);
 
@@ -294,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
       transformDate,
       unfilteredData => {
         const data = filterToLast10(unfilteredData);
-        metrics.forEach((metric, i) => addChart(data, metric, i));
+        metrics.forEach((metric, i) => addChart(data, metric, i, chartHeight));
       }
     );
   };
