@@ -222,16 +222,10 @@ document.addEventListener('DOMContentLoaded', () => {
       .filter(({ temperature }, i) => i > 0 && temperature !== data[i - 1].temperature);
   };
 
-  // Line chart with hover based on https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91
+  // Line chart with hover based on:
+  // https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91
+  // http://www.d3noob.org/2014/07/my-favourite-tooltip-method-for-line.html
   const initPrev10Charts = (metrics) => {
-    // const margin = {
-    //   top: 20,
-    //   right: 80,
-    //   bottom: 30,
-    //   left: 50,
-    // };
-    // const width = 900 - margin.left - margin.right;
-
     const chartHeight = 150;
     const height = (chartHeight) * metrics.length;
 
@@ -326,7 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ///////////////////////////////////////////////////
         //////////// BEGIN MOUSEOVER CODE /////////////////
         ///////////////////////////////////////////////////
-
         const mouseG = d3.select('#prev_10_charts')
           .append('g')
           .attr('class', 'mouse-over-effects');
@@ -344,13 +337,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mousePerLine.append('circle')
           .attr('r', 7)
-          .style('stroke', 'steelblue')
+          .style('stroke', 'black')
           .style('fill', 'none')
           .style('stroke-width', '1px')
           .style('opacity', '0');
 
         mousePerLine.append('text')
           .attr('transform', 'translate(10,3)');
+
+        // cache y(val) so we can calculate outside of addChart()
+        const metricY = metrics.reduce((map, key) => {
+          const fn = d3.scaleLinear()
+            .range([chartHeight, 0]);
+          if (key === 'wind_direction') {
+            fn.domain([0, 380]);
+          } else {
+            fn.domain([
+              key === 'wind_speed' ? 0 : d3.min(data, v => parseInt(v[key], 10)) - 2,
+              d3.max(data, v => parseInt(v[key], 10)) + 2,
+            ]);
+          }
+          return {
+            ...map,
+            [key]: fn,
+          };
+        }, {});
 
         mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
           .attr('width', width) // can't catch mouse events on a g element
@@ -360,6 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
           .on('mouseout', () => setMouseOverOpacity(0))
           .on('mouseover', () => setMouseOverOpacity(1))
           .on('mousemove', function onMouseMove() { // this usage necessitates non arrow func
+            // our rect includes margins, which we want for usability
             let [mouseX] = d3.mouse(this);
             if (mouseX < margin.left) {
               mouseX = margin.left;
@@ -371,25 +383,19 @@ document.addEventListener('DOMContentLoaded', () => {
             d3.select('.mouse-line')
               .attr('d', () => `M${mouseX},${height + margin.top} ${mouseX},${margin.top}`);
 
-            // circle on trend lines that intersects our mouse line
-            const date = x.invert(mouseX - margin.left);
+            // find intersection of x position and relevant line
+            const xIntersect = x.invert(mouseX - margin.left); // our rect includes margins
             const bisect = d3.bisector(({ timestamp }) => timestamp).right;
-            const index = bisect(data, date);
-            const x0 = data[index - 1];
-            const x1 = data[index];
-            const intersection = date - x0.timestamp > x1.timestamp - date ? x0 : x1;
+            const index = bisect(data, xIntersect);
+            const intersection = data[index] || data[index - 1]; // -1 for when at right edge
+
+            // add circle and text label
             d3.selectAll('.mouse-per-line')
-              .attr('transform', (key, i) => {
-                if (key === 'wind_direction') {
-                  y.domain([0, 380]);
-                } else {
-                  y.domain([
-                    key === 'wind_speed' ? 0 : d3.min(data, v => parseInt(v[key], 10)) - 2,
-                    d3.max(data, v => parseInt(v[key], 10)) + 2,
-                  ]);
-                }
-                return `translate(${margin.left + x(intersection.timestamp)}, ${y(intersection[key]) + margin.top + chartHeight * i})`;
-              });
+              .attr('transform', (key, i) => (
+                `translate(${margin.left + x(intersection.timestamp)}, ${metricY[key](intersection[key]) + margin.top + chartHeight * i})`
+              ))
+              .selectAll('text')
+                .text(key => intersection[key]);
           });
         ///////////////////////////////////////////////////
         ////////////// END MOUSEOVER CODE /////////////////
