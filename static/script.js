@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         && d.date.getDate() === lastUpdated.getDate()
       ) || { snowDepth: 0 };
       d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
-      d3.select('#comparisonLabel').text(comparisonData.season);
+      d3.select('#comparisonLabel').text(`This date in ${comparisonData.season}`);
 
       // need to call raise after raising comparison season
       currentSeason.raise();
