@@ -25,12 +25,18 @@ const transformRow = (season) => {
   };
 };
 
+const setMouseOverOpacity = opacity => {
+  d3.select('.mouse-line').style('opacity', opacity);
+  d3.selectAll('.mouse-per-line circle').style('opacity', opacity);
+  d3.selectAll('.mouse-per-line text').style('opacity', opacity);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   ///////////////////////////////////////////////////
   ///////// GLOBALS FOR USE BY CHARTS ///////////////
   ///////////////////////////////////////////////////
   const margin = {
-    top: 10, right: 45, bottom: 30, left: 45,
+    top: 10, right: 60, bottom: 30, left: 60,
   };
   const width = document.getElementById('visualization').clientWidth;
   ///////////////////////////////////////////////////
@@ -99,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const initSnowDepthChart = () => {
     /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
     const seasonSelect = document.getElementById('select-season');
-    const height = width > 800 ? 400 : width / 2;
+    const height = width > 800 ? 490 : width / 2;
 
     const g = d3.select('#snow_depth_chart')
       .attr('width', width)
@@ -232,7 +238,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const x = d3.scaleTime()
       .range([0, width - margin.left - margin.right]);
 
-    const y = d3.scaleLinear();
+    const y = d3.scaleLinear()
+      .range([chartHeight, 0]);
 
     const line = d3.line()
       .x((d) => x(d.timestamp))
@@ -259,8 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const g = d3.select('#prev_10_charts')
         .select(`#${key}`)
           .attr('transform', `translate(${margin.left},${(chartHeight) * order + margin.top})`);
-
-      y.range([chartHeight, 0]);
 
       const values = data.map(d => parseInt(d[key], 10));
 
@@ -293,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .call(yAxis);
 
       g.append('path')
-          .attr('class', `line ${key}`)
+          .attr('class', `line prev_10_line ${key}`)
           .attr('d', line(data))
           .style('fill-opacity', 0)
           .style('stroke-width', 1.5);
@@ -317,6 +322,78 @@ document.addEventListener('DOMContentLoaded', () => {
       unfilteredData => {
         const data = filterToLast10(unfilteredData);
         metrics.forEach((metric, i) => addChart(data, metric, i));
+
+        ///////////////////////////////////////////////////
+        //////////// BEGIN MOUSEOVER CODE /////////////////
+        ///////////////////////////////////////////////////
+
+        const mouseG = d3.select('#prev_10_charts')
+          .append('g')
+          .attr('class', 'mouse-over-effects');
+
+        mouseG.append('path') // this is the black vertical line to follow mouse
+          .attr('class', 'mouse-line')
+          .style('stroke', 'black')
+          .style('stroke-width', '1px')
+          .style('opacity', '0');
+
+        const mousePerLine = mouseG.selectAll('.mouse-per-line')
+          .data(metrics)
+          .enter().append('g')
+            .attr('class', 'mouse-per-line');
+
+        mousePerLine.append('circle')
+          .attr('r', 7)
+          .style('stroke', 'steelblue')
+          .style('fill', 'none')
+          .style('stroke-width', '1px')
+          .style('opacity', '0');
+
+        mousePerLine.append('text')
+          .attr('transform', 'translate(10,3)');
+
+        mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+          .attr('width', width) // can't catch mouse events on a g element
+          .attr('height', height)
+          .attr('fill', 'none')
+          .attr('pointer-events', 'all')
+          .on('mouseout', () => setMouseOverOpacity(0))
+          .on('mouseover', () => setMouseOverOpacity(1))
+          .on('mousemove', function onMouseMove() { // this usage necessitates non arrow func
+            let [mouseX] = d3.mouse(this);
+            if (mouseX < margin.left) {
+              mouseX = margin.left;
+            } else if (mouseX > width - margin.left) {
+              mouseX = width - margin.left;
+            }
+
+            // vertical line that follows mouse
+            d3.select('.mouse-line')
+              .attr('d', () => `M${mouseX},${height + margin.top} ${mouseX},${margin.top}`);
+
+            // circle on trend lines that intersects our mouse line
+            const date = x.invert(mouseX - margin.left);
+            const bisect = d3.bisector(({ timestamp }) => timestamp).right;
+            const index = bisect(data, date);
+            const x0 = data[index - 1];
+            const x1 = data[index];
+            const intersection = date - x0.timestamp > x1.timestamp - date ? x0 : x1;
+            d3.selectAll('.mouse-per-line')
+              .attr('transform', (key, i) => {
+                if (key === 'wind_direction') {
+                  y.domain([0, 380]);
+                } else {
+                  y.domain([
+                    key === 'wind_speed' ? 0 : d3.min(data, v => parseInt(v[key], 10)) - 2,
+                    d3.max(data, v => parseInt(v[key], 10)) + 2,
+                  ]);
+                }
+                return `translate(${margin.left + x(intersection.timestamp)}, ${y(intersection[key]) + margin.top + chartHeight * i})`;
+              });
+          });
+        ///////////////////////////////////////////////////
+        ////////////// END MOUSEOVER CODE /////////////////
+        ///////////////////////////////////////////////////
       }
     );
   };

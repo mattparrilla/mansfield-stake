@@ -19,6 +19,11 @@ h1 {
   font-size: 48px;
 }
 
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
 .yearly-trend {
   display: block;
   margin: 0 auto 20px;
@@ -101,15 +106,15 @@ svg text {
   position: absolute;
   width: 100%;
   top: 0;
-  left: 0;
+  left: 50px;
   bottom: 0;
   height: 100px;
 }
 
-#legend h3 {
+#legend h4 {
   display: inline-block;
   margin: 0;
-  width: 280px;
+  width: 200px;
 }
 
 #legend .depth_value {
@@ -119,12 +124,14 @@ svg text {
   font-size: 24px;
 }
 
-#comparisonSeason h3, #comparisonSeason .depth_value {
+#comparisonSeason h4, #comparisonSeason .depth_value {
   color: #1a1a1a;
+  font-size: 18px;
 }
 
-#currentSeason h3, #currentSeason .depth_value {
+#currentSeason h4, #currentSeason .depth_value {
   color: #e3624f;
+  font-size: 18px;
 }
 
 #legend p {
@@ -137,8 +144,13 @@ svg text {
 }
 
 
+.container {
+  margin: 0 auto;
+  width: 100% !important;
+  padding: 0 100px;
+}
 @media (max-width: 992px) {
-  #legend h3 {
+  #legend h4 {
     font-size: 18px;
     width: 180px;
   }
@@ -153,7 +165,7 @@ svg text {
 }
   
 @media (max-width: 768px) {
-  #legend h3 {
+  #legend h4 {
     font-size: 12px;
     width: 120px;
   }
@@ -169,22 +181,33 @@ svg text {
   }
 }
 
-.line.temperature, .mini_chart_label.temperature, #temperature .tick {
+/*
+.line.temperature,
+.mini_chart_label.temperature,
+circle.temperature,
+#temperature .tick {
   stroke: steelblue;
 }
 
-.line.wind_speed, .mini_chart_label.wind_speed, #wind_speed .tick {
+.line.wind_speed,
+.mini_chart_label.wind_speed,
+#wind_speed .tick {
   stroke: #e3624f;
 }
 
-.line.wind_direction, .mini_chart_label.wind_direction, #wind_direction .tick {
+.line.wind_direction,
+.mini_chart_label.wind_direction,
+#wind_direction .tick {
   stroke: #4a7023;
 }
 
 .x.axis .tick {
   stroke: #333 !important;
 }
+*/
 
-#prev_10_weather h3 {
-  text-align: center;
+.line.temperature,
+.line.wind_speed,
+.line.wind_direction {
+  stroke: #e3624f;
 }
