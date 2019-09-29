@@ -35,12 +35,12 @@ h1 {
 
 .current .line {
   stroke-width: 2px;
-  stroke: #1a1a1a;
+  stroke: #e3624f;
 }
 
 .comparison .line {
   stroke-width: 2px;
-  stroke: #e3624f;
+  stroke: #1a1a1a;
 }
 
 .grid-line {
@@ -120,6 +120,10 @@ svg text {
 }
 
 #comparisonSeason h3, #comparisonSeason .depth_value {
+  color: #1a1a1a;
+}
+
+#currentSeason h3, #currentSeason .depth_value {
   color: #e3624f;
 }
 
@@ -165,3 +169,22 @@ svg text {
   }
 }
 
+.line.temperature, .mini_chart_label.temperature, #temperature .tick {
+  stroke: steelblue;
+}
+
+.line.wind_speed, .mini_chart_label.wind_speed, #wind_speed .tick {
+  stroke: #e3624f;
+}
+
+.line.wind_direction, .mini_chart_label.wind_direction, #wind_direction .tick {
+  stroke: #4a7023;
+}
+
+.x.axis .tick {
+  stroke: #333 !important;
+}
+
+#prev_10_weather h3 {
+  text-align: center;
+}

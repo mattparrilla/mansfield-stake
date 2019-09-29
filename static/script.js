@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ///////// GLOBALS FOR USE BY CHARTS ///////////////
   ///////////////////////////////////////////////////
   const margin = {
-    top: 40, right: 45, bottom: 30, left: 45,
+    top: 10, right: 45, bottom: 30, left: 45,
   };
   const width = document.getElementById('visualization').clientWidth;
   ///////////////////////////////////////////////////
@@ -226,8 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // };
     // const width = 900 - margin.left - margin.right;
 
-    const chartHeight = 250;
-    const height = (chartHeight + margin.top) * metrics.length;
+    const chartHeight = 150;
+    const height = (chartHeight) * metrics.length;
 
     const x = d3.scaleTime()
       .range([0, width - margin.left - margin.right]);
@@ -242,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .scale(x);
 
     const yAxis = d3.axisLeft()
+      .ticks(5)
       .scale(y);
 
     d3.select('#prev_10_charts')
@@ -254,20 +255,34 @@ document.addEventListener('DOMContentLoaded', () => {
       wind_direction: row.wind_direction >= 0 ? row.wind_direction : null,
     });
 
-    const addChart = (data, key, order, chartHeight) => {
+    const addChart = (data, key, order) => {
       const g = d3.select('#prev_10_charts')
         .select(`#${key}`)
-          .attr('transform', `translate(${margin.left},${(chartHeight + margin.top) * order + margin.top})`);
+          .attr('transform', `translate(${margin.left},${(chartHeight) * order + margin.top})`);
 
       y.range([chartHeight, 0]);
 
       const values = data.map(d => parseInt(d[key], 10));
 
       x.domain(d3.extent(data, (d) => d.timestamp));
-      y.domain([
-        key === 'wind_speed' ? 0 : d3.min(values) - 2,
-        d3.max(values) + 2,
-      ]);
+      if (key === 'wind_direction') {
+        y.domain([0, 380]);
+      } else {
+        y.domain([
+          key === 'wind_speed' ? 0 : d3.min(values) - 2,
+          d3.max(values) + 2,
+        ]);
+      }
+
+      g.append('text')
+        .text(key.split('_')
+          .map(str => str.charAt(0).toUpperCase() + str.substr(1))
+          .join(' '))
+        .attr('class', `mini_chart_label ${key}`)
+        .attr('transform', 'rotate(90)')
+        .attr('y', -width + 60)
+        .attr('dy', '0.71em')
+        .attr('x', 20);
 
       line
         .y((d) => y(d[key]))
@@ -278,11 +293,17 @@ document.addEventListener('DOMContentLoaded', () => {
         .call(yAxis);
 
       g.append('path')
-          .attr('class', 'line')
+          .attr('class', `line ${key}`)
           .attr('d', line(data))
           .style('fill-opacity', 0)
-          .style('stroke', '#333');
+          .style('stroke-width', 1.5);
 
+      // Only show tick labels on last row
+      if (order === metrics.length - 1) {
+        xAxis.tickFormat(d3.timeFormat('%b %d'));
+      } else {
+        xAxis.tickFormat('');
+      }
       g.append('g')
         .attr('class', 'x axis')
         .attr('transform', `translate(0,${chartHeight})`)
@@ -295,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
       transformDate,
       unfilteredData => {
         const data = filterToLast10(unfilteredData);
-        metrics.forEach((metric, i) => addChart(data, metric, i, chartHeight));
+        metrics.forEach((metric, i) => addChart(data, metric, i));
       }
     );
   };
