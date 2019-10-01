@@ -36,9 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
   ///////// GLOBALS FOR USE BY CHARTS ///////////////
   ///////////////////////////////////////////////////
   const margin = {
-    top: 10, right: 60, bottom: 30, left: 60,
+    top: 10, right: 60, bottom: 30, left: 15,
   };
-  const width = document.getElementById('visualization').clientWidth;
+  const largeWidthThreshold = 600;
+  const width = document.getElementById('legend_container').clientWidth;
+  const height = width > largeWidthThreshold ? 490 : width / 2;
+  const fontSize = `${width > largeWidthThreshold ? 14 : 10}px`;
   ///////////////////////////////////////////////////
   //////////////// END GLOBALS //////////////////////
   ///////////////////////////////////////////////////
@@ -105,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const initSnowDepthChart = () => {
     /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
     const seasonSelect = document.getElementById('select-season');
-    const height = width > 800 ? 490 : width / 2;
 
     const g = d3.select('#snow_depth_chart')
       .attr('width', width)
@@ -128,18 +130,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const xAxis = g.append('g')
       .attr('class', 'axis axis--x')
       .attr('transform', `translate(${margin.left},${height - margin.bottom})`)
+      .style('font-size', fontSize)
       .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
 
     const yAxis = g.append('g')
       .attr('class', 'axis axis--y')
       .attr('transform', `translate(${width - margin.right}, 0)`)
+      .style('font-size', fontSize)
       .call(d3.axisRight(y))
       .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -20)
         .attr('dy', '0.71em')
-        .attr('x', -165)
-        .attr('style', 'fill: #000')
+        .attr('x', width > 400 ? -165 : -120)
+        .style('fill', '#000')
+        .style('font-size', width > 400 ? '14px' : '10px')
         .text('Snow Depth, inches');
 
     /* REQUEST DATA, DRAW CHART AND AXIS */
@@ -226,8 +231,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91
   // http://www.d3noob.org/2014/07/my-favourite-tooltip-method-for-line.html
   const initPrev10Charts = (metrics) => {
-    const chartHeight = 150;
-    const height = (chartHeight) * metrics.length;
+    const chartHeight = width > largeWidthThreshold
+      ? 150
+      : (height - margin.top - margin.bottom) / 3;
+    const containerHeight = (chartHeight) * metrics.length;
 
     const x = d3.scaleTime()
       .range([0, width - margin.left - margin.right]);
@@ -242,19 +249,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const xAxis = d3.axisBottom()
       .scale(x);
 
-    const yAxis = d3.axisLeft()
+    const yAxis = d3.axisRight()
       .ticks(5)
       .scale(y);
 
     d3.select('#prev_10_charts')
       .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom);
+      .attr('height', containerHeight + margin.top + margin.bottom);
 
     const transformDate = row => ({
       ...row,
       timestamp: new Date(row.timestamp),
       wind_direction: row.wind_direction >= 0 ? row.wind_direction : null,
     });
+
+    const metricLabel = {
+      temperature: 'Temp',
+      wind_direction: 'Wind Dir',
+      wind_speed: 'Wind Speed',
+    };
 
     const addChart = (data, key, order) => {
       const g = d3.select('#prev_10_charts')
@@ -274,14 +287,13 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       g.append('text')
-        .text(key.split('_')
-          .map(str => str.charAt(0).toUpperCase() + str.substr(1))
-          .join(' '))
+        .text(metricLabel[key])
         .attr('class', `mini_chart_label ${key}`)
-        .attr('transform', 'rotate(90)')
-        .attr('y', -width + 60)
+        .attr('transform', 'rotate(-90)')
+        .attr('y', width > 400 ? width - margin.left : width - 2 * margin.left)
         .attr('dy', '0.71em')
-        .attr('x', 20);
+        .style('font-size', fontSize)
+        .attr('x', -chartHeight + 10);
 
       line
         .y((d) => y(d[key]))
@@ -289,6 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       g.append('g')
         .attr('class', 'y axis')
+        .style('font-size', fontSize)
+        .attr('transform', `translate(${width - margin.left - margin.right}, 0)`)
         .call(yAxis);
 
       g.append('path')
@@ -299,13 +313,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Only show tick labels on last row
       if (order === metrics.length - 1) {
-        xAxis.tickFormat(d3.timeFormat('%b %d'));
+        xAxis.tickFormat(d3.timeFormat(width > 400 ? '%b %d' : '%m/%d'));
       } else {
         xAxis.tickFormat('');
       }
       g.append('g')
         .attr('class', 'x axis')
         .attr('transform', `translate(0,${chartHeight})`)
+        .style('font-size', fontSize)
         .call(xAxis);
     };
 
@@ -365,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
           .attr('width', width) // can't catch mouse events on a g element
-          .attr('height', height)
+          .attr('height', containerHeight)
           .attr('fill', 'none')
           .attr('pointer-events', 'all')
           .on('mouseout', () => setMouseOverOpacity(0))
@@ -375,13 +390,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let [mouseX] = d3.mouse(this);
             if (mouseX < margin.left) {
               mouseX = margin.left;
-            } else if (mouseX > width - margin.left) {
-              mouseX = width - margin.left;
+            } else if (mouseX > width - margin.right) {
+              mouseX = width - margin.right;
             }
 
             // vertical line that follows mouse
             d3.select('.mouse-line')
-              .attr('d', () => `M${mouseX},${height + margin.top} ${mouseX},${margin.top}`);
+              .attr('d', () => `M${mouseX},${containerHeight + margin.top} ${mouseX},${margin.top}`);
 
             // find intersection of x position and relevant line
             const xIntersect = x.invert(mouseX - margin.left); // our rect includes margins

@@ -20,10 +20,12 @@
     <div class="top-border"></div>
     <div class="container">
       <div class="row">
-        <h1>Mansfield Weather Station</h1>
-        <div class="col-md-6">
+        <div class="col-xs-12">
+          <h1>Mansfield Weather Station</h1>
+        </div>
+        <div class="col-lg-6">
           <h2>Snow Depth</h2>
-          <div id="visualization">
+          <div id="legend_container">
             <div id="legend">
               <div id="currentSeason">
                 <h4>Current Snow Depth</h4>
@@ -43,9 +45,9 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6">
-          <div id="prev_10_weather">
-            <h2>Wind and Temps for Previous 10 Days</h2>
+        <div class="col-lg-6">
+          <div id="prev_10_container">
+            <h2>Wind and Temps</h2>
             <svg id="prev_10_charts">
               <g id="temperature"></g>
               <g id="wind_speed"></g>
@@ -54,12 +56,14 @@
             </svg>
           </div>
         </div>
-        <div class="col-md-10 col-md-offset-1">
+      </div>
+      <div class="row">
+        <div class="col-lg-8 col-lg-offset-2">
           <div id="info_pane">
             <h3>About the data</h3>
             <p>Last updated: <span id="last_updated"></span></p>
-            <p>The latest data is provided by the NWS Burlington office. The source data can be found in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. This plot is updated within the hour of new data being published in the report.</p>
-            <p>Historical data was originally pulled from the <a href="https://waw.w3.uvm.edu//skivt-l/?Page=mansel.php">Ski-VT</a> website</p>
+            <p>The latest data is provided by the NWS Burlington office. The source data can be found in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. These plots are updated within the hour of new data being published in the report.</p>
+            <p>Historical snow depth data was originally pulled from the <a href="https://waw.w3.uvm.edu//skivt-l/?Page=mansel.php">Ski-VT</a> website</p>
             <p>Many thanks to the WCAX engineers who for years reported the snow depth, to Ski-VT for reporting the historical data, and to the NWS for stepping in to keep the historical record going.</p>
           </div>
         </div>

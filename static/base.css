@@ -29,9 +29,6 @@ h2 {
   margin: 0 auto 20px;
 }
 
-.yearly-trend .axis--x path {
-}
-
 .yearly-trend .line {
   fill: none;
   stroke: #d3d3d3;
@@ -55,7 +52,6 @@ h2 {
 
 svg text {
   font-family: Helvetica Neue;
-  font-size: 16px;
 }
 
 .year-label {
@@ -88,7 +84,7 @@ svg text {
   margin-bottom: 40px;
 }
 
-#select-season-group label, #select-season-group p {
+#select-season-group label {
   font-size: 18px;
   font-weight: 200;
 }
@@ -98,7 +94,7 @@ svg text {
 }
 
 /* LEGEND STYLING */
-#visualization {
+#legend_container {
   position: relative;
 }
 
@@ -148,7 +144,9 @@ svg text {
   margin: 0 auto;
   width: 100% !important;
   padding: 0 100px;
+  overflow: hidden;
 }
+
 @media (max-width: 992px) {
   #legend h4 {
     font-size: 18px;
@@ -165,6 +163,9 @@ svg text {
 }
   
 @media (max-width: 768px) {
+  .container {
+    padding: 0 10px;
+  }
   #legend h4 {
     font-size: 12px;
     width: 120px;
@@ -176,35 +177,22 @@ svg text {
   h1 {
     font-size: 20px;
     font-weight: 500;
-    text-align: left;
     margin-bottom: 20px;
   }
+  h2 {
+    font-size: 16px;
+  }
+  #select-season-group label {
+    font-size: 12px;
+  }
+  #select-season {
+    font-size: 12px;
+    margin-left: 10px;
+  }
+  #legend {
+    left: 20px;
+  }
 }
-
-/*
-.line.temperature,
-.mini_chart_label.temperature,
-circle.temperature,
-#temperature .tick {
-  stroke: steelblue;
-}
-
-.line.wind_speed,
-.mini_chart_label.wind_speed,
-#wind_speed .tick {
-  stroke: #e3624f;
-}
-
-.line.wind_direction,
-.mini_chart_label.wind_direction,
-#wind_direction .tick {
-  stroke: #4a7023;
-}
-
-.x.axis .tick {
-  stroke: #333 !important;
-}
-*/
 
 .line.temperature,
 .line.wind_speed,
