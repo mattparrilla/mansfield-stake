@@ -19,13 +19,14 @@ h1 {
   font-size: 48px;
 }
 
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
 .yearly-trend {
   display: block;
   margin: 0 auto 20px;
-}
-
-.yearly-trend .axis--x path {
-  display: none;
 }
 
 .yearly-trend .line {
@@ -36,12 +37,12 @@ h1 {
 
 .current .line {
   stroke-width: 2px;
-  stroke: #1a1a1a;
+  stroke: #e3624f;
 }
 
 .comparison .line {
   stroke-width: 2px;
-  stroke: #e3624f;
+  stroke: #1a1a1a;
 }
 
 .grid-line {
@@ -51,7 +52,6 @@ h1 {
 
 svg text {
   font-family: Helvetica Neue;
-  font-size: 16px;
 }
 
 .year-label {
@@ -84,7 +84,7 @@ svg text {
   margin-bottom: 40px;
 }
 
-#select-season-group label, #select-season-group p {
+#select-season-group label {
   font-size: 18px;
   font-weight: 200;
 }
@@ -94,7 +94,7 @@ svg text {
 }
 
 /* LEGEND STYLING */
-#visualization {
+#legend_container {
   position: relative;
 }
 
@@ -102,11 +102,12 @@ svg text {
   position: absolute;
   width: 100%;
   top: 0;
-  left: 0;
+  left: 50px;
   bottom: 0;
+  height: 100px;
 }
 
-#legend h3 {
+#legend h4 {
   display: inline-block;
   margin: 0;
   width: 280px;
@@ -119,8 +120,14 @@ svg text {
   font-size: 24px;
 }
 
-#comparisonSeason h3, #comparisonSeason .depth_value {
+#comparisonSeason h4, #comparisonSeason .depth_value {
+  color: #1a1a1a;
+  font-size: 18px;
+}
+
+#currentSeason h4, #currentSeason .depth_value {
   color: #e3624f;
+  font-size: 18px;
 }
 
 #legend p {
@@ -133,8 +140,15 @@ svg text {
 }
 
 
+.container {
+  margin: 0 auto;
+  width: 100% !important;
+  padding: 0 100px;
+  overflow: hidden;
+}
+
 @media (max-width: 992px) {
-  #legend h3 {
+  #legend h4 {
     font-size: 18px;
     width: 180px;
   }
@@ -149,7 +163,10 @@ svg text {
 }
   
 @media (max-width: 768px) {
-  #legend h3 {
+  .container {
+    padding: 0 10px;
+  }
+  #legend h4 {
     font-size: 12px;
     width: 120px;
   }
@@ -160,8 +177,25 @@ svg text {
   h1 {
     font-size: 20px;
     font-weight: 500;
-    text-align: left;
     margin-bottom: 20px;
+  }
+  h2 {
+    font-size: 16px;
+  }
+  #select-season-group label {
+    font-size: 12px;
+  }
+  #select-season {
+    font-size: 12px;
+    margin-left: 10px;
+  }
+  #legend {
+    left: 20px;
   }
 }
 
+.line.temperature,
+.line.wind_speed,
+.line.wind_direction {
+  stroke: #e3624f;
+}
