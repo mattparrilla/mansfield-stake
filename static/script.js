@@ -298,6 +298,17 @@ document.addEventListener('DOMContentLoaded', () => {
         .y((d) => y(d[key]))
         .defined(d => d[key] !== null);
 
+      if (key === 'temperature') {
+        g.append('path')
+            .attr('class', 'line freezing')
+            .attr('d', line(data.map(d => ({
+              ...d,
+              temperature: 32
+            }))))
+            .style('fill-opacity', 0)
+            .style('stroke-width', 1.5);
+      }
+
       g.append('g')
         .attr('class', 'y axis')
         .style('font-size', fontSize)

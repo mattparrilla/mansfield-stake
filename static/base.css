@@ -206,3 +206,7 @@ svg text {
   fill: black;
   opacity: 0.9
 }
+
+.freezing {
+  stroke: #d3d3d3;
+}
