@@ -347,7 +347,8 @@ document.addEventListener('DOMContentLoaded', () => {
         ///////////////////////////////////////////////////
         const mouseG = d3.select('#prev_10_charts')
           .append('g')
-          .attr('class', 'mouse-over-effects');
+          .attr('class', 'mouse-over-effects')
+          .attr('transform', `translate(0,${margin.top})`);
 
         mouseG.append('path') // this is the black vertical line to follow mouse
           .attr('class', 'mouse-line')
@@ -411,7 +412,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // vertical line that follows mouse
             d3.select('.mouse-line')
-              .attr('d', () => `M${mouseX},${containerHeight + margin.top} ${mouseX},${margin.top}`);
+              .attr('d', () => `M${mouseX},${containerHeight} ${mouseX},0`);
 
             // find intersection of x position and relevant line
             const xIntersect = x.invert(mouseX - margin.left); // our rect includes margins
@@ -422,14 +423,14 @@ document.addEventListener('DOMContentLoaded', () => {
             // add circle and text label
             d3.selectAll('.mouse-per-line')
               .attr('transform', (key, i) => (
-                `translate(${margin.left + x(intersection.timestamp)}, ${metricY[key](intersection[key]) + margin.top + chartHeight * i})`
+                `translate(${margin.left + x(intersection.timestamp)}, ${metricY[key](intersection[key]) + chartHeight * i})`
               ))
               .selectAll('text.shadow')
                 .text(key => intersection[key]);
 
             d3.selectAll('.mouse-per-line')
               .attr('transform', (key, i) => (
-                `translate(${margin.left + x(intersection.timestamp)}, ${metricY[key](intersection[key]) + margin.top + chartHeight * i})`
+                `translate(${margin.left + x(intersection.timestamp)}, ${metricY[key](intersection[key]) + chartHeight * i})`
               ))
               .selectAll('text.fill')
                 .text(key => intersection[key]);
