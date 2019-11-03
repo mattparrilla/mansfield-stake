@@ -129,13 +129,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const xAxis = g.append('g')
       .attr('class', 'axis axis--x')
-      .attr('transform', `translate(${margin.left},${height - margin.bottom})`)
+      .attr('transform', `translate(0,${height - margin.bottom})`)
       .style('font-size', fontSize)
       .call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
 
     const yAxis = g.append('g')
       .attr('class', 'axis axis--y')
-      .attr('transform', `translate(${width - margin.right}, 0)`)
+      .attr('transform', `translate(${width - margin.right - margin.left}, 0)`)
       .style('font-size', fontSize)
       .call(d3.axisRight(y))
       .append('text')
