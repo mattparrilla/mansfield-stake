@@ -264,8 +264,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const metricLabel = {
-      temperature: 'Temp',
-      wind_direction: 'Wind Dir',
+      temperature: 'Temperature',
+      wind_direction: 'Wind Direction',
       wind_speed: 'Wind Speed',
     };
 
@@ -289,11 +289,10 @@ document.addEventListener('DOMContentLoaded', () => {
       g.append('text')
         .text(metricLabel[key])
         .attr('class', `mini_chart_label ${key}`)
-        .attr('transform', 'rotate(-90)')
-        .attr('y', width > 400 ? width - margin.left : width - 2 * margin.left)
+        .attr('y', chartHeight - (1.5 * margin.top))
         .attr('dy', '0.71em')
         .style('font-size', fontSize)
-        .attr('x', -chartHeight + 10);
+        .attr('x', 0);
 
       line
         .y((d) => y(d[key]))
@@ -358,6 +357,11 @@ document.addEventListener('DOMContentLoaded', () => {
           .style('opacity', '0');
 
         mousePerLine.append('text')
+          .attr('class', 'shadow')
+          .attr('transform', 'translate(10,3)');
+
+        mousePerLine.append('text')
+          .attr('class', 'fill')
           .attr('transform', 'translate(10,3)');
 
         // cache y(val) so we can calculate outside of addChart()
@@ -409,7 +413,14 @@ document.addEventListener('DOMContentLoaded', () => {
               .attr('transform', (key, i) => (
                 `translate(${margin.left + x(intersection.timestamp)}, ${metricY[key](intersection[key]) + margin.top + chartHeight * i})`
               ))
-              .selectAll('text')
+              .selectAll('text.shadow')
+                .text(key => intersection[key]);
+
+            d3.selectAll('.mouse-per-line')
+              .attr('transform', (key, i) => (
+                `translate(${margin.left + x(intersection.timestamp)}, ${metricY[key](intersection[key]) + margin.top + chartHeight * i})`
+              ))
+              .selectAll('text.fill')
                 .text(key => intersection[key]);
           });
         ///////////////////////////////////////////////////

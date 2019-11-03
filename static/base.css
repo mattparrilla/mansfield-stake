@@ -199,3 +199,10 @@ svg text {
 .line.wind_direction {
   stroke: #e3624f;
 }
+
+.mouse-per-line .shadow {
+  stroke: white;
+  stroke-width: 2.5px;
+  fill: black;
+  opacity: 0.9
+}
