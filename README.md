@@ -4,5 +4,14 @@
 
 Due to reports of the page not working in old versions of Safari and Edge, I need to transpile the JS.
 
-Use babel to do so:
+To install the needed packages:
 
+```
+npm install
+```
+
+Then to transpile from `src/script.js` to `static/script.js`, run
+
+```
+npm run transpile
+```
