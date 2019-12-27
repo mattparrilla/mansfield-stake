@@ -221,10 +221,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const today = new Date();
     const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
-    // filter to last 10 days and repeat values
     return data
-      .filter(({ timestamp }) => Math.round((today - timestamp) / millisecondsPerDay) < 10)
-      .filter(({ temperature }, i) => i > 0 && temperature !== data[i - 1].temperature);
+      // filter to last 10 days with temperatures above -100 (bad temp values are -9999
+      .filter(({ timestamp, temperature }) => (
+        (Math.round((today - timestamp) / millisecondsPerDay) < 10)
+        && temperature > -100));
   };
 
   // Line chart with hover based on:
