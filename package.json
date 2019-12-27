@@ -4,14 +4,15 @@
   "version": "1.0.0",
   "main": "src/script.js",
   "dependencies": {
-    "eslint-config-airbnb": "^18.0.1"
+    "@babel/polyfill": "^7.7.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.7",
-    "@babel/core": "^7.7.7"
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "transpile": "./node_modules/.bin/babel src -o static/script.js"
   },
   "repository": {
     "type": "git",
