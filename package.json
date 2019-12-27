@@ -1,0 +1,27 @@
+{
+  "name": "mansfield-stake",
+  "description": "[http://matthewparrilla.com/mansfield-stake](http://matthewparrilla.com/mansfield-stake)",
+  "version": "1.0.0",
+  "main": "src/script.js",
+  "dependencies": {
+    "@babel/polyfill": "^7.7.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/preset-env": "^7.7.7"
+  },
+  "scripts": {
+    "transpile": "./node_modules/.bin/babel src -o static/script.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mattparrilla/mansfield-stake.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mattparrilla/mansfield-stake/issues"
+  },
+  "homepage": "https://github.com/mattparrilla/mansfield-stake#readme"
+}
