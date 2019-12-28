@@ -12,7 +12,8 @@
     "@babel/preset-env": "^7.7.7"
   },
   "scripts": {
-    "transpile": "./node_modules/.bin/babel src -o static/script.js"
+    "transpile": "./node_modules/.bin/babel src -o static/script.js",
+    "watch": "./node_modules/.bin/babel -w src -o static/script.js"
   },
   "repository": {
     "type": "git",
