@@ -225,7 +225,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // filter to last 10 days with temperatures above -100 (bad temp values are -9999
       .filter(({ timestamp, temperature }) => (
         (Math.round((today - timestamp) / millisecondsPerDay) < 10)
-        && temperature > -100));
+        && temperature > -100))
+      .map(entry => ({
+          ...entry,
+          // bad values are -9999, but lets always throw out < 0
+          wind_speed: entry.wind_direction < 0 ? null : entry.wind_speed,
+          wind_gust: entry.wind_direction < 0 ? null : entry.wind_gust,
+      }));
   };
 
   // Line chart with hover based on:
@@ -234,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const initPrev10Charts = (metrics) => {
     const chartHeight = width > largeWidthThreshold
       ? 150
-      : (height - margin.top - margin.bottom) / 3;
+      : (height - margin.top - margin.bottom) / metrics.length;
     const containerHeight = (chartHeight) * metrics.length;
 
     const x = d3.scaleTime()
@@ -268,6 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
       temperature: 'Temperature',
       wind_direction: 'Wind Direction',
       wind_speed: 'Wind Speed',
+      wind_gust: 'Wind Gust',
     };
 
     const addChart = (data, key, order) => {
@@ -282,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
         y.domain([0, 380]);
       } else {
         y.domain([
-          key === 'wind_speed' ? 0 : d3.min(values) - 2,
+          (key === 'wind_speed' || key === 'wind_gust') ? 0 : d3.min(values) - 2,
           d3.max(values) + 2,
         ]);
       }
@@ -342,6 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
       unfilteredData => {
         const data = filterToLast10(unfilteredData);
         metrics.forEach((metric, i) => addChart(data, metric, i));
+        // TODO: add wind gust to wind_speed
 
         ///////////////////////////////////////////////////
         //////////// BEGIN MOUSEOVER CODE /////////////////
@@ -385,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
             fn.domain([0, 380]);
           } else {
             fn.domain([
-              key === 'wind_speed' ? 0 : d3.min(data, v => parseInt(v[key], 10)) - 2,
+              (key === 'wind_speed' || key === 'wind_gust') ? 0 : d3.min(data, v => parseInt(v[key], 10)) - 2,
               d3.max(data, v => parseInt(v[key], 10)) + 2,
             ]);
           }
@@ -444,5 +452,5 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   initSnowDepthChart();
-  initPrev10Charts(['temperature', 'wind_speed', 'wind_direction']);
+  initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
 });

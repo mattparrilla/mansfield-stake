@@ -196,6 +196,7 @@ svg text {
 
 .line.temperature,
 .line.wind_speed,
+.line.wind_gust,
 .line.wind_direction {
   stroke: #e3624f;
 }

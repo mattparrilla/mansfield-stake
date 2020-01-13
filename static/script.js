@@ -214,6 +214,12 @@ document.addEventListener('DOMContentLoaded', function () {
       var timestamp = _ref4.timestamp,
           temperature = _ref4.temperature;
       return Math.round((today - timestamp) / millisecondsPerDay) < 10 && temperature > -100;
+    }).map(function (entry) {
+      return _objectSpread({}, entry, {
+        // bad values are -9999, but lets always throw out < 0
+        wind_speed: entry.wind_direction < 0 ? null : entry.wind_speed,
+        wind_gust: entry.wind_direction < 0 ? null : entry.wind_gust
+      });
     });
   }; // Line chart with hover based on:
   // https://bl.ocks.org/larsenmtl/e3b8b7c2ca4787f77d78f58d41c3da91
@@ -221,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   var initPrev10Charts = function initPrev10Charts(metrics) {
-    var chartHeight = width > largeWidthThreshold ? 150 : (height - margin.top - margin.bottom) / 3;
+    var chartHeight = width > largeWidthThreshold ? 150 : (height - margin.top - margin.bottom) / metrics.length;
     var containerHeight = chartHeight * metrics.length;
     var x = d3.scaleTime().range([0, width - margin.left - margin.right]);
     var y = d3.scaleLinear().range([chartHeight, 0]);
@@ -242,7 +248,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var metricLabel = {
       temperature: 'Temperature',
       wind_direction: 'Wind Direction',
-      wind_speed: 'Wind Speed'
+      wind_speed: 'Wind Speed',
+      wind_gust: 'Wind Gust'
     };
 
     var addChart = function addChart(data, key, order) {
@@ -257,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
       if (key === 'wind_direction') {
         y.domain([0, 380]);
       } else {
-        y.domain([key === 'wind_speed' ? 0 : d3.min(values) - 2, d3.max(values) + 2]);
+        y.domain([key === 'wind_speed' || key === 'wind_gust' ? 0 : d3.min(values) - 2, d3.max(values) + 2]);
       }
 
       g.append('text').text(metricLabel[key]).attr('class', "mini_chart_label ".concat(key)).attr('y', chartHeight - 1.5 * margin.top).attr('dy', '0.71em').style('font-size', fontSize).attr('x', 0);
@@ -292,7 +299,8 @@ document.addEventListener('DOMContentLoaded', function () {
       var data = filterToLast10(unfilteredData);
       metrics.forEach(function (metric, i) {
         return addChart(data, metric, i);
-      }); ///////////////////////////////////////////////////
+      }); // TODO: add wind gust to wind_speed
+      ///////////////////////////////////////////////////
       //////////// BEGIN MOUSEOVER CODE /////////////////
       ///////////////////////////////////////////////////
 
@@ -310,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (key === 'wind_direction') {
           fn.domain([0, 380]);
         } else {
-          fn.domain([key === 'wind_speed' ? 0 : d3.min(data, function (v) {
+          fn.domain([key === 'wind_speed' || key === 'wind_gust' ? 0 : d3.min(data, function (v) {
             return parseInt(v[key], 10);
           }) - 2, d3.max(data, function (v) {
             return parseInt(v[key], 10);
@@ -370,5 +378,5 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   initSnowDepthChart();
-  initPrev10Charts(['temperature', 'wind_speed', 'wind_direction']);
+  initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
 });
