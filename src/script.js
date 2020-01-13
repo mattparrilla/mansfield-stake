@@ -267,7 +267,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const transformDate = row => ({
       ...row,
       timestamp: new Date(row.timestamp),
-      wind_direction: row.wind_direction >= 0 ? row.wind_direction : null,
+      // "no data" for wind is identified by wind direction -9999
+      wind_direction: row.wind_direction < 0 ? null : row.wind_direction,
+      wind_speed: row.wind_direction < 0 ? null : row.wind_speed,
+      wind_gust: row.wind_direction < 0 ? null : row.wind_gust,
     });
 
     const metricLabel = {
