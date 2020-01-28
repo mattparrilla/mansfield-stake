@@ -10,6 +10,7 @@ body {
   height: 2px;
   width: 100%;
   background-color: #e3624f;
+  z-index: 100;
 }
 
 h1 {
