@@ -86,7 +86,7 @@ svg text {
 
 #select-season-group label {
   font-size: 18px;
-  font-weight: 200;
+  font-weight: 400;
 }
 
 #select-season-group p {
@@ -147,6 +147,10 @@ svg text {
   overflow: hidden;
 }
 
+section p {
+  font-size: 16px;
+}
+
 @media (max-width: 992px) {
   #legend h4 {
     font-size: 18px;
@@ -159,6 +163,9 @@ svg text {
 
   h1 {
     font-size: 32px;
+  }
+  #prev_10_container {
+    margin-bottom: 30px;
   }
 }
   
@@ -180,7 +187,10 @@ svg text {
     margin-bottom: 20px;
   }
   h2 {
-    font-size: 16px;
+    font-size: 18px;
+  }
+  section p {
+    font-size: 14px;
   }
   #select-season-group label {
     font-size: 12px;
@@ -211,3 +221,8 @@ svg text {
 .freezing {
   stroke: #d3d3d3;
 }
+
+section {
+  margin-bottom: 40px;
+}
+

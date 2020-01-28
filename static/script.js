@@ -152,19 +152,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
       })]);
       xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
-      yAxis.call(d3.axisRight(y)); // create grid lines for y-axis
-
-      seasonContainer.append('g').attr('class', 'grid-lines').selectAll('g.grid-line').data([20, 40, 60, 80, 100, 120, 140]).enter().append('line').attr('class', 'grid-line').attr('x1', 0).attr('x2', width).attr('y1', function (d) {
-        return y(d);
-      }).attr('y2', function (d) {
-        return y(d);
-      });
+      yAxis.call(d3.axisRight(y));
       seasonContainer.selectAll('.season').data(data, function (d) {
         return d.season;
       }).enter().append('g').attr('class', function (d) {
         return "season x".concat(d.season);
       }).append('path').attr('class', 'line').attr('d', function (d) {
         return line(d.values);
+      }); // create grid lines for y-axis
+
+      seasonContainer.append('g').attr('class', 'grid-lines').selectAll('g.grid-line').data([20, 40, 60, 80, 100, 120, 140]).enter().append('line').attr('class', 'grid-line').attr('x1', 0).attr('x2', width).attr('y1', function (d) {
+        return y(d);
+      }).attr('y2', function (d) {
+        return y(d);
       });
       updateSnowDepthChart({
         data: data,

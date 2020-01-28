@@ -163,6 +163,17 @@ document.addEventListener('DOMContentLoaded', () => {
       xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
       yAxis.call(d3.axisRight(y));
 
+      seasonContainer.selectAll('.season')
+        .data(
+          data,
+          (d) => d.season,
+        )
+        .enter().append('g')
+        .attr('class', (d) => `season x${d.season}`)
+        .append('path')
+        .attr('class', 'line')
+        .attr('d', (d) => line(d.values));
+
       // create grid lines for y-axis
       seasonContainer.append('g')
         .attr('class', 'grid-lines')
@@ -175,17 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .attr('x2', width)
         .attr('y1', (d) => y(d))
         .attr('y2', (d) => y(d));
-
-      seasonContainer.selectAll('.season')
-        .data(
-          data,
-          (d) => d.season,
-        )
-        .enter().append('g')
-        .attr('class', (d) => `season x${d.season}`)
-        .append('path')
-        .attr('class', 'line')
-        .attr('d', (d) => line(d.values));
 
       updateSnowDepthChart({ data, line, seasonContainer });
 

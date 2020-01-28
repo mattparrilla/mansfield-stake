@@ -41,51 +41,108 @@
         <div class="col-xs-12">
           <h1>Mansfield Weather Station</h1>
         </div>
-        <div class="col-lg-6">
-          <h2>Snow Depth</h2>
-          <div id="legend_container">
-            <div id="legend">
-              <div id="currentSeason">
-                <h4>Current Snow Depth</h4>
-                <div id="currentDepth" class="depth_value"></div>
+      </div>
+
+      <section>
+        <div class="row">
+          <div class="col-md-6 col-md-offset-1">
+            <h2>Mount Mansfield Snow Depth</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-md-offset-1">
+            <div id="legend_container">
+              <div id="legend">
+                <div id="currentSeason">
+                  <h4>Current Snow Depth</h4>
+                  <div id="currentDepth" class="depth_value"></div>
+                </div>
+                <div id="comparisonSeason">
+                  <h4 id="comparisonLabel"></h4>
+                  <div id="comparisonDepth" class="depth_value"></div>
+                </div>
               </div>
-              <div id="comparisonSeason">
-                <h4 id="comparisonLabel"></h4>
-                <div id="comparisonDepth" class="depth_value"></div>
+              <svg id="snow_depth_chart" class="yearly-trend"></svg>
+              <div id="select-season-group" class="form-group">
+                <label for="select-season">Compare to a historical winter:</label>
+                <select id="select-season" class="form-control">
+                  <option disabled selected value>Select a season</option>
+                </select>
               </div>
             </div>
-            <svg id="snow_depth_chart" class="yearly-trend"></svg>
-            <div id="select-season-group" class="form-group">
-              <label for="select-season">Compare to a historical winter:</label>
-              <select id="select-season" class="form-control">
-                <option disabled selected value>Select a season</option>
-              </select>
+          </div>
+          <div class="col-md-4">
+            <p>Mt. Mansfield snow depth has been recorded continuously at a stake
+            3900 feet on the mountain since 1954. The reading is a single data point
+            that can be used to give you an idea of how the season is progressing
+            in the high country.</p>
+            <p>The metric is popularly used for determining
+            when the backcountry is "in." Many locals follow the rule that
+            you should not venture into the backcountry until the snow at the
+            stake reaches 40 inches.</p>
+            <p>What this reading doesn't tell you is how elevation dependent
+            the snow and conditions are, so it's important to take the measurement
+            with a grain of salt and dial your stoke appropriately for the
+            conditions.</p>
+            <p>You can use the dropdown below the chart to compare this season
+            to a historical season.</p>
+            <p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="row">
+          <div class="col-md-6 col-md-offset-1">
+              <h2>Last 10 Wind and Temps</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-md-offset-1">
+            <div id="prev_10_container">
+              <svg id="prev_10_charts">
+                <g id="temperature"></g>
+                <g id="wind_gust"></g>
+                <g id="wind_direction"></g>
+                <g id="snow"></g>
+              </svg>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <p>Use the previous 10 days wind and temperature readings to tell the
+            <em>quality</em> of the snow on the hill.</p>
+            <h4>Temperature</h4>
+            <p>When used in conjunction with the snow depth plot, temperatures can
+            tell you if snow has melted and refrozen since it fell.</p>
+            <p>Since the data
+            comes from the Mt. Mansfield snow stake's location at 3900 feet,
+            temperatures effectively represent an upper bound for temperatures on
+            the mountain.</p>
+            <h4>Wind</h4>
+            <p>Wind speed and direction can tell you if wind has impacted fresh snow
+            and where the snow might have blown. Wind often pushes snow from windward
+            aspects (the side the wind is blowing from) to leeward aspects (the
+            opposite direction).</p>
+            <p>The wind direction measurement indicates the direction that the
+            wind is coming <strong>from</strong>, so a reading of 270 indicates
+            the wind is blowing from west to east and a reading of 180 indicates
+            the wind is blowing from the south to north.</p>
+          </div>
+        </div>
+      </section>
+      
+      <section>
+        <div class="row">
+          <div class="col-md-offset-1 col-md-6">
+            <div id="info_pane">
+              <h2>About the data</h2>
+              <p>Last updated: <span id="last_updated"></span></p>
+              <p>The latest data is provided by the NWS Burlington office. The source data for snow depth can be found in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. The snow depth plot is updated within the hour of new data being published in the report.</p>
+              <p>Many thanks to the WCAX engineers who for years reported the snow depth and to the NWS for stepping in to keep the historical record going.</p>
             </div>
           </div>
         </div>
-        <div class="col-lg-6">
-          <div id="prev_10_container">
-            <h2>Last 10 Wind and Temps</h2>
-            <svg id="prev_10_charts">
-              <g id="temperature"></g>
-              <g id="wind_gust"></g>
-              <g id="wind_direction"></g>
-              <g id="snow"></g>
-            </svg>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-8 col-lg-offset-2">
-          <div id="info_pane">
-            <h3>About the data</h3>
-            <p>Last updated: <span id="last_updated"></span></p>
-            <p>The latest data is provided by the NWS Burlington office. The source data can be found in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. These plots are updated within the hour of new data being published in the report.</p>
-            <p>Historical snow depth data was originally pulled from the <a href="https://waw.w3.uvm.edu//skivt-l/?Page=mansel.php">Ski-VT</a> website</p>
-            <p>Many thanks to the WCAX engineers who for years reported the snow depth, to Ski-VT for reporting the historical data, and to the NWS for stepping in to keep the historical record going.</p>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
     <script type="text/javascript" src="static/d3.min.js"></script>
     <script type="text/javascript" src="static/script.js"></script>
