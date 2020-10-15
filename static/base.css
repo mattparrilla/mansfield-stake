@@ -176,6 +176,7 @@ section {
   flex: 3;
   align-self: center;
   padding: 0 30px;
+  min-width: 300px;
 }
 
 .map_maker h2 {
