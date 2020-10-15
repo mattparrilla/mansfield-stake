@@ -152,6 +152,55 @@ section p {
   font-size: 16px;
 }
 
+section {
+  margin-bottom: 80px;
+}
+
+.coming_soon_stations {
+  margin-top: -20px;
+}
+
+.maps_too {
+  display: flex;
+  max-width: 1600px;
+  margin: 0 auto 80px;
+  flex-wrap: wrap;
+}
+
+.map_img {
+  flex: 4;
+  min-width: 300px;
+}
+
+.map_maker {
+  flex: 3;
+  align-self: center;
+  padding: 0 30px;
+}
+
+.map_maker h2 {
+  text-align: left;
+}
+
+button {
+  border: 0;
+  padding: 1.5rem;
+  font-size: 1.8rem;
+  border-radius: 5px;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15),
+               0 2px 4px rgba(0, 0, 0, 0.12);
+  font-weight: 600;
+  background: #424242;
+  color: white;
+  cursor: pointer;
+  display: block;
+  margin: 30px auto 0;
+}
+
+button:hover {
+  background: #616161;
+}
+
 @media (max-width: 992px) {
   #legend h4 {
     font-size: 18px;
@@ -203,6 +252,9 @@ section p {
   #legend {
     left: 20px;
   }
+  section, .maps_too {
+    margin-bottom: 40px;
+  }
 }
 
 .line.temperature,
@@ -223,10 +275,3 @@ section p {
   stroke: #d3d3d3;
 }
 
-section {
-  margin-bottom: 40px;
-}
-
-.coming_soon_stations {
-  margin-top: -20px;
-}

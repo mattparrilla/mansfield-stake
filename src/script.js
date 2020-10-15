@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const largeWidthThreshold = 600;
   const width = document.getElementById('legend_container').clientWidth;
-  const height = width > largeWidthThreshold ? 490 : width / 2;
+  const height = width > largeWidthThreshold ? 400 : width / 2;
   const fontSize = `${width > largeWidthThreshold ? 14 : 10}px`;
   ///////////////////////////////////////////////////
   //////////////// END GLOBALS //////////////////////

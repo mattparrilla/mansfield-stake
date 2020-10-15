@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
   };
   var largeWidthThreshold = 600;
   var width = document.getElementById('legend_container').clientWidth;
-  var height = width > largeWidthThreshold ? 490 : width / 2;
+  var height = width > largeWidthThreshold ? 400 : width / 2;
   var fontSize = "".concat(width > largeWidthThreshold ? 14 : 10, "px"); ///////////////////////////////////////////////////
   //////////////// END GLOBALS //////////////////////
   ///////////////////////////////////////////////////

@@ -42,15 +42,10 @@
           <h1>Mansfield Weather Station</h1>
         </div>
       </div>
-
-      <section>
-        <div class="row">
-          <div class="col-md-6 col-md-offset-1">
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <section>
             <h2>Mount Mansfield Snow Depth</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-md-offset-1">
             <div id="legend_container">
               <div id="legend">
                 <div id="currentSeason">
@@ -70,35 +65,38 @@
                 </select>
               </div>
             </div>
-          </div>
-          <div class="col-md-4">
-            <p>Mt. Mansfield snow depth has been recorded continuously at a stake
-            3900 feet on the mountain since 1954. The reading is a single data point
-            that can be used to give you an idea of how the season is progressing
-            in the high country.</p>
-            <p>The metric is popularly used for determining
-            when the backcountry is "in." Many locals follow the rule that
-            you should not venture into the backcountry until the snow at the
-            stake reaches 40 inches.</p>
-            <p>What this reading doesn't tell you is how elevation dependent
-            the snow and conditions are, so it's important to take the measurement
-            with a grain of salt and dial your stoke appropriately for the
-            conditions.</p>
-            <p>You can use the dropdown below the chart to compare this season
-            to a historical season.</p>
-            <p>
-          </div>
+          </section>
+        </div>
+      </div>
+      <section class="maps_too">
+        <div class="map_img">
+          <img class="img-responsive"
+            src="https://static.ramblemaps.com/wood-mansfield-straight-1296.jpg"
+            srcset="
+                
+                  https://static.ramblemaps.com/wood-mansfield-straight-1296.jpg 1296w,
+                  https://static.ramblemaps.com/wood-mansfield-straight-1118.jpg 1118w,
+                  https://static.ramblemaps.com/wood-mansfield-straight-972.jpg 972w,
+                  https://static.ramblemaps.com/wood-mansfield-straight-850.jpg 850w,
+                  https://static.ramblemaps.com/wood-mansfield-straight-746.jpg 746w,
+                  https://static.ramblemaps.com/wood-mansfield-straight-675.jpg 675w,
+                  https://static.ramblemaps.com/wood-mansfield-straight-648.jpg 648w,
+                  https://static.ramblemaps.com/wood-mansfield-straight-576.jpg 576w,
+                " sizes="555550vw" alt="wood_mounted Map">
+        </div>
+        <div class="map_maker">
+          <h2>Did you know I make maps too?</h2>
+          <p>Ski-inspired maps of the Green Mountains. Designed for folks who care about snow as much as you do.</p>
+          <a href="https://ramblemaps.com/green-mountain-ski-maps">
+            <button>See The Maps</button>
+          </a>
         </div>
       </section>
 
-      <section>
-        <div class="row">
-          <div class="col-md-6 col-md-offset-1">
-              <h2>Last 10 Wind and Temps</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-md-offset-1">
+      <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+          <section>
+            <h2>Last 10 Wind and Temps</h2>
             <div id="prev_10_container">
               <svg id="prev_10_charts">
                 <g id="temperature"></g>
@@ -107,64 +105,23 @@
                 <g id="snow"></g>
               </svg>
             </div>
-          </div>
-          <div class="col-md-4">
-            <p>Use the previous 10 days wind and temperature readings to tell the
-            <em>quality</em> of the snow on the hill.</p>
-            <h3>Temperature</h3>
-            <p>When used in conjunction with the snow depth plot, temperature can
-            tell you if snow has melted and refrozen since it fell.</p>
-            <p>Since the data
-            comes from the Mt. Mansfield snow stake's location at 3900 feet, this
-            temperature effectively represent an upper bound for temperatures on
-            the mountain.</p>
-            <h3>Wind</h3>
-            <p>Wind speed and direction can tell you if wind has impacted fresh snow
-            and where the snow might have blown. Wind generally pushes snow from windward
-            aspects (the side the wind is blowing from) to leeward aspects (the
-            opposite direction).</p>
-            <p>The wind direction measurement indicates the direction the
-            wind is coming <strong>from</strong>, so a reading of 270 indicates
-            the wind is blowing from west to east and a reading of 180 indicates
-            the wind is blowing from the south to north.</p>
-          </div>
+          </section>
         </div>
-      </section>
+      </div>
 
-      <section>
-        <div class="row">
-          <div class="col-md-6 col-md-offset-1">
-              <h2>Coming Soon: More Stations</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6 col-md-offset-1">
-            <img class="coming_soon_stations" width="100%"
-              src="./static/nws_stations_snow_depth.svg"
-              alt="Snow depth at different NWS stations"></img>
-          </div>
-          <div class="col-md-4">
-            <p>In an effort to provide you a better picture of snowpack health
-            I'm going to add snow depth data from NWS weather stations
-            across the state. I'll also provide elevation data of each station
-            and provide a map of the listed stations.</p>
-            <p>The current image is accurate as of January 26, 2020.</p>
-          </div>
-        </div>
-      </section>
-      
-      <section>
-        <div class="row">
-          <div class="col-md-offset-1 col-md-6">
+      <div class="row">
+        <div class="col-md-offset-2 col-md-8">
+          <section>
             <div id="info_pane">
               <h2>About the data</h2>
               <p>Last updated: <span id="last_updated"></span></p>
+              <p>Mt. Mansfield snow depth has been recorded continuously at a stake 3900 feet on the mountain since 1954. The reading is a single data point that can be used to give you an idea of how the season is progressing in the high country.</p>
               <p>The latest data is provided by the NWS Burlington office. The source data for snow depth can be found in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. The snow depth plot is updated within the hour of new data being published in the report.</p>
               <p>Many thanks to the WCAX engineers who for years reported the snow depth and to the NWS for stepping in to keep the historical record going.</p>
             </div>
-          </div>
+          </section>
         </div>
-      </section>
+      </div>
     </div>
     <script type="text/javascript" src="static/d3.min.js"></script>
     <script type="text/javascript" src="static/script.js"></script>
