@@ -172,15 +172,15 @@ section {
   min-width: 300px;
 }
 
+.map_img img {
+  margin: 0 auto;
+}
+
 .map_maker {
   flex: 3;
   align-self: center;
-  padding: 0 30px;
+  padding: 0 0 0 80px;
   min-width: 300px;
-}
-
-.map_maker h2 {
-  text-align: left;
 }
 
 button {
@@ -203,6 +203,10 @@ button:hover {
 }
 
 @media (max-width: 992px) {
+  .map_maker {
+    padding: 0 30px;
+  }
+
   #legend h4 {
     font-size: 18px;
     width: 180px;
@@ -214,6 +218,9 @@ button:hover {
 
   h1 {
     font-size: 32px;
+  }
+  h2 {
+    font-size: 24px;
   }
   #prev_10_container {
     margin-bottom: 30px;
