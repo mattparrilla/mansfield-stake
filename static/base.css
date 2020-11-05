@@ -283,3 +283,11 @@ button:hover {
   stroke: #d3d3d3;
 }
 
+.alert {
+  padding: 1rem 2rem;
+  border: 2px solid rgb(253, 208, 162);
+  border-radius: 3px;
+  background: rgb(255, 245, 235);
+  margin-bottom: 40px;
+}
+
