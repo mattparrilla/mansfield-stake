@@ -15,6 +15,8 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* global d3 */
+var AVERAGE_SEASON = "Average Season";
+
 var getCurrentSeason = function getCurrentSeason() {
   var date = new Date();
   var month = date.getMonth() + 1;
@@ -68,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
   var updateSnowDepthChart = function updateSnowDepthChart(_ref) {
     var data = _ref.data,
         _ref$comparisonYear = _ref.comparisonYear,
-        comparisonYear = _ref$comparisonYear === void 0 ? 'Average Season' : _ref$comparisonYear,
+        comparisonYear = _ref$comparisonYear === void 0 ? AVERAGE_SEASON : _ref$comparisonYear,
         line = _ref.line,
         seasonContainer = _ref.seasonContainer;
     d3.select('.comparison-label').text(comparisonYear);
@@ -177,20 +179,14 @@ document.addEventListener('DOMContentLoaded', function () {
         return season;
       }).filter(function (season) {
         return season && season !== getCurrentSeason();
-      }).sort(function (a, b) {
-        return a < b;
-      }) // reverse order, so alphabet then reverse 9, 8 etc
-      .map(function (season) {
-        return {
-          value: season,
-          label: season
-        };
-      }).forEach(function (season) {
+      }).reverse().forEach(function (season) {
+        console.log(season);
         var option = document.createElement('option');
-        option.value = season.value;
-        option.text = season.label;
+        option.value = season;
+        option.text = season;
         seasonSelect.add(option, null);
-      }); // add event listener to select season
+      });
+      seasonSelect.value = AVERAGE_SEASON; // add event listener to select season
 
       seasonSelect.onchange = function (_ref3) {
         var comparisonYear = _ref3.target.value;

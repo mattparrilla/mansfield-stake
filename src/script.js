@@ -1,5 +1,7 @@
 /* global d3 */
 
+const AVERAGE_SEASON = "Average Season";
+
 const getCurrentSeason = () => {
   const date = new Date();
   const month = date.getMonth() + 1;
@@ -47,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ///////////////////////////////////////////////////
 
   const updateSnowDepthChart = ({
-    data, comparisonYear = 'Average Season', line, seasonContainer,
+    data, comparisonYear = AVERAGE_SEASON, line, seasonContainer,
   }) => {
     d3.select('.comparison-label')
       .text(comparisonYear);
@@ -193,17 +195,16 @@ document.addEventListener('DOMContentLoaded', () => {
       data
         .map(({ season }) => season)
         .filter((season) => season && season !== getCurrentSeason())
-        .sort((a, b) => a < b) // reverse order, so alphabet then reverse 9, 8 etc
-        .map((season) => ({
-          value: season,
-          label: season,
-        }))
+        .reverse()
         .forEach((season) => {
+          console.log(season);
           const option = document.createElement('option');
-          option.value = season.value;
-          option.text = season.label;
+          option.value = season;
+          option.text = season;
           seasonSelect.add(option, null);
         });
+
+      seasonSelect.value = AVERAGE_SEASON;
 
       // add event listener to select season
       seasonSelect.onchange = ({ target: { value: comparisonYear } }) => {
