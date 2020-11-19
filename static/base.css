@@ -291,3 +291,6 @@ button:hover {
   margin-bottom: 80px;
 }
 
+.missing_data_note {
+  text-align: center;
+}
