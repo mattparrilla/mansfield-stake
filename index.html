@@ -24,7 +24,7 @@
     <link rel="shortcut icon" href="favicon.ico">
     <link href="static/bootstrap.min.css" rel="stylesheet">
     <link href="static/base.css" rel="stylesheet">
-    <title>Mt. Mansfield Snow Depth</title>
+    <title>Mount Mansfield Snow Station</title>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-31358980-1"></script>
     <script>
@@ -39,13 +39,15 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12">
-          <h1>Mansfield Weather Station</h1>
+          <h1>Mount Mansfield Snow Station</h1>
         </div>
       </div>
+
       <div class="row">
         <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
+
           <section>
-            <h2>Mount Mansfield Snow Depth</h2>
+            <h2>Mount Mansfield Snow Stake Depth</h2>
             <div id="legend_container">
               <div id="legend">
                 <div id="currentSeason">
@@ -65,10 +67,34 @@
                 </select>
               </div>
             </div>
-            <p class="missing_data_note">Note: The depth for the November 2-3, 2020 snow event was never recorded. I've estimated the depth based on reports and temperatures.</p>
+          </section>
+
+          <section>
+            <h2>Last 10 Wind and Temps</h2>
+            <div id="prev_10_container">
+              <svg id="prev_10_charts">
+                <g id="temperature"></g>
+                <g id="wind_gust"></g>
+                <g id="wind_direction"></g>
+                <g id="snow"></g>
+              </svg>
+            </div>
+          </section>
+
+          <section>
+            <h2>NWS Expected Snowfall Map</h2>
+            <img class="img-responsive"
+              src="https://www.weather.gov/images/btv/winter/StormTotalSnowWeb.png">
+          </section>
+
+          <section>
+            <h2>Latest NWS Forecast</h2>
+            <p class="forecast_location">Forecast for Mount Mansfield at 3,747 feet.</p>
+            <div id="nws_worded_forecast">Fetching forecast...</div>
           </section>
         </div>
       </div>
+
       <section class="maps_too">
         <div class="map_img">
           <a href="https://ramblemaps.com/green-mountain-ski-maps">
@@ -88,7 +114,7 @@
             </a>
         </div>
         <div class="map_maker">
-          <h2>Did you know I make maps too?</h2>
+          <h2>Green Mountain Maps</h2>
           <p>Ski-inspired wall maps of the Green Mountains. Designed for folks who care about snow as much as you do.</p>
           <a href="https://ramblemaps.com/green-mountain-ski-maps">
             <button>See The Maps</button>
@@ -99,22 +125,11 @@
       <div class="row">
         <div class="col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3">
           <section>
-            <h2>Last 10 Wind and Temps</h2>
-            <div id="prev_10_container">
-              <svg id="prev_10_charts">
-                <g id="temperature"></g>
-                <g id="wind_gust"></g>
-                <g id="wind_direction"></g>
-                <g id="snow"></g>
-              </svg>
-            </div>
-          </section>
-
-          <section>
             <div id="info_pane">
               <h2>About the data</h2>
               <p>Last updated: <span id="last_updated"></span></p>
               <p>Mt. Mansfield snow depth has been recorded continuously at a stake 3900 feet on the mountain since 1954. The reading is a single data point that can be used to give you an idea of how the season is progressing in the high country.</p>
+              <p>The depth for the November 2-3, 2020 snow event was never recorded. I've estimated the depth based on reports and temperatures.</p>
               <p>The latest data is provided by the NWS Burlington office. The source data for snow depth can be found in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. The snow depth plot is updated within the hour of new data being published in the report.</p>
               <p>Many thanks to the WCAX engineers who for years reported the snow depth and to the NWS for stepping in to keep the historical record going.</p>
             </div>

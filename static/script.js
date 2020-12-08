@@ -44,6 +44,42 @@ var transformRow = function transformRow(season) {
   };
 };
 
+function fetchNwsForecast() {
+  var xhr = new XMLHttpRequest();
+
+  xhr.onload = function () {
+    var response = xhr.responseXML.documentElement;
+    var forecast = response.querySelector("data[type='forecast']");
+    var wordedForecastNode = forecast.querySelector("wordedForecast"); // this key is how we match the word forecast to the dates they represent
+
+    var wordedForecastTimeLayoutKey = wordedForecastNode.getAttribute("time-layout"); // map over each forecast text node and grab the contents
+
+    var wordedForecast = Array.from(wordedForecastNode.querySelectorAll("text")).map(function (textNode) {
+      return textNode.innerHTML;
+    }); // Numerous forecasts of varying time ranges are in the XML document, get
+    // them all so we can find the desired match
+
+    var timeLayouts = forecast.querySelectorAll("time-layout");
+    var matchingTimeLayout = Array.from(timeLayouts).find(function (layout) {
+      return layout.querySelector("layout-key").innerHTML === wordedForecastTimeLayoutKey;
+    }); // Pull name of forecast time period from element attribute
+
+    var forecastTimes = Array.from(matchingTimeLayout.querySelectorAll("start-valid-time")).map(function (period) {
+      return period.getAttribute("period-name");
+    }); // Generate HTML from the forecast data for our HTML
+
+    var newForecastAsString = forecastTimes.reduce(function (string, time, i) {
+      return string += "\n        <div>\n          <h5 class='forecast_period'>".concat(time, "</h5>\n          <div class='forecast_content'>").concat(wordedForecast[i], "</div>\n        </div>\n      ");
+    }, ""); // Add our forecast to our HTML
+
+    document.getElementById("nws_worded_forecast").innerHTML = newForecastAsString;
+  };
+
+  xhr.open("GET", "https://forecast.weather.gov/MapClick.php?lat=44.5437&lon=-72.8143&unit=0&lg=english&FcstType=dwml");
+  xhr.responseType = "document";
+  xhr.send();
+}
+
 var setMouseOverOpacity = function setMouseOverOpacity(opacity) {
   d3.select('.mouse-line').style('opacity', opacity);
   d3.selectAll('.mouse-per-line circle').style('opacity', opacity);
@@ -180,7 +216,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }).filter(function (season) {
         return season && season !== getCurrentSeason();
       }).reverse().forEach(function (season) {
-        console.log(season);
         var option = document.createElement('option');
         option.value = season;
         option.text = season;
@@ -378,4 +413,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
   initSnowDepthChart();
   initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
+  fetchNwsForecast();
 });
