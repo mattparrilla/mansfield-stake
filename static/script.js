@@ -151,10 +151,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
 
-  var initSnowDepthChart = function initSnowDepthChart() {
+  var initSnowDepthChart = function initSnowDepthChart(csv, svgId) {
+    var selectableSeason = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+
     /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
-    var seasonSelect = document.getElementById('select-season');
-    var g = d3.select('#snow_depth_chart').attr('width', width).attr('height', height);
+    var g = d3.select(svgId).attr('width', width).attr('height', height);
     var seasonContainer = g.append('g').attr('class', 'season-container');
     var x = d3.scaleTime().range([margin.left, width - margin.right - margin.left]);
     var y = d3.scaleLinear().range([height - margin.bottom, margin.top]); // hard coded values
@@ -170,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var yAxis = g.append('g').attr('class', 'axis axis--y').attr('transform', "translate(".concat(width - margin.right - margin.left, ", 0)")).style('font-size', fontSize).call(d3.axisRight(y)).append('text').attr('transform', 'rotate(-90)').attr('y', -20).attr('dy', '0.71em').attr('x', width > 400 ? -165 : -120).style('fill', '#000').style('font-size', width > 400 ? '14px' : '10px').text('Snow Depth, inches');
     /* REQUEST DATA, DRAW CHART AND AXIS */
 
-    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, function (csv) {
+    d3.csv(csv, transformRow, function (csv) {
       var data = csv.filter(function (season) {
         return season.season !== '';
       }); // update axes values with actual data
@@ -182,11 +183,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }), d3.max(data, function (season) {
         return d3.max(season.values, function (date) {
           return date.date;
-        });
-      })]);
-      y.domain([0, d3.max(data, function (season) {
-        return d3.max(season.values, function (date) {
-          return date.snowDepth;
         });
       })]);
       xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
@@ -208,30 +204,34 @@ document.addEventListener('DOMContentLoaded', function () {
         data: data,
         line: line,
         seasonContainer: seasonContainer
-      }); // Add seasons to dropdown options
-
-      data.map(function (_ref2) {
-        var season = _ref2.season;
-        return season;
-      }).filter(function (season) {
-        return season && season !== getCurrentSeason();
-      }).reverse().forEach(function (season) {
-        var option = document.createElement('option');
-        option.value = season;
-        option.text = season;
-        seasonSelect.add(option, null);
       });
-      seasonSelect.value = AVERAGE_SEASON; // add event listener to select season
 
-      seasonSelect.onchange = function (_ref3) {
-        var comparisonYear = _ref3.target.value;
-        updateSnowDepthChart({
-          data: data,
-          line: line,
-          seasonContainer: seasonContainer,
-          comparisonYear: comparisonYear
+      if (selectableSeason) {
+        var seasonSelect = document.getElementById('select-season'); // Add seasons to dropdown options
+
+        data.map(function (_ref2) {
+          var season = _ref2.season;
+          return season;
+        }).filter(function (season) {
+          return season && season !== getCurrentSeason();
+        }).reverse().forEach(function (season) {
+          var option = document.createElement('option');
+          option.value = season;
+          option.text = season;
+          seasonSelect.add(option, null);
         });
-      };
+        seasonSelect.value = AVERAGE_SEASON; // add event listener to select season
+
+        seasonSelect.onchange = function (_ref3) {
+          var comparisonYear = _ref3.target.value;
+          updateSnowDepthChart({
+            data: data,
+            line: line,
+            seasonContainer: seasonContainer,
+            comparisonYear: comparisonYear
+          });
+        };
+      }
     });
   }; // TODO: make this more performant (maybe reverse and find, then slice)
   // or consider slicing in lambda (better)
@@ -411,7 +411,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  initSnowDepthChart();
+  initSnowDepthChart("./20201216_snow_depth.csv", "#snow_depth_chart");
+  initSnowDepthChart("./el_nino.csv", "#el_nino_chart", false);
+  initSnowDepthChart("./big_el_nino.csv", "#big_el_nino_chart", false);
+  initSnowDepthChart("./la_nina.csv", "#la_nina_chart", false);
+  initSnowDepthChart("./big_la_nina.csv", "#big_la_nina_chart", false);
+  initSnowDepthChart("./neutral.csv", "#neutral_chart", false);
+  initSnowDepthChart("./average.csv", "#avg_chart", false);
   initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
   fetchNwsForecast();
 });

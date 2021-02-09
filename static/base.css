@@ -312,3 +312,35 @@ h5 {
 .nws_predicted_snowfall {
   margin: 0 auto;
 }
+
+.enso_type {
+  border: 1px solid black;
+  text-align: center;
+  margin: 50px 0;
+  padding: 20px;
+}
+
+.yearly-trend .xel_nino_avg path {
+  stroke-width: 2px;
+  stroke: #EFAAAA;
+}
+.yearly-trend .xbig_el_nino_avg path {
+  stroke-width: 2px;
+  stroke: #EB2C2C;
+}
+.yearly-trend .xla_nina_avg path {
+  stroke-width: 2px;
+  stroke: #7993F3;
+}
+.yearly-trend .xbig_la_nina_avg path {
+  stroke-width: 2px;
+  stroke: #2E57EC;
+}
+.yearly-trend .xneutral_avg path {
+  stroke-width: 2px;
+  stroke: #8A8989;
+}
+.yearly-trend .xall_time_avg path {
+  stroke-width: 4px;
+  stroke: #000;
+}

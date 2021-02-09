@@ -153,11 +153,10 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
 
-  const initSnowDepthChart = () => {
+  const initSnowDepthChart = (csv, svgId, selectableSeason = true) => {
     /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
-    const seasonSelect = document.getElementById('select-season');
 
-    const g = d3.select('#snow_depth_chart')
+    const g = d3.select(svgId)
       .attr('width', width)
       .attr('height', height);
 
@@ -196,17 +195,13 @@ document.addEventListener('DOMContentLoaded', () => {
         .text('Snow Depth, inches');
 
     /* REQUEST DATA, DRAW CHART AND AXIS */
-    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, csv => {
+    d3.csv(csv, transformRow, csv => {
       const data = csv.filter((season) => season.season !== '');
 
       // update axes values with actual data
       x.domain([
         d3.min(data, (season) => d3.min(season.values, (date) => date.date)),
         d3.max(data, (season) => d3.max(season.values, (date) => date.date)),
-      ]);
-      y.domain([
-        0,
-        d3.max(data, (season) => d3.max(season.values, (date) => date.snowDepth)),
       ]);
       xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
       yAxis.call(d3.axisRight(y));
@@ -237,26 +232,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
       updateSnowDepthChart({ data, line, seasonContainer });
 
-      // Add seasons to dropdown options
-      data
-        .map(({ season }) => season)
-        .filter((season) => season && season !== getCurrentSeason())
-        .reverse()
-        .forEach((season) => {
-          const option = document.createElement('option');
-          option.value = season;
-          option.text = season;
-          seasonSelect.add(option, null);
-        });
+      if (selectableSeason) {
+        const seasonSelect = document.getElementById('select-season');
+        // Add seasons to dropdown options
+        data
+          .map(({ season }) => season)
+          .filter((season) => season && season !== getCurrentSeason())
+          .reverse()
+          .forEach((season) => {
+            const option = document.createElement('option');
+            option.value = season;
+            option.text = season;
+            seasonSelect.add(option, null);
+          });
 
-      seasonSelect.value = AVERAGE_SEASON;
+        seasonSelect.value = AVERAGE_SEASON;
 
-      // add event listener to select season
-      seasonSelect.onchange = ({ target: { value: comparisonYear } }) => {
-        updateSnowDepthChart({
-          data, line, seasonContainer, comparisonYear,
-        });
-      };
+        // add event listener to select season
+        seasonSelect.onchange = ({ target: { value: comparisonYear } }) => {
+          updateSnowDepthChart({
+            data, line, seasonContainer, comparisonYear,
+          });
+        };
+      }
     });
   };
 
@@ -500,7 +498,13 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   };
 
-  initSnowDepthChart();
+  initSnowDepthChart("./20201216_snow_depth.csv", "#snow_depth_chart");
+  initSnowDepthChart("./el_nino.csv", "#el_nino_chart", false);
+  initSnowDepthChart("./big_el_nino.csv", "#big_el_nino_chart", false);
+  initSnowDepthChart("./la_nina.csv", "#la_nina_chart", false);
+  initSnowDepthChart("./big_la_nina.csv", "#big_la_nina_chart", false);
+  initSnowDepthChart("./neutral.csv", "#neutral_chart", false);
+  initSnowDepthChart("./average.csv", "#avg_chart", false);
   initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
   fetchNwsForecast();
 });
