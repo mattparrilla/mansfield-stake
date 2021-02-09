@@ -411,7 +411,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   };
 
-  initSnowDepthChart();
-  initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
+  initSnowDepthChart(); // initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
+
   fetchNwsForecast();
 });

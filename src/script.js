@@ -501,6 +501,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   initSnowDepthChart();
-  initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
+  // initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
   fetchNwsForecast();
 });
