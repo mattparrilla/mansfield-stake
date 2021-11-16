@@ -1,14 +1,18 @@
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 
-function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
@@ -170,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var yAxis = g.append('g').attr('class', 'axis axis--y').attr('transform', "translate(".concat(width - margin.right - margin.left, ", 0)")).style('font-size', fontSize).call(d3.axisRight(y)).append('text').attr('transform', 'rotate(-90)').attr('y', -20).attr('dy', '0.71em').attr('x', width > 400 ? -165 : -120).style('fill', '#000').style('font-size', width > 400 ? '14px' : '10px').text('Snow Depth, inches');
     /* REQUEST DATA, DRAW CHART AND AXIS */
 
-    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, function (csv) {
+    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/test.csv', transformRow, function (csv) {
       var data = csv.filter(function (season) {
         return season.season !== '';
       }); // update axes values with actual data
@@ -246,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function () {
           temperature = _ref4.temperature;
       return Math.round((today - timestamp) / millisecondsPerDay) < 10 && temperature > -100;
     }).map(function (entry) {
-      return _objectSpread({}, entry, {
+      return _objectSpread(_objectSpread({}, entry), {}, {
         // bad values are -9999, but lets always throw out < 0
         wind_speed: entry.wind_direction < 0 ? null : entry.wind_speed,
         wind_gust: entry.wind_direction < 0 ? null : entry.wind_gust
@@ -270,7 +274,7 @@ document.addEventListener('DOMContentLoaded', function () {
     d3.select('#prev_10_charts').attr('width', width + margin.left + margin.right).attr('height', containerHeight + margin.top + margin.bottom);
 
     var transformDate = function transformDate(row) {
-      return _objectSpread({}, row, {
+      return _objectSpread(_objectSpread({}, row), {}, {
         timestamp: new Date(row.timestamp),
         // "no data" for wind is identified by wind direction -9999
         wind_direction: row.wind_direction < 0 ? null : row.wind_direction,
@@ -310,7 +314,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       if (key === 'temperature') {
         g.append('path').attr('class', 'line freezing').attr('d', line(data.map(function (d) {
-          return _objectSpread({}, d, {
+          return _objectSpread(_objectSpread({}, d), {}, {
             temperature: 32
           });
         }))).style('fill-opacity', 0).style('stroke-width', 1.5);
@@ -359,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
           }) + 2]);
         }
 
-        return _objectSpread({}, map, _defineProperty({}, key, fn));
+        return _objectSpread(_objectSpread({}, map), {}, _defineProperty({}, key, fn));
       }, {});
       mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
       .attr('width', width) // can't catch mouse events on a g element

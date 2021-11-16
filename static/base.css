@@ -312,3 +312,7 @@ h5 {
 .nws_predicted_snowfall {
   margin: 0 auto;
 }
+
+#last_updated_par {
+  text-align: center;
+}
