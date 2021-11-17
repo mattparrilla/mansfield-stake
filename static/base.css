@@ -198,6 +198,16 @@ button {
   margin: 30px auto 0;
 }
 
+button a {
+  text-decoration: none;
+  color: white;
+}
+
+button a:hover {
+  text-decoration: none;
+  color: white;
+}
+
 button:hover {
   background: #616161;
 }
