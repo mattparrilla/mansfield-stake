@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var yAxis = g.append('g').attr('class', 'axis axis--y').attr('transform', "translate(".concat(width - margin.right - margin.left, ", 0)")).style('font-size', fontSize).call(d3.axisRight(y)).append('text').attr('transform', 'rotate(-90)').attr('y', -20).attr('dy', '0.71em').attr('x', width > 400 ? -165 : -120).style('fill', '#000').style('font-size', width > 400 ? '14px' : '10px').text('Snow Depth, inches');
     /* REQUEST DATA, DRAW CHART AND AXIS */
 
-    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/test.csv', transformRow, function (csv) {
+    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, function (csv) {
       var data = csv.filter(function (season) {
         return season.season !== '';
       }); // update axes values with actual data
