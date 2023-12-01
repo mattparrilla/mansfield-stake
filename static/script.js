@@ -72,7 +72,7 @@ function fetchNwsForecast() {
       return period.getAttribute("period-name");
     }); // Generate HTML from the forecast data for our HTML
 
-    var newForecastAsString = forecastTimes.reduce(function (string, time, i) {
+    var newForecastAsString = forecastTimes.slice(0, 7).reduce(function (string, time, i) {
       return string += "\n        <div>\n          <h5 class='forecast_period'>".concat(time, "</h5>\n          <div class='forecast_content'>").concat(wordedForecast[i], "</div>\n        </div>\n      ");
     }, ""); // Add our forecast to our HTML
 
@@ -96,14 +96,14 @@ document.addEventListener('DOMContentLoaded', function () {
   ///////////////////////////////////////////////////
   var margin = {
     top: 10,
-    right: 60,
+    right: 30,
     bottom: 30,
     left: 15
   };
   var largeWidthThreshold = 600;
   var width = document.getElementById('legend_container').clientWidth;
-  var height = width > largeWidthThreshold ? 400 : width / 2;
-  var fontSize = "".concat(width > largeWidthThreshold ? 14 : 10, "px"); ///////////////////////////////////////////////////
+  var height = width / 2;
+  var fontSize = "".concat(width > largeWidthThreshold ? 16 : 10, "px"); ///////////////////////////////////////////////////
   //////////////// END GLOBALS //////////////////////
   ///////////////////////////////////////////////////
 
@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return y(d.snowDepth);
     });
     var xAxis = g.append('g').attr('class', 'axis axis--x').attr('transform', "translate(0,".concat(height - margin.bottom, ")")).style('font-size', fontSize).call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
-    var yAxis = g.append('g').attr('class', 'axis axis--y').attr('transform', "translate(".concat(width - margin.right - margin.left, ", 0)")).style('font-size', fontSize).call(d3.axisRight(y)).append('text').attr('transform', 'rotate(-90)').attr('y', -20).attr('dy', '0.71em').attr('x', width > 400 ? -165 : -120).style('fill', '#000').style('font-size', width > 400 ? '14px' : '10px').text('Snow Depth, inches');
+    var yAxis = g.append('g').attr('class', 'axis axis--y').attr('transform', "translate(".concat(width - margin.right - margin.left, ", 0)")).style('font-size', fontSize).call(d3.axisRight(y)).append('text').attr('transform', 'rotate(-90)').attr('y', -20).attr('dy', '0.71em').attr('x', width > 400 ? -165 : -120).style('fill', '#000').style('font-size', width > 400 ? '16px' : '12px').text('Snow Depth, inches');
     /* REQUEST DATA, DRAW CHART AND AXIS */
 
     d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, function (csv) {

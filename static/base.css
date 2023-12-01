@@ -2,6 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: sans-serif;
+  font-size: 16px;
 }
 
 .top-border {
@@ -13,11 +14,18 @@ body {
   z-index: 100;
 }
 
+
 h1 {
   font-weight: 200;
   text-align: center;
-  margin-bottom: 50px;
   font-size: 48px;
+}
+
+.title {
+  margin-bottom: 30px;
+}
+.title h1 {
+  margin-bottom: 10px;
 }
 
 h2 {
@@ -216,7 +224,16 @@ button:hover {
   text-align: center;
 }
 
+#last_updated_par {
+  font-size: 18px;
+  text-align: center;
+}
+
 @media (max-width: 992px) {
+  #last_updated_par {
+    font-size: 12px;
+  }
+
   .map_maker {
     padding: 0 30px;
   }
@@ -264,6 +281,7 @@ button:hover {
   }
   h2 {
     font-size: 18px;
+    margin-bottom: 10px;
   }
   section p {
     font-size: 14px;
@@ -312,6 +330,7 @@ button:hover {
 h5 {
   margin: 20px 0 5px;
   font-weight: bold;
+  font-size: 16px;
 }
 
 .forecast_location {
@@ -319,10 +338,11 @@ h5 {
   margin-bottom: 20px;
 }
 
+.forecast_content {
+  font-size: 16px;
+}
+
 .nws_predicted_snowfall {
   margin: 0 auto;
 }
 
-#last_updated_par {
-  text-align: center;
-}

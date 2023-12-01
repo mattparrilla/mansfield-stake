@@ -41,7 +41,7 @@ function fetchNwsForecast() {
     // map over each forecast text node and grab the contents
     const wordedForecast = Array.from(wordedForecastNode.querySelectorAll("text"))
       .map(textNode => textNode.innerHTML);
-
+    
     // Numerous forecasts of varying time ranges are in the XML document, get
     // them all so we can find the desired match
     const timeLayouts = forecast.querySelectorAll("time-layout");
@@ -55,7 +55,7 @@ function fetchNwsForecast() {
       .map(period => period.getAttribute("period-name"));
 
     // Generate HTML from the forecast data for our HTML
-    const newForecastAsString = forecastTimes.reduce((string, time, i) => {
+    const newForecastAsString = forecastTimes.slice(0, 7).reduce((string, time, i) => {
       return string += `
         <div>
           <h5 class='forecast_period'>${time}</h5>
@@ -84,12 +84,12 @@ document.addEventListener('DOMContentLoaded', () => {
   ///////// GLOBALS FOR USE BY CHARTS ///////////////
   ///////////////////////////////////////////////////
   const margin = {
-    top: 10, right: 60, bottom: 30, left: 15,
+    top: 10, right: 30, bottom: 30, left: 15,
   };
   const largeWidthThreshold = 600;
   const width = document.getElementById('legend_container').clientWidth;
-  const height = width > largeWidthThreshold ? 400 : width / 2;
-  const fontSize = `${width > largeWidthThreshold ? 14 : 10}px`;
+  const height = width / 2;
+  const fontSize = `${width > largeWidthThreshold ? 16 : 10}px`;
   ///////////////////////////////////////////////////
   //////////////// END GLOBALS //////////////////////
   ///////////////////////////////////////////////////
@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .attr('dy', '0.71em')
         .attr('x', width > 400 ? -165 : -120)
         .style('fill', '#000')
-        .style('font-size', width > 400 ? '14px' : '10px')
+        .style('font-size', width > 400 ? '16px' : '12px')
         .text('Snow Depth, inches');
 
     /* REQUEST DATA, DRAW CHART AND AXIS */
