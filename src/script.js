@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .text('Snow Depth, inches');
 
     /* REQUEST DATA, DRAW CHART AND AXIS */
-    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth-patched.csv', transformRow, csv => {
+    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, csv => {
       const data = csv.filter((season) => season.season !== '');
 
       // update axes values with actual data
