@@ -40,25 +40,23 @@
 
 <body>
   <div class="top-border"></div>
-  <div class="container">
-    <h1>Mount Mansfield Snow Stake Depth</h1>
+  <h1>Mount Mansfield Snow Stake Depth</h1>
 
-    <div>
-      <section>
-        <div id="chart_container">
-          <div id="legend">
-            <div id="currentSeason">
-              <div class="legend_label">Latest depth</div>
-              <div id="currentDepth" class="depth_value"></div>
-            </div>
-            <div id="comparisonSeason">
-              <div class="legend_label" id="comparisonLabel"></div>
-              <div id="comparisonDepth" class="depth_value"></div>
-            </div>
-          </div>
-          <svg id="snow_depth_chart" class="yearly-trend"></svg>
-          <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
-          <!--
+  <section>
+    <div id="chart_container">
+      <div id="legend">
+        <div id="currentSeason">
+          <div class="legend_label">Latest depth</div>
+          <div id="currentDepth" class="depth_value"></div>
+        </div>
+        <div id="comparisonSeason">
+          <div class="legend_label" id="comparisonLabel"></div>
+          <div id="comparisonDepth" class="depth_value"></div>
+        </div>
+      </div>
+      <svg id="snow_depth_chart" class="yearly-trend"></svg>
+      <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
+      <!--
             <div id="select-season-group" class="form-group">
               <label for="select-season">Compare to a historical winter:</label>
               <select id="select-season" class="form-control">
@@ -66,106 +64,111 @@
               </select>
             </div>
             -->
-        </div>
-
-        <div class="metrics-grid">
-          <div class="metric-card">
-            <div class="metric-label">Latest Snow Depth</div>
-            <div class="metric-value">86</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-label">Average for 2/15</div>
-            <div class="metric-value">60</div>
-          </div>
-
-          <div class="metric-card difference-positive">
-            <div class="metric-label">Above Average</div>
-            <div class="metric-value">+26</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-label">Last Snowier Winter</div>
-            <div class="metric-value">2019</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-label">Snowier Winters</div>
-            <div class="metric-value">15</div>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-label">Less Snowy Winters</div>
-            <div class="metric-value">45</div>
-          </div>
-        </div>
-      </section>
-
-      <section>
-        <!--
-          <h2 class="summary_title">Mansfield Snow Depth Statistics</h2>
-          <div class="summary_subtitle">Comparing <span id="metric_comparison_date">##/##</span> to historical values.</div>
-          -->
-      </section>
-
-      <section>
-        <h2>NWS Expected Snowfall Map</h2>
-        <img class="img-responsive nws_predicted_snowfall"
-          src="https://www.weather.gov/images/btv/winter/StormTotalSnow.jpg">
-      </section>
-
-      <section>
-        <h2>Latest NWS Forecast</h2>
-        <p class="forecast_location">For Mount Mansfield at 3,747 feet.</p>
-        <div id="nws_worded_forecast">Fetching forecast...</div>
-      </section>
     </div>
 
-    <section class="maps_too">
-      <div class="map_img">
-        <a href="https://ramblemaps.com/green-mountain-ski-maps">
-          <img class="img-responsive" src="https://static.ramblemaps.com/wood-mansfield-straight-1296.jpg" srcset="
-                
-                  https://static.ramblemaps.com/wood-mansfield-straight-1296.jpg 1296w,
-                  https://static.ramblemaps.com/wood-mansfield-straight-1118.jpg 1118w,
-                  https://static.ramblemaps.com/wood-mansfield-straight-972.jpg 972w,
-                  https://static.ramblemaps.com/wood-mansfield-straight-850.jpg 850w,
-                  https://static.ramblemaps.com/wood-mansfield-straight-746.jpg 746w,
-                  https://static.ramblemaps.com/wood-mansfield-straight-675.jpg 675w,
-                  https://static.ramblemaps.com/wood-mansfield-straight-648.jpg 648w,
-                  https://static.ramblemaps.com/wood-mansfield-straight-576.jpg 576w,
-                " sizes="(min-width: 620px) 50vw, 100vw" alt="wood_mounted Map">
-        </a>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">Latest Snow Depth</div>
+        <div class="metric-value">86</div>
       </div>
-      <div class="map_maker">
-        <h2><a href="https://ramblemaps.com/green-mountain-ski-maps">Green Mountain Ski Maps</a></h2>
-        <p>Ski-inspired wall maps of the Green Mountains (and beyond). Designed for folks who care about snow as much as
-          you do.</p>
-        <p>Made by me.</p>
-        <button><a href="https://ramblemaps.com/green-mountain-ski-maps">See The Maps</a></button>
-      </div>
-    </section>
 
-    <section>
-      <div id="info_pane">
-        <h2>About the data</h2>
-        <p>The snow depth has been measured at a stake at 3,900 feet on Mount Mansfield nearly continuously since 1954.
-          The reading is a single data point that can be used to give an idea of how the season is progressing in the
-          high country.</p>
-        <p>The latest data is published by the NWS Burlington office in the <a
-            href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily
-            Hydrometeorological Report</a>. My website is updated within the hour of new data being published in the
-          report.</p>
-        <p>In recent years there have been some gaps in NWS reporting that have been filled with skier reports.</p>
-        <p>Thanks to the many folks who have kept this record going over the years.</p>
-        <h2>Download Data</h2>
-        <p>If you'd like a copy of this data, you can find it <a
-            href="https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv">here.</a></p>
-        <p>This is my copy of the data and includes values reported to me over COVID and cleaning of erroneous values.
-          It is updated within the hour of a new depth report by the NWS.</p>
+      <div class="metric-card">
+        <div class="metric-label">Average for 2/15</div>
+        <div class="metric-value">60</div>
       </div>
-    </section>
+
+      <div class="metric-card difference-positive">
+        <div class="metric-label">Above Average</div>
+        <div class="metric-value">+26</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Last Snowier Winter</div>
+        <div class="metric-value">2019</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Snowier Winters</div>
+        <div class="metric-value">15</div>
+      </div>
+
+      <div class="metric-card">
+        <div class="metric-label">Less Snowy Winters</div>
+        <div class="metric-value">45</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>NWS Expected Snowfall Map</h2>
+    <img class="img-responsive nws_predicted_snowfall"
+      src="https://www.weather.gov/images/btv/winter/StormTotalSnow.jpg">
+  </section>
+
+  <section>
+    <h2>Latest NWS Forecast</h2>
+    <p class="forecast_location">For Mount Mansfield at 3,747 feet.</p>
+    <div id="nws_worded_forecast">Fetching forecast...</div>
+  </section>
+
+  <div>
+    <div class="hero">
+      <picture>
+        <source media="(min-width: 55rem)" srcset="
+            https://static.ramblemaps.com/mount-mansfield-desktop-hero-3840.jpg 3840w,
+            https://static.ramblemaps.com/mount-mansfield-desktop-hero-2560.jpg 2560w,
+            https://static.ramblemaps.com/mount-mansfield-desktop-hero-1920.jpg 1920w,
+            https://static.ramblemaps.com/mount-mansfield-desktop-hero-1536.jpg 1536w,
+            https://static.ramblemaps.com/mount-mansfield-desktop-hero-1366.jpg 1366w,
+            https://static.ramblemaps.com/mount-mansfield-desktop-hero-1024.jpg 1024w,
+            " sizes="100vw">
+        <source srcset="
+            https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-1440.jpg 1440w,
+            https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-1242.jpg 1242w,
+            https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-1125.jpg 1125w,
+            https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-1080.jpg 1080w,
+            https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-828.jpg 828w,
+            https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-750.jpg 750w,
+            https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-720.jpg 720w,
+            https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-640.jpg 640w
+            " sizes="100vw">
+        <img src="https://static.ramblemaps.com/mount-mansfield-stowe-tall-hero-1440.jpg"
+          alt="Mount Mansfield Wood Mounted Map" loading="eager">
+      </picture>
+      <div class="hero_contents_container">
+        <div class="hero_contents">
+          <h3>Green Mountain Ski Maps</h3>
+          <p>Ski-inspired wall maps of the Green Mountains. Designed for folks who care about snow as much as you do.</p>
+          <p>Made by me.</p>
+          <button type="button">
+            <a href="https://ramblemaps.com/green-mountain-maps">
+              See The Maps
+            </a>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
+
+  <section>
+    <div id="info_pane">
+      <h2>About the data</h2>
+      <p>The snow depth has been measured at a stake at 3,900 feet on Mount Mansfield nearly continuously since 1954.
+        The reading is a single data point that can be used to give an idea of how the season is progressing in the
+        high country.</p>
+      <p>The latest data is published by the NWS Burlington office in the <a
+          href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily
+          Hydrometeorological Report</a>. My website is updated within the hour of new data being published in the
+        report.</p>
+      <p>In recent years there have been some gaps in NWS reporting that have been filled with skier reports.</p>
+      <p>Thanks to the many folks who have kept this record going over the years.</p>
+      <h2>Download Data</h2>
+      <p>If you'd like a copy of this data, you can find it <a
+          href="https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv">here.</a></p>
+      <p>This is my copy of the data and includes values reported to me over COVID and cleaning of erroneous values.
+        It is updated within the hour of a new depth report by the NWS.</p>
+    </div>
+  </section>
   <script type="text/javascript" src="static/d3.min.js"></script>
   <script type="text/javascript" src="static/script.js"></script>
 </body>
