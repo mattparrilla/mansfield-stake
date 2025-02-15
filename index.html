@@ -40,7 +40,6 @@
       <div class="row">
         <div class="col-xs-12 title">
           <h1>Mount Mansfield Snow Stake Depth</h1>
-          <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
         </div>
       </div>
 
@@ -51,22 +50,64 @@
             <div id="legend_container">
               <div id="legend">
                 <div id="currentSeason">
-                  <h4>Latest snow depth</h4>
+                  <div class="legend_label">Latest depth</div>
                   <div id="currentDepth" class="depth_value"></div>
                 </div>
                 <div id="comparisonSeason">
-                  <h4 id="comparisonLabel"></h4>
+                  <div class="legend_label" id="comparisonLabel"></div>
                   <div id="comparisonDepth" class="depth_value"></div>
                 </div>
               </div>
               <svg id="snow_depth_chart" class="yearly-trend"></svg>
+              <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
+              <!--
               <div id="select-season-group" class="form-group">
                 <label for="select-season">Compare to a historical winter:</label>
                 <select id="select-season" class="form-control">
                   <option disabled selected value>Select a season</option>
                 </select>
               </div>
+              -->
             </div>
+
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <div class="metric-label">Latest Snow Depth</div>
+                <div class="metric-value">86</div>
+              </div>
+              
+              <div class="metric-card">
+                <div class="metric-label">Average for ##/##</div>
+                <div class="metric-value">60</div>
+              </div>
+              
+              <div class="metric-card difference-positive">
+                <div class="metric-label">Above Average</div>
+                <div class="metric-value">+26</div>
+              </div>
+
+              <div class="metric-card">
+                <div class="metric-label">Last Snowier Winter</div>
+                <div class="metric-value">2019</div>
+              </div>
+              
+              <div class="metric-card">
+                <div class="metric-label">Snowier Winters</div>
+                <div class="metric-value">15</div>
+              </div>
+              
+              <div class="metric-card">
+                <div class="metric-label">Less Snowy Winters</div>
+                <div class="metric-value">45</div>
+              </div>
+            </div>
+          </section>
+
+          <section>
+            <!--
+            <h2 class="summary_title">Mansfield Snow Depth Statistics</h2>
+            <div class="summary_subtitle">Comparing <span id="metric_comparison_date">##/##</span> to historical values.</div>
+            -->
           </section>
 
           <section>
