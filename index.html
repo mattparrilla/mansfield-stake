@@ -1,64 +1,64 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <meta name="description" content="Snow depth, forecast, temperature, and wind at the fabled stake on top of Mount Mansfield.">
-    <meta name="author" content="@mattparrilla">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Social Media Tags -->
-    <meta property="og:title" content="Mount Mansfield Snow Depth">
-    <meta property="og:description" content="Snow depth, forecast, temperature, and wind at the fabled stake on top of Mount Mansfield.">
-    <meta property="og:url" content="https://www.matthewparrilla.com/mansfield-stake/">
-    
-    <meta property="og:image" content="https://www.matthewparrilla.com/mansfield-stake/static/mansfield_snow_plot.png">
-    <meta name="twitter:image" content="https://www.matthewparrilla.com/mansfield-stake/static/mansfield_snow_plot.png">
-    
-    <meta name="twitter:title" content="Mount Mansfield Snow Depth">
-    <meta name="twitter:description" content="Snow depth, forecast, temperature, and wind at the fabled stake on top of Mount Mansfield.">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="mattparrilla">
+  <meta name="description"
+    content="Snow depth, forecast, temperature, and wind at the fabled stake on top of Mount Mansfield.">
+  <meta name="author" content="@mattparrilla">
+
+  <!-- Social Media Tags -->
+  <meta property="og:title" content="Mount Mansfield Snow Depth">
+  <meta property="og:description"
+    content="Snow depth, forecast, temperature, and wind at the fabled stake on top of Mount Mansfield.">
+  <meta property="og:url" content="https://www.matthewparrilla.com/mansfield-stake/">
+
+  <meta property="og:image" content="https://www.matthewparrilla.com/mansfield-stake/static/mansfield_snow_plot.png">
+  <meta name="twitter:image" content="https://www.matthewparrilla.com/mansfield-stake/static/mansfield_snow_plot.png">
+
+  <meta name="twitter:title" content="Mount Mansfield Snow Depth">
+  <meta name="twitter:description"
+    content="Snow depth, forecast, temperature, and wind at the fabled stake on top of Mount Mansfield.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="mattparrilla">
 
 
-    <link rel="shortcut icon" href="favicon.ico">
-    <!-- <link href="static/bootstrap.min.css" rel="stylesheet"> --> <!-- Removed Bootstrap -->
-    <link href="static/base.css" rel="stylesheet">
-    <title>Mount Mansfield Snow Station</title>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-31358980-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-31358980-1');
-    </script>
-  </head>
-  <body>
-    <div class="top-border"></div>
-    <div class="container">
-      <!-- Removed "row" and "col-xs-12" -->
-      <div class="title">
-        <h1>Mount Mansfield Snow Stake Depth</h1>
-      </div>
+  <link rel="shortcut icon" href="favicon.ico">
+  <link href="static/base.css" rel="stylesheet">
+  <title>Mount Mansfield Snow Station</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-31358980-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'UA-31358980-1');
+  </script>
+</head>
 
-      <!-- Removed the "row" and "col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2" wrappers -->
-      <div>
-        <section>
-          <div id="chart_container">
-            <div id="legend">
-              <div id="currentSeason">
-                <div class="legend_label">Latest depth</div>
-                <div id="currentDepth" class="depth_value"></div>
-              </div>
-              <div id="comparisonSeason">
-                <div class="legend_label" id="comparisonLabel"></div>
-                <div id="comparisonDepth" class="depth_value"></div>
-              </div>
+<body>
+  <div class="top-border"></div>
+  <div class="container">
+    <h1>Mount Mansfield Snow Stake Depth</h1>
+
+    <div>
+      <section>
+        <div id="chart_container">
+          <div id="legend">
+            <div id="currentSeason">
+              <div class="legend_label">Latest depth</div>
+              <div id="currentDepth" class="depth_value"></div>
             </div>
-            <svg id="snow_depth_chart" class="yearly-trend"></svg>
-            <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
-            <!--
+            <div id="comparisonSeason">
+              <div class="legend_label" id="comparisonLabel"></div>
+              <div id="comparisonDepth" class="depth_value"></div>
+            </div>
+          </div>
+          <svg id="snow_depth_chart" class="yearly-trend"></svg>
+          <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
+          <!--
             <div id="select-season-group" class="form-group">
               <label for="select-season">Compare to a historical winter:</label>
               <select id="select-season" class="form-control">
@@ -66,68 +66,65 @@
               </select>
             </div>
             -->
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Latest Snow Depth</div>
+            <div class="metric-value">86</div>
           </div>
 
-          <div class="metrics-grid">
-            <div class="metric-card">
-              <div class="metric-label">Latest Snow Depth</div>
-              <div class="metric-value">86</div>
-            </div>
-            
-            <div class="metric-card">
-              <div class="metric-label">Average for ##/##</div>
-              <div class="metric-value">60</div>
-            </div>
-            
-            <div class="metric-card difference-positive">
-              <div class="metric-label">Above Average</div>
-              <div class="metric-value">+26</div>
-            </div>
-
-            <div class="metric-card">
-              <div class="metric-label">Last Snowier Winter</div>
-              <div class="metric-value">2019</div>
-            </div>
-            
-            <div class="metric-card">
-              <div class="metric-label">Snowier Winters</div>
-              <div class="metric-value">15</div>
-            </div>
-            
-            <div class="metric-card">
-              <div class="metric-label">Less Snowy Winters</div>
-              <div class="metric-value">45</div>
-            </div>
+          <div class="metric-card">
+            <div class="metric-label">Average for 2/15</div>
+            <div class="metric-value">60</div>
           </div>
-        </section>
 
-        <section>
-          <!--
+          <div class="metric-card difference-positive">
+            <div class="metric-label">Above Average</div>
+            <div class="metric-value">+26</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Last Snowier Winter</div>
+            <div class="metric-value">2019</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Snowier Winters</div>
+            <div class="metric-value">15</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-label">Less Snowy Winters</div>
+            <div class="metric-value">45</div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <!--
           <h2 class="summary_title">Mansfield Snow Depth Statistics</h2>
           <div class="summary_subtitle">Comparing <span id="metric_comparison_date">##/##</span> to historical values.</div>
           -->
-        </section>
+      </section>
 
-        <section>
-          <h2>NWS Expected Snowfall Map</h2>
-          <img class="img-responsive nws_predicted_snowfall"
-            src="https://www.weather.gov/images/btv/winter/StormTotalSnow.jpg">
-        </section>
+      <section>
+        <h2>NWS Expected Snowfall Map</h2>
+        <img class="img-responsive nws_predicted_snowfall"
+          src="https://www.weather.gov/images/btv/winter/StormTotalSnow.jpg">
+      </section>
 
-        <section>
-          <h2>Latest NWS Forecast</h2>
-          <p class="forecast_location">Forecast for Mount Mansfield at 3,747 feet.</p>
-          <div id="nws_worded_forecast">Fetching forecast...</div>
-        </section>
-      </div>
+      <section>
+        <h2>Latest NWS Forecast</h2>
+        <p class="forecast_location">For Mount Mansfield at 3,747 feet.</p>
+        <div id="nws_worded_forecast">Fetching forecast...</div>
+      </section>
     </div>
 
     <section class="maps_too">
       <div class="map_img">
         <a href="https://ramblemaps.com/green-mountain-ski-maps">
-          <img class="img-responsive"
-            src="https://static.ramblemaps.com/wood-mansfield-straight-1296.jpg"
-            srcset="
+          <img class="img-responsive" src="https://static.ramblemaps.com/wood-mansfield-straight-1296.jpg" srcset="
                 
                   https://static.ramblemaps.com/wood-mansfield-straight-1296.jpg 1296w,
                   https://static.ramblemaps.com/wood-mansfield-straight-1118.jpg 1118w,
@@ -141,28 +138,36 @@
         </a>
       </div>
       <div class="map_maker">
-        <h2>My Business: Ramble Maps</h2>
-        <p>Ski-inspired wall maps of the Green Mountains (and beyond). Designed for folks who care about snow as much as you do.</p>
+        <h2><a href="https://ramblemaps.com/green-mountain-ski-maps">Green Mountain Ski Maps</a></h2>
+        <p>Ski-inspired wall maps of the Green Mountains (and beyond). Designed for folks who care about snow as much as
+          you do.</p>
         <p>Made by me.</p>
         <button><a href="https://ramblemaps.com/green-mountain-ski-maps">See The Maps</a></button>
       </div>
     </section>
 
-    <div class="container">
-      <section>
-        <div id="info_pane">
-          <h2>About the data</h2>
-          <p>The snow depth has been measured at a stake at 3,900 feet on Mount Mansfield nearly continuously since 1954. The reading is a single data point that can be used to give an idea of how the season is progressing in the high country.</p>
-          <p>The latest data is published by the NWS Burlington office in the <a href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily Hydrometeorological Report</a>. My website is updated within the hour of new data being published in the report.</p>
-          <p>In recent years there have been some gaps in NWS reporting that have been filled with skier reports.</p>
-          <p>Thanks to the many folks who have kept this record going over the years.</p>
-          <h2>Download Data</h2>
-          <p>If you'd like a copy of this data, you can find it <a href="https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv">here.</a></p>
-          <p>This is my copy of the data and includes values reported to me over COVID and cleaning of erroneous values. It is updated within the hour of a new depth report by the NWS.</p>
-        </div>
-      </section>
-    </div>
-    <script type="text/javascript" src="static/d3.min.js"></script>
-    <script type="text/javascript" src="static/script.js"></script>
-  </body>
+    <section>
+      <div id="info_pane">
+        <h2>About the data</h2>
+        <p>The snow depth has been measured at a stake at 3,900 feet on Mount Mansfield nearly continuously since 1954.
+          The reading is a single data point that can be used to give an idea of how the season is progressing in the
+          high country.</p>
+        <p>The latest data is published by the NWS Burlington office in the <a
+            href="https://forecast.weather.gov/product.php?site=BTV&issuedby=BTV&product=HYD&format=CI&version=1">Daily
+            Hydrometeorological Report</a>. My website is updated within the hour of new data being published in the
+          report.</p>
+        <p>In recent years there have been some gaps in NWS reporting that have been filled with skier reports.</p>
+        <p>Thanks to the many folks who have kept this record going over the years.</p>
+        <h2>Download Data</h2>
+        <p>If you'd like a copy of this data, you can find it <a
+            href="https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv">here.</a></p>
+        <p>This is my copy of the data and includes values reported to me over COVID and cleaning of erroneous values.
+          It is updated within the hour of a new depth report by the NWS.</p>
+      </div>
+    </section>
+  </div>
+  <script type="text/javascript" src="static/d3.min.js"></script>
+  <script type="text/javascript" src="static/script.js"></script>
+</body>
+
 </html>

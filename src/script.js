@@ -59,7 +59,7 @@ function fetchNwsForecast() {
       return string += `
         <div>
           <h5 class='forecast_period'>${time}</h5>
-          <div class='forecast_content'>${wordedForecast[i]}</div>
+          <p class='forecast_content'>${wordedForecast[i]}</p>
         </div>
       `;
     }, "");

@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700;800&display=swap');
 
-/* Base text styles */
+/* Base Styles (Mobile First) */
 body {
   font-family: 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
 }
 
 h1, h2, h3 {
@@ -13,35 +16,32 @@ h1, h2, h3 {
   letter-spacing: -0.02em;
 }
 
-/* Metrics and data specific styles */
-.metric-value {
-  font-family: 'Roboto Mono', monospace;
-  font-feature-settings: "tnum" 1;
-}
-
-/* Refined text styles */
+/* Mobile Typography & Layout */
 h1 {
-  line-height: 1.2;
-  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  margin: 1.5rem 0 2rem;
 }
 
 h2 {
+  text-align: center;
+  font-size: 18px;
+  margin: 2.5rem 0 1rem;
   line-height: 1.3;
-  margin: 2rem 0 1rem;
 }
 
-p {
-  font-size: 1rem;
+p, section p {
+  font-size: 14px;
   line-height: 1.6;
   color: #374151;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-size: 16px;
+.container {
+  padding: 0 10px;
 }
 
+/* Top Border & Title */
 .top-border {
   position: fixed;
   top: 0;
@@ -51,21 +51,44 @@ body {
   z-index: 100;
 }
 
-.title {
-  text-align: center;
-  margin-bottom: 1rem;
+/* Chart & Legend */
+#chart_container {
+  position: relative;
 }
 
-h1 {
-  text-align: center;
-  font-size: 48px;
+#legend {
+  position: absolute;
+  top: 0;
+  left: 20px; /* Mobile */
+  height: 100px;
+  line-height: 1;
 }
 
-h2 {
-  text-align: center;
-  margin-bottom: 30px;
+#legend div.legend_label {
+  display: inline-block;
+  margin: 0;
+  font-size: 12px;
+  width: 100px;
 }
 
+#legend .depth_value {
+  display: inline-block;
+  text-align: right;
+  font-size: 12px;
+  width: 20px;
+}
+
+#currentSeason .legend_label,
+#currentSeason .depth_value {
+  color: #e3624f;
+}
+
+#comparisonSeason .legend_label,
+#comparisonSeason .depth_value {
+  color: #1a1a1a;
+}
+
+/* SVG & Chart Elements */
 .yearly-trend {
   display: block;
   margin: 0 auto;
@@ -93,7 +116,11 @@ h2 {
 }
 
 svg text {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-family: 'Open Sans', sans-serif;
+}
+
+svg .tick text {
+  font-family: 'Roboto Mono', monospace;
 }
 
 .year-label {
@@ -101,109 +128,82 @@ svg text {
   font-weight: 300;
 }
 
+/* Info Pane */
 #info_pane {
   margin: 30px 0 40px;
 }
 
-.year-label {
-  font-size: 32px;
-  font-weight: 300;
+/* Depth & Metric Values */
+.depth_value,
+.metric-value {
+  font-family: 'Roboto Mono', monospace;
+  font-feature-settings: "tnum" 1;
+  font-size: 2rem;
+  font-weight: 800;
 }
 
-.form-control {
-  display: inline-block;
-  width: auto;
-  min-width: 150px;
-}
-
-#select-season {
-  margin-left: 30px;
-}
-
-#select-season-group {
-  width: 100%;
+/* Forecast & Last Updated */
+#last_updated_par {
+  font-size: 0.75rem;
   text-align: center;
-  margin-bottom: 40px;
+  color: #6b7280;
+  margin-top: 0;
+  font-weight: 500;
 }
 
-#select-season-group label {
-  font-size: 18px;
-  font-weight: 400;
+.forecast_location {
+  text-align: center;
+  margin: -1rem 0 0.5rem;
 }
 
-#select-season-group p {
-  float: right;
+.forecast_content {
+  margin-top: 0;
 }
 
-/* LEGEND STYLING */
-#chart_container {
+/* Metrics Grid & Cards (Mobile: 2 columns) */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 2rem auto;
+}
+
+.metric-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 1.25rem 1rem 1rem;
+  transition: all 0.2s ease;
   position: relative;
+  text-align: center;
 }
 
-#legend {
+.metric-card::before {
+  content: '';
   position: absolute;
   top: 0;
-  left: 50px;
-  bottom: 0;
-  height: 100px;
-  line-height: 1;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: #a1a1a1;
 }
 
-#legend div.legend_label {
-  display: inline-block;
-  margin: 0;
-  width: 280px;
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
 }
 
-#legend .depth_value {
-  display: inline-block;
-  width: 50px;
-  text-align: right;
-  font-size: 24px;
+.metric-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 0.05em;
 }
 
-#comparisonSeason .legend_label, #comparisonSeason .depth_value {
-  color: #1a1a1a;
-  font-size: 18px;
-}
-
-#currentSeason .legend_label, #currentSeason .depth_value {
-  color: #e3624f;
-  font-size: 18px;
-}
-
-#legend p {
-  position: absolute;
-  top: 420px;
-  right: 0;
-  font-size: 10px;
-  color: grey;
-  margin-top: 10px;
-}
-
-.summary_title {
-  margin-bottom: 0;
-}
-.summary_subtitle {
-  text-align: center;
-}
-
-section p {
-  font-size: 16px;
-}
-
-section {
-  margin-bottom: 80px;
-}
-
-.coming_soon_stations {
-  margin-top: -20px;
-}
-
+/* Maps */
 .maps_too {
   display: flex;
   max-width: 1600px;
-  margin: 0 auto 80px;
+  margin: 3rem auto;
   flex-wrap: wrap;
 }
 
@@ -213,29 +213,39 @@ section {
 }
 
 .map_img img {
+  display: block;
   margin: 0 auto;
 }
 
 .map_maker {
   flex: 3;
   align-self: center;
-  padding: 0 0 0 80px;
+  padding: 0;
   min-width: 300px;
 }
 
+.map_maker a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.map_maker a:hover {
+  text-decoration: underline;
+}
+
+/* Buttons */
 button {
   border: 0;
-  padding: 1.5rem;
-  font-size: 1.8rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
   border-radius: 5px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15),
-               0 2px 4px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
   font-weight: 600;
   background: #424242;
   color: white;
   cursor: pointer;
   display: block;
-  margin: 30px auto 0;
+  margin: 1.5rem auto 0;
 }
 
 button a {
@@ -243,96 +253,12 @@ button a {
   color: white;
 }
 
+button:hover,
 button a:hover {
-  text-decoration: none;
-  color: white;
-}
-
-button:hover {
   background: #616161;
 }
 
-.missing_data_note {
-  text-align: center;
-}
-
-#last_updated_par {
-  font-size: 18px;
-  text-align: center;
-}
-
-@media (max-width: 992px) {
-  #last_updated_par {
-    font-size: 12px;
-  }
-
-  .map_maker {
-    padding: 0 30px;
-  }
-
-  .missing_data_note {
-    text-align: left;
-  }
-
-  #legend div.legend_label {
-    font-size: 18px;
-    width: 180px;
-  }
-  #legend .depth_value {
-    font-size: 18px;
-    width: 40px;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-  h2 {
-    font-size: 24px;
-  }
-  #prev_10_container {
-    margin-bottom: 30px;
-  }
-}
-  
-@media (max-width: 768px) {
-  .container {
-    padding: 0 10px;
-  }
-  #legend div.legend_label {
-    font-size: 12px;
-    width: 100px;
-  }
-  #legend .depth_value {
-    font-size: 12px;
-    width: 20px;
-  }
-  h1 {
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 20px;
-  }
-  h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  section p {
-    font-size: 14px;
-  }
-  #select-season-group label {
-    font-size: 12px;
-  }
-  #select-season {
-    font-size: 12px;
-    margin-left: 10px;
-  }
-  #legend {
-    left: 20px;
-  }
-  section, .maps_too {
-    margin-bottom: 40px;
-  }
-}
-
+/* Additional Chart Styles */
 .line.temperature,
 .line.wind_speed,
 .line.wind_gust,
@@ -344,7 +270,7 @@ button:hover {
   stroke: white;
   stroke-width: 2.5px;
   fill: black;
-  opacity: 0.9
+  opacity: 0.9;
 }
 
 .freezing {
@@ -365,132 +291,49 @@ h5 {
   font-size: 16px;
 }
 
-.forecast_location {
-  text-align: center;
-  margin-bottom: 20px;
+/* Responsive Images */
+.img-responsive {
+  max-width: 100%;
+  height: auto;
+  display: block;
 }
 
-.forecast_content {
-  font-size: 16px;
-}
-
-.nws_predicted_snowfall {
-  margin: 0 auto;
-}
-
-
-/* Metrics Grid */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin: 2rem auto;
-  padding: 0.5rem;
-}
-
+/* Media Queries (Min-Width Only) */
 @media (min-width: 768px) {
-  .metrics-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-    margin: 4rem auto;
+  #legend {
+    left: 50px;
+  }
+  #legend div.legend_label {
+    font-size: 18px;
+    width: 180px;
+  }
+  #legend .depth_value {
+    font-size: 18px;
+    width: 40px;
+  }
+  h1 {
+    font-size: 32px;
+  }
+  h2 {
+    font-size: 24px;
+  }
+  .map_maker {
+    padding: 0 30px;
   }
 }
 
 @media (min-width: 992px) {
+  h1 {
+    font-size: 48px;
+  }
+  h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
   .metrics-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 2.5rem;
     margin: 5rem auto;
     padding: 0 2rem;
   }
-}
-
-.metric-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  padding: 2rem;
-  transition: all 0.2s ease;
-  position: relative;
-  text-align: center;
-}
-
-@media (min-width: 992px) {
-  .metric-card {
-    padding: 2.5rem;
-  }
-}
-
-.metric-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: #4a90e2;
-}
-
-.metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
-}
-
-.metric-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #6b7280;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
-}
-
-@media (min-width: 992px) {
-  .metric-label {
-    font-size: 1.25rem;
-    margin-bottom: 0.75rem;
-  }
-}
-
-@media (min-width: 1200px) {
-  .metric-label {
-    font-size: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
-}
-
-.metric-value {
-  font-family: 'Roboto Mono', monospace;
-  font-feature-settings: "tnum" 1;
-  font-size: 2.75rem;
-  font-weight: 700;
-  color: #1f2937;
-  line-height: 1.1;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-}
-
-@media (min-width: 992px) {
-  .metric-value {
-    font-size: 3.5rem;
-  }
-}
-
-.depth_value {
-  font-family: 'Roboto Mono', monospace;
-  font-feature-settings: "tnum" 1;
-}
-
-/* Special styling for difference metric */
-.metric-card.difference-positive::before {
-  background: #10B981;
-}
-
-.metric-card.difference-negative::before {
-  background: #EF4444;
-}
-
-.img-responsive {
-  max-width: 100%;
-  height: auto;
-  display: block;
 }

@@ -73,7 +73,7 @@ function fetchNwsForecast() {
     }); // Generate HTML from the forecast data for our HTML
 
     var newForecastAsString = forecastTimes.slice(0, 7).reduce(function (string, time, i) {
-      return string += "\n        <div>\n          <h5 class='forecast_period'>".concat(time, "</h5>\n          <div class='forecast_content'>").concat(wordedForecast[i], "</div>\n        </div>\n      ");
+      return string += "\n        <div>\n          <h5 class='forecast_period'>".concat(time, "</h5>\n          <p class='forecast_content'>").concat(wordedForecast[i], "</p>\n        </div>\n      ");
     }, ""); // Add our forecast to our HTML
 
     document.getElementById("nws_worded_forecast").innerHTML = newForecastAsString;
