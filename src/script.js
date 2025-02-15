@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     top: 10, right: 30, bottom: 30, left: 15,
   };
   const largeWidthThreshold = 600;
-  const width = document.getElementById('legend_container').clientWidth;
+  const width = document.getElementById('chart_container').clientWidth;
   const height = width / 2;
   const fontSize = `${width > largeWidthThreshold ? 16 : 10}px`;
   ///////////////////////////////////////////////////

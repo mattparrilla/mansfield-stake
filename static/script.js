@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     left: 15
   };
   var largeWidthThreshold = 600;
-  var width = document.getElementById('legend_container').clientWidth;
+  var width = document.getElementById('chart_container').clientWidth;
   var height = width / 2;
   var fontSize = "".concat(width > largeWidthThreshold ? 16 : 10, "px"); ///////////////////////////////////////////////////
   //////////////// END GLOBALS //////////////////////
