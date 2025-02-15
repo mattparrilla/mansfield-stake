@@ -45,7 +45,7 @@ body {
 .top-border {
   position: fixed;
   top: 0;
-  height: 2px;
+  height: 3px;
   width: 100%;
   background-color: #e3624f;
   z-index: 100;
