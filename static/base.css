@@ -7,7 +7,7 @@ body {
   -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
-  font-size: 16px;
+  font-size: 1rem; /* 16px */
 }
 
 h1, h2, h3 {
@@ -40,11 +40,12 @@ a {
 a:hover {
   color: #3E98F5;
   text-decoration: underline;
-
 }
 
 section {
   padding: 2rem 1rem;
+  max-width: 64rem;
+  margin: 0 auto;
 }
 
 p {
@@ -54,14 +55,14 @@ p {
 }
 
 .container {
-  padding: 0 10px;
+  padding: 0 0.625rem; /* 10px */
 }
 
 /* Top Border & Title */
 .top-border {
   position: fixed;
   top: 0;
-  height: 3px;
+  height: 0.1875rem; /* 3px */
   width: 100%;
   background-color: #e3624f;
   z-index: 100;
@@ -75,23 +76,23 @@ p {
 #legend {
   position: absolute;
   top: 0;
-  left: 20px; /* Mobile */
-  height: 100px;
+  left: 1.25rem; /* 20px */
+  height: 6.25rem; /* 100px */
   line-height: 1;
 }
 
 #legend div.legend_label {
   display: inline-block;
   margin: 0;
-  font-size: 12px;
-  width: 100px;
+  font-size: 0.75rem; /* 12px */
+  width: 6.25rem; /* 100px */
 }
 
 #legend .depth_value {
   display: inline-block;
   text-align: right;
-  font-size: 12px;
-  width: 20px;
+  font-size: 0.75rem; /* 12px */
+  width: 1.25rem; /* 20px */
 }
 
 #currentSeason .legend_label,
@@ -113,21 +114,21 @@ p {
 .yearly-trend .line {
   fill: none;
   stroke: #d3d3d3;
-  stroke-width: 1px;
+  stroke-width: 0.0625rem; /* 1px */
 }
 
 .current .line {
-  stroke-width: 2px;
+  stroke-width: 0.125rem; /* 2px */
   stroke: #e3624f;
 }
 
 .comparison .line {
-  stroke-width: 2px;
+  stroke-width: 0.125rem; /* 2px */
   stroke: #1a1a1a;
 }
 
 .grid-line {
-  stroke-width: 1px;
+  stroke-width: 0.0625rem; /* 1px */
   stroke: white;
 }
 
@@ -140,13 +141,13 @@ svg .tick text {
 }
 
 .year-label {
-  font-size: 32px;
+  font-size: 2rem; /* 32px */
   font-weight: 300;
 }
 
 /* Info Pane */
 #info_pane {
-  margin: 30px 0 40px;
+  margin: 1.875rem 0 2.5rem; /* 30px 0 40px */
 }
 
 /* Depth & Metric Values */
@@ -186,7 +187,7 @@ svg .tick text {
 
 .metric-card {
   background: #ffffff;
-  border: 1px solid #e5e7eb;
+  border: 0.0625rem solid #e5e7eb; /* 1px */
   padding: 1.25rem 1rem 1rem;
   transition: all 0.2s ease;
   position: relative;
@@ -199,13 +200,13 @@ svg .tick text {
   top: 0;
   left: 0;
   width: 100%;
-  height: 3px;
+  height: 0.1875rem; /* 3px */
   background: #a1a1a1;
 }
 
 .metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(149, 157, 165, 0.1);
+  transform: translateY(-0.125rem); /* -2px */
+  box-shadow: 0 0.5rem 1.5rem rgba(149, 157, 165, 0.1); /* 8px and 24px */
 }
 
 .metric-label {
@@ -219,7 +220,7 @@ svg .tick text {
 .maps_too {
   display: flex;
   flex-wrap: wrap;
-  background: #d3d3d3
+  background: #d3d3d3;
 }
 
 .maps_too h3 {
@@ -229,7 +230,7 @@ svg .tick text {
 
 .map_img {
   flex: 4;
-  min-width: 300px;
+  min-width: 18.75rem; /* 300px */
 }
 
 .map_img img {
@@ -241,7 +242,7 @@ svg .tick text {
   flex: 3;
   align-self: center;
   padding: 0;
-  min-width: 300px;
+  min-width: 18.75rem; /* 300px */
 }
 
 .map_maker a {
@@ -258,8 +259,8 @@ button {
   border: 0;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  border-radius: 5px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.12);
+  border-radius: 0.3125rem; /* 5px */
+  box-shadow: 0 0.1875rem 0.375rem rgba(0,0,0,0.15), 0 0.125rem 0.25rem rgba(0,0,0,0.12);
   font-weight: 600;
   background: #424242;
   color: white;
@@ -291,7 +292,7 @@ button a:hover {
 
 .mouse-per-line .shadow {
   stroke: white;
-  stroke-width: 2.5px;
+  stroke-width: 0.15625rem; /* 2.5px */
   fill: black;
   opacity: 0.9;
 }
@@ -302,14 +303,14 @@ button a:hover {
 
 .alert {
   padding: 1rem 2rem;
-  border: 2px solid rgb(253, 208, 162);
-  border-radius: 3px;
+  border: 0.125rem solid rgb(253, 208, 162); /* 2px */
+  border-radius: 0.1875rem; /* 3px */
   background: rgb(255, 245, 235);
-  margin-bottom: 80px;
+  margin-bottom: 5rem; /* 80px */
 }
 
 h5 {
-  margin: 20px 0 5px;
+  margin: 1.25rem 0 0.3125rem; /* 20px 0 5px */
   font-weight: bold;
   font-size: 1rem;
 }
@@ -319,23 +320,25 @@ h5 {
   max-width: 100%;
   height: auto;
   display: block;
+  margin: 0 auto;
 }
 
 /* Media Queries (Min-Width Only) */
-@media (min-width: 768px) {
+@media (min-width: 48rem) { /* 768px */
   #legend div.legend_label {
-    font-size: 18px;
-    width: 180px;
+    font-size: 1.125rem; /* 18px */
+    width: 11.25rem; /* 180px */
   }
   #legend .depth_value {
-    font-size: 18px;
-    width: 40px;
+    font-size: 1.125rem; /* 18px */
+    width: 2.5rem; /* 40px */
   }
   h1 {
-    font-size: 32px;
+    font-size: 2rem; /* 32px */
+    margin-bottom: 1.25rem; /* 20px */
   }
   h2 {
-    font-size: 24px;
+    font-size: 1.5rem; /* 24px */
   }
   p {
     font-size: 1rem;
@@ -353,25 +356,26 @@ h5 {
   }
 }
 
-@media (min-width: 992px) {
+@media (min-width: 62rem) { /* 992px */
   h1 {
-    font-size: 48px;
+    font-size: 3rem; /* 48px */
+    margin-bottom: 3rem;
   }
   h2 {
-    font-size: 32px;
-    margin-bottom: 30px;
+    font-size: 2rem; /* 32px */
+    margin-bottom: 1.875rem; /* 30px */
   }
 }
 
 /* Ramble Map section */
-.hero {
+.ramble {
   position: relative;
   text-align: center;
   overflow: hidden;
   padding-top: 156.8%;
 }
 
-.hero img {
+.ramble img {
   width: 100%;
   vertical-align: top;
   position: absolute;
@@ -380,28 +384,28 @@ h5 {
   height: auto;
 }
 
-.hero_contents {
+.ramble_contents {
   position: absolute;
   top: 75%;
   transform: translateY(-50%);
   padding: 0 1rem;
 }
 
-.hero_contents p {
+.ramble_contents p {
   text-align: left;
 }
 
-.hero_contents button {
+.ramble_contents button {
   margin-bottom: 10%;
   cursor: pointer;
 }
 
 @media all and (min-width: 55rem) {
-  .hero {
+  .ramble {
     padding-top: 42%;
   }
 
-  .hero_contents_container {
+  .ramble_contents_container {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -409,112 +413,89 @@ h5 {
     right: 0;
   }
 
-  .hero_contents {
-    width: 37%;
+  .ramble_contents {
+    width: 33%;  /* TODO: I changed this magic number! */
     left: 11.75%;
     top: 50%;
     transform: translate(0, -50%);
     bottom: unset;
   }
 
-  .hero_contents h1 {
-    font-size: 2.8rem;
+  .ramble_contents h2 {
     line-height: 1;
     margin: 0;
+    text-align: left;
   }
 
-  .hero_contents h2 {
-    font-size: 1.8rem;
-    margin: 1rem 0 3rem 0;
-  }
-
-  .hero_contents button {
-    padding: 1.4rem;
-    font-size: 1.6rem;
+  .ramble_contents button {
     margin-bottom: 0;
   }
 }
 
 @media all and (min-width: 64rem) {
-  .hero_contents {
-    width: inherit;
-  }
-
-  .hero_contents h1 {
+  .ramble_contents h1 {
     font-size: 3rem;
   }
 
-  .hero_contents h2 {
+  .ramble_contents h2 {
     font-size: 1.8rem;
     margin: 1.5rem 0 4rem 0;
   }
 
-  .hero_contents button {
-    padding: 1.4rem;
-    font-size: 1.6rem;
-  }
 }
 
 @media all and (min-width: 80rem) {
-  .hero_contents h1 {
+  .ramble_contents h1 {
     font-size: 3.6rem;
   }
 
-  .hero_contents h2 {
+  .ramble_contents h2 {
     font-size: 2.2rem;
     margin: 2rem 0 5rem 0;
   }
 
-  .hero_contents button {
-    padding: 1.6rem;
-    font-size: 1.8rem;
-  }
 }
 
 @media all and (min-width: 100rem) {
-  .hero_contents h1 {
+  .ramble_contents h1 {
     font-size: 4rem;
   }
 
-  .hero_contents h2 {
+  .ramble_contents h2 {
     font-size: 2.4rem;
     margin: 2.5rem 0 7rem 0;
   }
 
-  .hero_contents button {
+  .ramble_contents button {
     padding: 2rem;
     font-size: 2rem;
   }
 }
 
 @media all and (min-width: 124rem) {
-  .hero_contents h1 {
+  .ramble_contents h1 {
     font-size: 4.8rem;
   }
 
-  .hero_contents h2 {
+  .ramble_contents h2 {
     font-size: 3rem;
     margin: 2.5rem 0 8rem 0;
   }
 
-  .hero_contents button {
-    padding: 2.3rem;
-    font-size: 2.4rem;
-  }
 }
 
 @media all and (min-width: 160rem) {
-  .hero_contents h1 {
+  }
+.ramble_contents h1 {
     font-size: 6rem;
+  
+  .ramble_contents h2 {
   }
-
-  .hero_contents h2 {
-    font-size: 3.6rem;
-    margin: 2.5rem 0 10rem 0;
+  margin: 2.5rem 0 10rem 0;
+  font-size: 3.6rem;
+    
+  .ramble_contents button {
   }
-
-  .hero_contents button {
-    padding: 2.6rem;
-    font-size: 3rem;
-  }
-}
+  font-size: 3rem;
+  padding: 2.6rem;
+    }
