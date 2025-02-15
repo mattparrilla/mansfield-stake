@@ -187,21 +187,12 @@ svg .tick text {
 
 .metric-card {
   background: #ffffff;
-  border: 0.0625rem solid #e5e7eb; /* 1px */
+  border: 1px solid #e5e7eb; /* 1px */
+  border-top: 3px solid #e3624f;
   padding: 1.25rem 1rem 1rem;
   transition: all 0.2s ease;
   position: relative;
   text-align: center;
-}
-
-.metric-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 0.1875rem; /* 3px */
-  background: #a1a1a1;
 }
 
 .metric-card:hover {
@@ -326,6 +317,7 @@ h5 {
 /* Media Queries (Min-Width Only) */
 @media (min-width: 48rem) { /* 768px */
   #legend div.legend_label {
+    line-height: 1.25;
     font-size: 1.125rem; /* 18px */
     width: 11.25rem; /* 180px */
   }
