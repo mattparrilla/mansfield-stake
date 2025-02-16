@@ -191,7 +191,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       return matchingDay && matchingDay.snowDepth > currentDepth;
     }).map(function (season) {
-      return season.season.split("-")[0];
+      var year = season.season.split("-")[0];
+      return "".concat(year, "-").concat((parseInt(year) + 1).toString().slice(-2));
     }).pop() || "None"; // Update DOM
 
     var metrics = {
@@ -287,8 +288,9 @@ document.addEventListener("DOMContentLoaded", function () {
         var season = _ref4.season;
         return season;
       }).filter(function (season) {
-        return season && season !== getCurrentSeason();
-      }).reverse().forEach(function (season) {
+        return season && season !== getCurrentSeason() && season !== AVERAGE_SEASON;
+      }) // Add AVERAGE_SEASON to filter
+      .reverse().forEach(function (season) {
         var option = document.createElement("option");
         option.value = season;
         option.text = season;

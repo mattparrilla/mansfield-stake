@@ -212,7 +212,10 @@ document.addEventListener("DOMContentLoaded", () => {
           );
           return matchingDay && matchingDay.snowDepth > currentDepth;
         })
-        .map((season) => season.season.split("-")[0])
+        .map((season) => {
+          const year = season.season.split("-")[0];
+          return `${year}-${(parseInt(year) + 1).toString().slice(-2)}`;
+        })
         .pop() || "None";
 
     // Update DOM
@@ -349,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Add seasons to dropdown options
         data
           .map(({ season }) => season)
-          .filter((season) => season && season !== getCurrentSeason())
+          .filter((season) => season && season !== getCurrentSeason() && season !== AVERAGE_SEASON) // Add AVERAGE_SEASON to filter
           .reverse()
           .forEach((season) => {
             const option = document.createElement("option");
