@@ -461,7 +461,7 @@ h5 {
 
   .ramble_contents h2 {
     font-size: 1.8rem;
-    margin: 1.5rem 0 4rem 0;
+    margin: 1.5rem 0;
   }
 
 }
@@ -473,7 +473,7 @@ h5 {
 
   .ramble_contents h2 {
     font-size: 2.2rem;
-    margin: 2rem 0 5rem 0;
+    margin: 2rem 0;
   }
 
 }
@@ -485,12 +485,12 @@ h5 {
 
   .ramble_contents h2 {
     font-size: 2.4rem;
-    margin: 2.5rem 0 7rem 0;
+    margin: 2.5rem 0;
   }
 
   .ramble_contents button {
-    padding: 2rem;
-    font-size: 2rem;
+    padding: 1.25rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -501,7 +501,7 @@ h5 {
 
   .ramble_contents h2 {
     font-size: 3rem;
-    margin: 2.5rem 0 8rem 0;
+    margin: 2.5rem 0 4rem 0;
   }
 }
 
@@ -511,12 +511,7 @@ h5 {
   }
   
   .ramble_contents h2 {
-    margin: 2.5rem 0 10rem 0;
+    margin: 2.5rem 0 4rem 0;
     font-size: 3.6rem;
-  }
-    
-  .ramble_contents button {
-    font-size: 3rem;
-    padding: 2.6rem;
   }
 }
