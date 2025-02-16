@@ -69,12 +69,12 @@
       </div>
 
       <div class="metric-card" id="average-depth">
-        <div class="metric-label">Average for Today</div>
+        <div class="metric-label">Average on Date</div>
         <div class="metric-value">60</div>
       </div>
 
       <div class="metric-card" id="difference" class="difference-positive">
-        <div class="metric-label">Above Average</div>
+        <div class="metric-label">Diff From Average</div>
         <div class="metric-value">+26</div>
       </div>
 
@@ -156,6 +156,12 @@
         report.</p>
       <p>In recent years there have been some gaps in NWS reporting that have been filled with skier reports.</p>
       <p>Thanks to the many folks who have kept this record going over the years.</p>
+      <h3>Known Bug</h3>
+      <p>There is a known bug that affects the comparison depth and the summary metrics. Not every date in the dataset
+          has a reported snow depth. In between two valid values, like 46 and 52, you might have multiple days without
+          a value. At the moment, the comparison metrics do not count those days.
+      </p>
+
       <h2>Download Data</h2>
       <p>If you'd like a copy of this data, you can find it <a
           href="https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv">here.</a></p>
