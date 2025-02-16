@@ -1,209 +1,285 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;600;700;800&display=swap');
+
+/* Base Styles (Mobile First) */
 body {
+  font-family: 'Open Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
-  font-size: 16px;
+  font-size: 1rem; /* 16px */
 }
 
+h1, h2, h3 {
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Mobile Typography & Layout */
+h1 {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 1.5rem 0 0;
+}
+
+h2 {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1rem;
+  line-height: 1.3;
+}
+
+a {
+  text-decoration: none;
+  color: #1E88E5;
+}
+
+a:hover {
+  color: #3E98F5;
+  text-decoration: underline;
+}
+
+section {
+  padding: 2rem 1rem;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+p {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #374151;
+}
+
+.container {
+  padding: 0 0.625rem; /* 10px */
+}
+
+/* Top Border & Title */
 .top-border {
   position: fixed;
   top: 0;
-  height: 2px;
+  height: 0.1875rem; /* 3px */
   width: 100%;
   background-color: #e3624f;
   z-index: 100;
 }
 
-
-h1 {
-  font-weight: 200;
-  text-align: center;
-  font-size: 48px;
-}
-
-.title {
-  margin-bottom: 30px;
-}
-.title h1 {
-  margin-bottom: 10px;
-}
-
-h2 {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.yearly-trend {
-  display: block;
-  margin: 0 auto 20px;
-}
-
-.yearly-trend .line {
-  fill: none;
-  stroke: #d3d3d3;
-  stroke-width: 1px;
-}
-
-.current .line {
-  stroke-width: 2px;
-  stroke: #e3624f;
-}
-
-.comparison .line {
-  stroke-width: 2px;
-  stroke: #1a1a1a;
-}
-
-.grid-line {
-  stroke-width: 1px;
-  stroke: white;
-}
-
-svg text {
-  font-family: Helvetica Neue;
-}
-
-.year-label {
-  font-size: 32px;
-  font-weight: 300;
-}
-
-#info_pane {
-  margin: 30px 0 40px;
-}
-
-.year-label {
-  font-size: 32px;
-  font-weight: 300;
-}
-
-.form-control {
-  display: inline-block;
-  width: auto;
-  min-width: 150px;
-}
-
-#select-season {
-  margin-left: 30px;
-}
-
-#select-season-group {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-#select-season-group label {
-  font-size: 18px;
-  font-weight: 400;
-}
-
-#select-season-group p {
-  float: right;
-}
-
-/* LEGEND STYLING */
-#legend_container {
+/* Chart & Legend */
+#chart_container {
   position: relative;
 }
 
 #legend {
   position: absolute;
-  width: 100%;
   top: 0;
-  left: 50px;
-  bottom: 0;
-  height: 100px;
+  left: 1.25rem; /* 20px */
+  height: 6.25rem; /* 100px */
+  line-height: 1;
 }
 
-#legend h4 {
+#legend div.legend_label {
   display: inline-block;
-  margin: 0;
-  width: 280px;
+  margin: 0 0 0.25rem;
+  font-size: 0.75rem; /* 12px */
+  width: 150px;
 }
 
 #legend .depth_value {
   display: inline-block;
-  width: 50px;
   text-align: right;
-  font-size: 24px;
+  font-size: 0.75rem; /* 12px */
+  width: 1.25rem; /* 20px */
 }
 
-#comparisonSeason h4, #comparisonSeason .depth_value {
-  color: #1a1a1a;
-  font-size: 18px;
-}
-
-#currentSeason h4, #currentSeason .depth_value {
+#currentSeason .legend_label,
+#currentSeason .depth_value {
   color: #e3624f;
-  font-size: 18px;
 }
 
-#legend p {
-  position: absolute;
-  top: 420px;
-  right: 0;
-  font-size: 10px;
-  color: grey;
-  margin-top: 10px;
+#comparisonSeason .legend_label,
+#comparisonSeason .depth_value {
+  color: #1a1a1a;
 }
 
+#select-season {
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: inherit;
+  width: auto;
+  cursor: pointer;
+}
 
-.container {
+#select-season option {
+  color: #1a1a1a;
+  font-size: 0.75rem;
+}
+
+/* SVG & Chart Elements */
+.yearly-trend {
+  display: block;
   margin: 0 auto;
-  width: 100% !important;
-  padding: 0 100px;
-  overflow: hidden;
 }
 
-section p {
-  font-size: 16px;
+.yearly-trend .line {
+  fill: none;
+  stroke: #d3d3d3;
+  stroke-width: 0.0625rem; /* 1px */
 }
 
-section {
-  margin-bottom: 80px;
+.current .line {
+  stroke-width: 0.125rem; /* 2px */
+  stroke: #e3624f;
 }
 
-.coming_soon_stations {
-  margin-top: -20px;
+.comparison .line {
+  stroke-width: 0.125rem; /* 2px */
+  stroke: #1a1a1a;
 }
 
+.grid-line {
+  stroke-width: 0.0625rem; /* 1px */
+  stroke: white;
+}
+
+svg text {
+  font-family: 'Open Sans', sans-serif;
+}
+
+svg .tick text {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.year-label {
+  font-size: 2rem; /* 32px */
+  font-weight: 300;
+}
+
+/* Info Pane */
+#info_pane {
+  margin: 1.875rem 0 2.5rem; /* 30px 0 40px */
+}
+
+/* Depth & Metric Values */
+.depth_value,
+.metric-value {
+  font-family: 'Roboto Mono', monospace;
+  font-feature-settings: "tnum" 1;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.metric-value {
+  visibility: hidden;
+}
+
+.metric-value.visible {
+  visibility: visible;
+}
+
+/* Forecast & Last Updated */
+#last_updated_par {
+  font-size: 0.65rem;
+  text-align: center;
+  color: #6b7280;
+  margin-top: 0;
+  font-weight: 500;
+}
+
+.forecast_location {
+  text-align: center;
+  margin: -1rem 0 0.5rem;
+}
+
+.forecast_content {
+  margin-top: 0;
+}
+
+/* Metrics Grid & Cards (Mobile: 2 columns) */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin: 2rem auto 0;
+}
+
+.metric-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* 1px */
+  border-top: 3px solid #e3624f;
+  padding: 1.25rem 1rem 1rem;
+  transition: all 0.2s ease;
+  position: relative;
+  text-align: center;
+}
+
+.metric-card:hover {
+  transform: translateY(-0.125rem); /* -2px */
+  box-shadow: 0 0.5rem 1.5rem rgba(149, 157, 165, 0.1); /* 8px and 24px */
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6b7280;
+  letter-spacing: 0.05em;
+}
+
+/* Maps */
 .maps_too {
   display: flex;
-  max-width: 1600px;
-  margin: 0 auto 80px;
   flex-wrap: wrap;
+  background: #d3d3d3;
+}
+
+.maps_too h3 {
+  text-align: center;
+  margin-top: 2rem;
 }
 
 .map_img {
   flex: 4;
-  min-width: 300px;
+  min-width: 18.75rem; /* 300px */
 }
 
 .map_img img {
+  display: block;
   margin: 0 auto;
 }
 
 .map_maker {
   flex: 3;
   align-self: center;
-  padding: 0 0 0 80px;
-  min-width: 300px;
+  padding: 0;
+  min-width: 18.75rem; /* 300px */
 }
 
+.map_maker a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.map_maker a:hover {
+  text-decoration: underline;
+}
+
+/* Buttons */
 button {
   border: 0;
-  padding: 1.5rem;
-  font-size: 1.8rem;
-  border-radius: 5px;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15),
-               0 2px 4px rgba(0, 0, 0, 0.12);
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 0.3125rem; /* 5px */
+  box-shadow: 0 0.1875rem 0.375rem rgba(0,0,0,0.15), 0 0.125rem 0.25rem rgba(0,0,0,0.12);
   font-weight: 600;
   background: #424242;
   color: white;
   cursor: pointer;
   display: block;
-  margin: 30px auto 0;
+  margin: 0 auto;
+  text-decoration: none;
 }
 
 button a {
@@ -211,96 +287,14 @@ button a {
   color: white;
 }
 
+button:hover,
 button a:hover {
+  background: #616161;
   text-decoration: none;
   color: white;
 }
 
-button:hover {
-  background: #616161;
-}
-
-.missing_data_note {
-  text-align: center;
-}
-
-#last_updated_par {
-  font-size: 18px;
-  text-align: center;
-}
-
-@media (max-width: 992px) {
-  #last_updated_par {
-    font-size: 12px;
-  }
-
-  .map_maker {
-    padding: 0 30px;
-  }
-
-  .missing_data_note {
-    text-align: left;
-  }
-
-  #legend h4 {
-    font-size: 18px;
-    width: 180px;
-  }
-  #legend .depth_value {
-    font-size: 18px;
-    width: 40px;
-  }
-
-  h1 {
-    font-size: 32px;
-  }
-  h2 {
-    font-size: 24px;
-  }
-  #prev_10_container {
-    margin-bottom: 30px;
-  }
-}
-  
-@media (max-width: 768px) {
-  .container {
-    padding: 0 10px;
-  }
-  #legend h4 {
-    font-size: 12px;
-    width: 120px;
-  }
-  #legend .depth_value {
-    font-size: 12px;
-    width: 20px;
-  }
-  h1 {
-    font-size: 20px;
-    font-weight: 500;
-    margin-bottom: 20px;
-  }
-  h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  section p {
-    font-size: 14px;
-  }
-  #select-season-group label {
-    font-size: 12px;
-  }
-  #select-season {
-    font-size: 12px;
-    margin-left: 10px;
-  }
-  #legend {
-    left: 20px;
-  }
-  section, .maps_too {
-    margin-bottom: 40px;
-  }
-}
-
+/* Additional Chart Styles */
 .line.temperature,
 .line.wind_speed,
 .line.wind_gust,
@@ -310,9 +304,9 @@ button:hover {
 
 .mouse-per-line .shadow {
   stroke: white;
-  stroke-width: 2.5px;
+  stroke-width: 0.15625rem; /* 2.5px */
   fill: black;
-  opacity: 0.9
+  opacity: 0.9;
 }
 
 .freezing {
@@ -321,28 +315,208 @@ button:hover {
 
 .alert {
   padding: 1rem 2rem;
-  border: 2px solid rgb(253, 208, 162);
-  border-radius: 3px;
+  border: 0.125rem solid rgb(253, 208, 162); /* 2px */
+  border-radius: 0.1875rem; /* 3px */
   background: rgb(255, 245, 235);
-  margin-bottom: 80px;
+  margin-bottom: 5rem; /* 80px */
 }
 
 h5 {
-  margin: 20px 0 5px;
+  margin: 1.25rem 0 0.3125rem; /* 20px 0 5px */
   font-weight: bold;
-  font-size: 16px;
+  font-size: 1rem;
 }
 
-.forecast_location {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.forecast_content {
-  font-size: 16px;
-}
-
-.nws_predicted_snowfall {
+/* Responsive Images */
+.img-responsive {
+  max-width: 100%;
+  height: auto;
+  display: block;
   margin: 0 auto;
 }
 
+/* Media Queries (Min-Width Only) */
+@media (min-width: 48rem) { /* 768px */
+  #legend div.legend_label {
+    line-height: 1.25;
+    font-size: 1.125rem; /* 18px */
+    width: 11.25rem; /* 180px */
+  }
+  #legend .depth_value {
+    font-size: 1.125rem; /* 18px */
+    width: 2.5rem; /* 40px */
+  }
+  h1 {
+    font-size: 2rem; /* 32px */
+    margin-bottom: 1.25rem; /* 20px */
+  }
+  h2 {
+    font-size: 1.5rem; /* 24px */
+  }
+  p {
+    font-size: 1rem;
+  }
+
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
+    margin: 3rem auto 2rem;
+  }
+
+  #last_updated_par {
+    font-size: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  #select-season {
+    font-size: 1.125rem;
+    width: 11.25rem;
+  }
+  
+  #select-season option {
+    font-size: 1.125rem;
+  }
+}
+
+@media (min-width: 62rem) { /* 992px */
+  h1 {
+    font-size: 3rem; /* 48px */
+    margin-bottom: 3rem;
+  }
+  h2 {
+    font-size: 2rem; /* 32px */
+    margin-bottom: 1.875rem; /* 30px */
+  }
+}
+
+/* Ramble Map section */
+.ramble {
+  position: relative;
+  text-align: center;
+  overflow: hidden;
+  padding-top: 156.8%;
+}
+
+.ramble img {
+  width: 100%;
+  vertical-align: top;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: auto;
+}
+
+.ramble_contents {
+  position: absolute;
+  top: 80%;
+  transform: translateY(-50%);
+  padding: 0 1rem;
+}
+
+.ramble_contents p {
+  text-align: left;
+}
+
+.ramble_contents button {
+  margin-bottom: 10%;
+  cursor: pointer;
+}
+
+@media all and (min-width: 55rem) {
+  .ramble {
+    padding-top: 42%;
+  }
+
+  .ramble_contents_container {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  .ramble_contents {
+    width: 33%;  /* TODO: I changed this magic number! */
+    left: 11.75%;
+    top: 50%;
+    transform: translate(0, -50%);
+    bottom: unset;
+  }
+
+  .ramble_contents h2 {
+    line-height: 1;
+    margin: 0;
+    text-align: left;
+  }
+
+  .ramble_contents button {
+    margin-bottom: 0;
+  }
+}
+
+@media all and (min-width: 64rem) {
+  .ramble_contents h1 {
+    font-size: 3rem;
+  }
+
+  .ramble_contents h2 {
+    font-size: 1.8rem;
+    margin: 1.5rem 0 4rem 0;
+  }
+
+}
+
+@media all and (min-width: 80rem) {
+  .ramble_contents h1 {
+    font-size: 3.6rem;
+  }
+
+  .ramble_contents h2 {
+    font-size: 2.2rem;
+    margin: 2rem 0 5rem 0;
+  }
+
+}
+
+@media all and (min-width: 100rem) {
+  .ramble_contents h1 {
+    font-size: 4rem;
+  }
+
+  .ramble_contents h2 {
+    font-size: 2.4rem;
+    margin: 2.5rem 0 7rem 0;
+  }
+
+  .ramble_contents button {
+    padding: 2rem;
+    font-size: 2rem;
+  }
+}
+
+@media all and (min-width: 124rem) {
+  .ramble_contents h1 {
+    font-size: 4.8rem;
+  }
+
+  .ramble_contents h2 {
+    font-size: 3rem;
+    margin: 2.5rem 0 8rem 0;
+  }
+}
+
+@media all and (min-width: 160rem) {
+  .ramble_contents h1 {
+      font-size: 6rem;
+  }
+  
+  .ramble_contents h2 {
+    margin: 2.5rem 0 10rem 0;
+    font-size: 3.6rem;
+  }
+    
+  .ramble_contents button {
+    font-size: 3rem;
+    padding: 2.6rem;
+  }
+}
