@@ -50,18 +50,16 @@
           <div id="currentDepth" class="depth_value"></div>
         </div>
         <div id="comparisonSeason">
-          <div class="legend_label" id="comparisonLabel"></div>
+          <div class="legend_label">
+            <select id="select-season">
+              <option value="Average Season">Average Season</option>
+            </select>
+          </div>
           <div id="comparisonDepth" class="depth_value"></div>
         </div>
       </div>
       <svg id="snow_depth_chart" class="yearly-trend"></svg>
       <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
-      <div id="select-season-group" class="form-group">
-        <label for="select-season">Compare to a historical winter:</label>
-        <select id="select-season" class="form-control">
-          <option disabled selected value>Select a season</option>
-        </select>
-      </div>
     </div>
 
     <div class="metrics-grid">

@@ -83,9 +83,9 @@ p {
 
 #legend div.legend_label {
   display: inline-block;
-  margin: 0;
+  margin: 0 0 0.25rem;
   font-size: 0.75rem; /* 12px */
-  width: 6.25rem; /* 100px */
+  width: 150px;
 }
 
 #legend .depth_value {
@@ -103,6 +103,19 @@ p {
 #comparisonSeason .legend_label,
 #comparisonSeason .depth_value {
   color: #1a1a1a;
+}
+
+#select-season {
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: inherit;
+  width: auto;
+  cursor: pointer;
+}
+
+#select-season option {
+  color: #1a1a1a;
+  font-size: 0.75rem;
 }
 
 /* SVG & Chart Elements */
@@ -353,6 +366,15 @@ h5 {
   #last_updated_par {
     font-size: 1rem;
     margin-top: 0.75rem;
+  }
+
+  #select-season {
+    font-size: 1.125rem;
+    width: 11.25rem;
+  }
+  
+  #select-season option {
+    font-size: 1.125rem;
   }
 }
 
