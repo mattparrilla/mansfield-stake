@@ -156,13 +156,29 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   var updateMetricsGrid = function updateMetricsGrid(currentDepth, historicalData) {
-    var today = new Date();
-    var month = today.getMonth() + 1;
-    var day = today.getDate();
-    var dateStr = "".concat(month, "/").concat(day); // Get historical values for this date
+    // Find latest measurement date from current season
+    var currentSeason = historicalData.find(function (s) {
+      return s.season === getCurrentSeason();
+    });
+    var lastMeasurement = currentSeason === null || currentSeason === void 0 ? void 0 : currentSeason.values[currentSeason.values.length - 1];
+
+    if (!lastMeasurement) {
+      return; // No data yet for current season
+    }
+
+    var month = lastMeasurement.date.getMonth() + 1;
+    var day = lastMeasurement.date.getDate(); // Get the average season data for this date
+
+    var averageSeason = historicalData.find(function (s) {
+      return s.season === AVERAGE_SEASON;
+    });
+    var averageDay = averageSeason.values.find(function (d) {
+      return d.date.getMonth() + 1 === month && d.date.getDate() === day;
+    });
+    var average = averageDay ? averageDay.snowDepth : 0; // Get historical values for this date (excluding average season)
 
     var historicalValues = historicalData.filter(function (season) {
-      return season.season !== getCurrentSeason();
+      return season.season !== getCurrentSeason() && season.season !== AVERAGE_SEASON;
     }).map(function (season) {
       var matchingDay = season.values.find(function (d) {
         return d.date.getMonth() + 1 === month && d.date.getDate() === day;
@@ -170,11 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
       return matchingDay ? matchingDay.snowDepth : null;
     }).filter(function (depth) {
       return depth !== null;
-    }); // Calculate average for this date
-
-    var average = Math.round(historicalValues.reduce(function (sum, val) {
-      return sum + val;
-    }, 0) / historicalValues.length); // Calculate difference from average
+    }); // Calculate difference from average
 
     var difference = currentDepth - average; // Count snowier and less snowy winters
 

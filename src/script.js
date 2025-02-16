@@ -170,14 +170,27 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const updateMetricsGrid = (currentDepth, historicalData) => {
-    const today = new Date();
-    const month = today.getMonth() + 1;
-    const day = today.getDate();
-    const dateStr = `${month}/${day}`;
-
-    // Get historical values for this date
+    // Find latest measurement date from current season
+    const currentSeason = historicalData.find((s) => s.season === getCurrentSeason());
+    const lastMeasurement = currentSeason?.values[currentSeason.values.length - 1];
+    
+    if (!lastMeasurement) {
+      return; // No data yet for current season
+    }
+  
+    const month = lastMeasurement.date.getMonth() + 1;
+    const day = lastMeasurement.date.getDate();
+  
+    // Get the average season data for this date
+    const averageSeason = historicalData.find(s => s.season === AVERAGE_SEASON);
+    const averageDay = averageSeason.values.find(
+      d => d.date.getMonth() + 1 === month && d.date.getDate() === day
+    );
+    const average = averageDay ? averageDay.snowDepth : 0;
+  
+    // Get historical values for this date (excluding average season)
     const historicalValues = historicalData
-      .filter((season) => season.season !== getCurrentSeason())
+      .filter((season) => season.season !== getCurrentSeason() && season.season !== AVERAGE_SEASON)
       .map((season) => {
         const matchingDay = season.values.find(
           (d) => d.date.getMonth() + 1 === month && d.date.getDate() === day
@@ -185,16 +198,10 @@ document.addEventListener("DOMContentLoaded", () => {
         return matchingDay ? matchingDay.snowDepth : null;
       })
       .filter((depth) => depth !== null);
-
-    // Calculate average for this date
-    const average = Math.round(
-      historicalValues.reduce((sum, val) => sum + val, 0) /
-        historicalValues.length
-    );
-
+  
     // Calculate difference from average
     const difference = currentDepth - average;
-
+  
     // Count snowier and less snowy winters
     const snowierWinters = historicalValues.filter(
       (depth) => depth > currentDepth
@@ -202,7 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const lessSnowyWinters = historicalValues.filter(
       (depth) => depth < currentDepth
     ).length;
-
+  
     // Find last snowier winter
     const lastSnowierWinter =
       historicalData
@@ -217,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return `${year}-${(parseInt(year) + 1).toString().slice(-2)}`;
         })
         .pop() || "None";
-
+  
     // Update DOM
     const metrics = {
       "#current-depth .metric-value": currentDepth,
@@ -227,13 +234,13 @@ document.addEventListener("DOMContentLoaded", () => {
       "#snowier-count .metric-value": snowierWinters,
       "#less-snowy-count .metric-value": lessSnowyWinters,
     };
-
+  
     Object.entries(metrics).forEach(([selector, value]) => {
       const element = document.querySelector(selector);
       element.textContent = value;
       element.classList.add("visible");
     });
-
+  
     // Add/remove positive/negative classes for difference card
     const differenceCard = document.querySelector("#difference");
     differenceCard.classList.remove(
