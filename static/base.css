@@ -159,6 +159,14 @@ svg .tick text {
   font-weight: 800;
 }
 
+.metric-value {
+  visibility: hidden;
+}
+
+.metric-value.visible {
+  visibility: visible;
+}
+
 /* Forecast & Last Updated */
 #last_updated_par {
   font-size: 0.65rem;

@@ -56,43 +56,41 @@
       </div>
       <svg id="snow_depth_chart" class="yearly-trend"></svg>
       <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
-      <!--
-            <div id="select-season-group" class="form-group">
-              <label for="select-season">Compare to a historical winter:</label>
-              <select id="select-season" class="form-control">
-                <option disabled selected value>Select a season</option>
-              </select>
-            </div>
-            -->
+      <div id="select-season-group" class="form-group">
+        <label for="select-season">Compare to a historical winter:</label>
+        <select id="select-season" class="form-control">
+          <option disabled selected value>Select a season</option>
+        </select>
+      </div>
     </div>
 
     <div class="metrics-grid">
-      <div class="metric-card">
+      <div class="metric-card" id="current-depth">
         <div class="metric-label">Latest Snow Depth</div>
         <div class="metric-value">86</div>
       </div>
 
-      <div class="metric-card">
-        <div class="metric-label">Average for 2/15</div>
+      <div class="metric-card" id="average-depth">
+        <div class="metric-label">Average for Today</div>
         <div class="metric-value">60</div>
       </div>
 
-      <div class="metric-card difference-positive">
+      <div class="metric-card" id="difference" class="difference-positive">
         <div class="metric-label">Above Average</div>
         <div class="metric-value">+26</div>
       </div>
 
-      <div class="metric-card">
+      <div class="metric-card" id="last-snowier">
         <div class="metric-label">Last Snowier Winter</div>
         <div class="metric-value">2019</div>
       </div>
 
-      <div class="metric-card">
+      <div class="metric-card" id="snowier-count">
         <div class="metric-label">Snowier Winters</div>
         <div class="metric-value">15</div>
       </div>
 
-      <div class="metric-card">
+      <div class="metric-card" id="less-snowy-count">
         <div class="metric-label">Less Snowy Winters</div>
         <div class="metric-value">45</div>
       </div>

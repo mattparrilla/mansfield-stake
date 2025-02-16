@@ -1,5 +1,11 @@
 "use strict";
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -11,12 +17,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* global d3 */
 var AVERAGE_SEASON = "Average Season";
@@ -30,8 +30,8 @@ var getCurrentSeason = function getCurrentSeason() {
 
 var transformRow = function transformRow(season) {
   var parseTime = function parseTime(date) {
-    var year = date.split('/')[0] > 7 ? 1900 : 1901;
-    return d3.timeParse('%0m/%0d/%Y')("".concat(date, "/").concat(year));
+    var year = date.split("/")[0] > 7 ? 1900 : 1901;
+    return d3.timeParse("%0m/%0d/%Y")("".concat(date, "/").concat(year));
   };
 
   return {
@@ -85,12 +85,12 @@ function fetchNwsForecast() {
 }
 
 var setMouseOverOpacity = function setMouseOverOpacity(opacity) {
-  d3.select('.mouse-line').style('opacity', opacity);
-  d3.selectAll('.mouse-per-line circle').style('opacity', opacity);
-  d3.selectAll('.mouse-per-line text').style('opacity', opacity);
+  d3.select(".mouse-line").style("opacity", opacity);
+  d3.selectAll(".mouse-per-line circle").style("opacity", opacity);
+  d3.selectAll(".mouse-per-line text").style("opacity", opacity);
 };
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener("DOMContentLoaded", function () {
   ///////////////////////////////////////////////////
   ///////// GLOBALS FOR USE BY CHARTS ///////////////
   ///////////////////////////////////////////////////
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     left: 15
   };
   var largeWidthThreshold = 600;
-  var width = document.getElementById('chart_container').clientWidth;
+  var width = document.getElementById("chart_container").clientWidth;
   var height = width / 2;
   var fontSize = "".concat(width > largeWidthThreshold ? 16 : 10, "px"); ///////////////////////////////////////////////////
   //////////////// END GLOBALS //////////////////////
@@ -113,31 +113,31 @@ document.addEventListener('DOMContentLoaded', function () {
         comparisonYear = _ref$comparisonYear === void 0 ? AVERAGE_SEASON : _ref$comparisonYear,
         line = _ref.line,
         seasonContainer = _ref.seasonContainer;
-    d3.select('.comparison-label').text(comparisonYear);
-    var season = seasonContainer.selectAll('.season').data(data.filter(function (d) {
+    d3.select(".comparison-label").text(comparisonYear);
+    var season = seasonContainer.selectAll(".season").data(data.filter(function (d) {
       return d.season !== comparisonYear;
     }), function (d) {
       return d.season;
     });
-    season.enter().append('g').merge(season).attr('class', function (d) {
+    season.enter().append("g").merge(season).attr("class", function (d) {
       return "season x".concat(d.season);
-    }).select('path').attr('class', 'line').attr('d', function (d) {
+    }).select("path").attr("class", "line").attr("d", function (d) {
       return line(d.values);
     });
-    var currentSeason = seasonContainer.select(".x".concat(getCurrentSeason())).attr('class', 'season current');
+    var currentSeason = seasonContainer.select(".x".concat(getCurrentSeason())).attr("class", "season current");
     var comparisonSeason = season.exit();
-    comparisonSeason.attr('class', 'season comparison').raise(); // if we have data, update legend and last updated
+    comparisonSeason.attr("class", "season comparison").raise(); // if we have data, update legend and last updated
 
     if (currentSeason.data().length > 0) {
       // update legend with current snow depth
       var currentSeasonData = currentSeason.data()[0].values;
       var latestData = currentSeasonData[currentSeasonData.length - 1];
       var latestDepth = latestData.snowDepth;
-      d3.select('#currentDepth').text(latestDepth); // upate last updated
+      d3.select("#currentDepth").text(latestDepth); // upate last updated
 
       var lastUpdated = new Date(latestData.date);
       lastUpdated.setYear(new Date().getFullYear());
-      d3.select('#last_updated').text(lastUpdated.toLocaleDateString()); // update legend with comparison season
+      d3.select("#last_updated").text(lastUpdated.toLocaleDateString()); // update legend with comparison season
 
       var comparisonData = comparisonSeason.data()[0];
       var comparisonDay = comparisonData.values.find(function (d) {
@@ -145,21 +145,83 @@ document.addEventListener('DOMContentLoaded', function () {
       }) || {
         snowDepth: 0
       };
-      d3.select('#comparisonDepth').text(comparisonDay.snowDepth);
-      d3.select('#comparisonLabel').text("".concat(comparisonData.season)); // need to call raise after raising comparison season
+      d3.select("#comparisonDepth").text(comparisonDay.snowDepth);
+      d3.select("#comparisonLabel").text("".concat(comparisonData.season)); // need to call raise after raising comparison season
 
       currentSeason.raise();
     } else {
-      d3.select('#currentDepth').text(0);
-      d3.select('#last_updated').text('No data yet for season!');
+      d3.select("#currentDepth").text(0);
+      d3.select("#last_updated").text("No data yet for season!");
     }
+  };
+
+  var updateMetricsGrid = function updateMetricsGrid(currentDepth, historicalData) {
+    var today = new Date();
+    var month = today.getMonth() + 1;
+    var day = today.getDate();
+    var dateStr = "".concat(month, "/").concat(day); // Get historical values for this date
+
+    var historicalValues = historicalData.filter(function (season) {
+      return season.season !== getCurrentSeason();
+    }).map(function (season) {
+      var matchingDay = season.values.find(function (d) {
+        return d.date.getMonth() + 1 === month && d.date.getDate() === day;
+      });
+      return matchingDay ? matchingDay.snowDepth : null;
+    }).filter(function (depth) {
+      return depth !== null;
+    }); // Calculate average for this date
+
+    var average = Math.round(historicalValues.reduce(function (sum, val) {
+      return sum + val;
+    }, 0) / historicalValues.length); // Calculate difference from average
+
+    var difference = currentDepth - average; // Count snowier and less snowy winters
+
+    var snowierWinters = historicalValues.filter(function (depth) {
+      return depth > currentDepth;
+    }).length;
+    var lessSnowyWinters = historicalValues.filter(function (depth) {
+      return depth < currentDepth;
+    }).length; // Find last snowier winter
+
+    var lastSnowierWinter = historicalData.filter(function (season) {
+      var matchingDay = season.values.find(function (d) {
+        return d.date.getMonth() + 1 === month && d.date.getDate() === day;
+      });
+      return matchingDay && matchingDay.snowDepth > currentDepth;
+    }).map(function (season) {
+      return season.season.split("-")[0];
+    }).pop() || "None"; // Update DOM
+
+    var metrics = {
+      "#current-depth .metric-value": currentDepth,
+      "#average-depth .metric-value": average,
+      "#difference .metric-value": "".concat(difference > 0 ? "+" : "").concat(difference),
+      "#last-snowier .metric-value": lastSnowierWinter,
+      "#snowier-count .metric-value": snowierWinters,
+      "#less-snowy-count .metric-value": lessSnowyWinters
+    };
+    Object.entries(metrics).forEach(function (_ref2) {
+      var _ref3 = _slicedToArray(_ref2, 2),
+          selector = _ref3[0],
+          value = _ref3[1];
+
+      var element = document.querySelector(selector);
+      element.textContent = value;
+      element.classList.add("visible");
+    }); // Add/remove positive/negative classes for difference card
+
+    var differenceCard = document.querySelector("#difference");
+    differenceCard.classList.remove("difference-positive", "difference-negative");
+    differenceCard.classList.add(difference > 0 ? "difference-positive" : "difference-negative");
   };
 
   var initSnowDepthChart = function initSnowDepthChart() {
     /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
-    var seasonSelect = document.getElementById('select-season');
-    var g = d3.select('#snow_depth_chart').attr('width', width).attr('height', height);
-    var seasonContainer = g.append('g').attr('class', 'season-container');
+    var seasonSelect = document.getElementById("select-season");
+    var g = d3.select("#snow_depth_chart").attr("width", width).attr("height", height);
+    var seasonContainer = g.append("g").attr("class", "season-container");
     var x = d3.scaleTime().range([margin.left, width - margin.right - margin.left]);
     var y = d3.scaleLinear().range([height - margin.bottom, margin.top]); // hard coded values
 
@@ -170,13 +232,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }).y(function (d) {
       return y(d.snowDepth);
     });
-    var xAxis = g.append('g').attr('class', 'axis axis--x').attr('transform', "translate(0,".concat(height - margin.bottom, ")")).style('font-size', fontSize).call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
-    var yAxis = g.append('g').attr('class', 'axis axis--y').attr('transform', "translate(".concat(width - margin.right - margin.left, ", 0)")).style('font-size', fontSize).call(d3.axisRight(y)).append('text').attr('transform', 'rotate(-90)').attr('y', -20).attr('dy', '0.71em').attr('x', width > 400 ? -165 : -120).style('fill', '#000').style('font-size', width > 400 ? '16px' : '12px').text('Snow Depth, inches');
+    var xAxis = g.append("g").attr("class", "axis axis--x").attr("transform", "translate(0,".concat(height - margin.bottom, ")")).style("font-size", fontSize).call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b")));
+    var yAxis = g.append("g").attr("class", "axis axis--y").attr("transform", "translate(".concat(width - margin.right - margin.left, ", 0)")).style("font-size", fontSize).call(d3.axisRight(y)).append("text").attr("transform", "rotate(-90)").attr("y", -20).attr("dy", "0.71em").attr("x", width > 400 ? -165 : -120).style("fill", "#000").style("font-size", width > 400 ? "16px" : "12px").text("Snow Depth, inches");
     /* REQUEST DATA, DRAW CHART AND AXIS */
 
-    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv', transformRow, function (csv) {
+    d3.csv("https://s3.amazonaws.com/matthewparrilla.com/snowDepth.csv", transformRow, function (csv) {
       var data = csv.filter(function (season) {
-        return season.season !== '';
+        return season.season !== "";
       }); // update axes values with actual data
 
       x.domain([d3.min(data, function (season) {
@@ -193,42 +255,49 @@ document.addEventListener('DOMContentLoaded', function () {
           return date.snowDepth;
         });
       })]);
-      xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat('%b')));
+      xAxis.call(d3.axisBottom(x).tickFormat(d3.timeFormat("%b")));
       yAxis.call(d3.axisRight(y));
-      seasonContainer.selectAll('.season').data(data, function (d) {
+      seasonContainer.selectAll(".season").data(data, function (d) {
         return d.season;
-      }).enter().append('g').attr('class', function (d) {
+      }).enter().append("g").attr("class", function (d) {
         return "season x".concat(d.season);
-      }).append('path').attr('class', 'line').attr('d', function (d) {
+      }).append("path").attr("class", "line").attr("d", function (d) {
         return line(d.values);
       }); // create grid lines for y-axis
 
-      seasonContainer.append('g').attr('class', 'grid-lines').selectAll('g.grid-line').data([20, 40, 60, 80, 100, 120, 140]).enter().append('line').attr('class', 'grid-line').attr('x1', 0).attr('x2', width).attr('y1', function (d) {
+      seasonContainer.append("g").attr("class", "grid-lines").selectAll("g.grid-line").data([20, 40, 60, 80, 100, 120, 140]).enter().append("line").attr("class", "grid-line").attr("x1", 0).attr("x2", width).attr("y1", function (d) {
         return y(d);
-      }).attr('y2', function (d) {
+      }).attr("y2", function (d) {
         return y(d);
       });
       updateSnowDepthChart({
         data: data,
         line: line,
         seasonContainer: seasonContainer
-      }); // Add seasons to dropdown options
+      }); // Get current season's latest depth
 
-      data.map(function (_ref2) {
-        var season = _ref2.season;
+      var currentSeason = data.find(function (s) {
+        return s.season === getCurrentSeason();
+      });
+      var currentDepth = currentSeason ? currentSeason.values[currentSeason.values.length - 1].snowDepth : 0; // Update metrics grid
+
+      updateMetricsGrid(currentDepth, data); // Add seasons to dropdown options
+
+      data.map(function (_ref4) {
+        var season = _ref4.season;
         return season;
       }).filter(function (season) {
         return season && season !== getCurrentSeason();
       }).reverse().forEach(function (season) {
-        var option = document.createElement('option');
+        var option = document.createElement("option");
         option.value = season;
         option.text = season;
         seasonSelect.add(option, null);
       });
       seasonSelect.value = AVERAGE_SEASON; // add event listener to select season
 
-      seasonSelect.onchange = function (_ref3) {
-        var comparisonYear = _ref3.target.value;
+      seasonSelect.onchange = function (_ref5) {
+        var comparisonYear = _ref5.target.value;
         updateSnowDepthChart({
           data: data,
           line: line,
@@ -245,9 +314,9 @@ document.addEventListener('DOMContentLoaded', function () {
     var today = new Date();
     var millisecondsPerDay = 24 * 60 * 60 * 1000;
     return data // filter to last 10 days with temperatures above -100 (bad temp values are -9999
-    .filter(function (_ref4) {
-      var timestamp = _ref4.timestamp,
-          temperature = _ref4.temperature;
+    .filter(function (_ref6) {
+      var timestamp = _ref6.timestamp,
+          temperature = _ref6.temperature;
       return Math.round((today - timestamp) / millisecondsPerDay) < 10 && temperature > -100;
     }).map(function (entry) {
       return _objectSpread(_objectSpread({}, entry), {}, {
@@ -271,7 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }).curve(d3.curveBasis);
     var xAxis = d3.axisBottom().scale(x);
     var yAxis = d3.axisRight().ticks(5).scale(y);
-    d3.select('#prev_10_charts').attr('width', width + margin.left + margin.right).attr('height', containerHeight + margin.top + margin.bottom);
+    d3.select("#prev_10_charts").attr("width", width + margin.left + margin.right).attr("height", containerHeight + margin.top + margin.bottom);
 
     var transformDate = function transformDate(row) {
       return _objectSpread(_objectSpread({}, row), {}, {
@@ -284,14 +353,14 @@ document.addEventListener('DOMContentLoaded', function () {
     };
 
     var metricLabel = {
-      temperature: 'Temperature',
-      wind_direction: 'Wind Direction',
-      wind_speed: 'Wind Speed',
-      wind_gust: 'Wind Gust'
+      temperature: "Temperature",
+      wind_direction: "Wind Direction",
+      wind_speed: "Wind Speed",
+      wind_gust: "Wind Gust"
     };
 
     var addChart = function addChart(data, key, order) {
-      var g = d3.select('#prev_10_charts').select("#".concat(key)).attr('transform', "translate(".concat(margin.left, ",").concat(chartHeight * order + margin.top, ")"));
+      var g = d3.select("#prev_10_charts").select("#".concat(key)).attr("transform", "translate(".concat(margin.left, ",").concat(chartHeight * order + margin.top, ")"));
       var values = data.map(function (d) {
         return parseInt(d[key], 10);
       });
@@ -299,41 +368,41 @@ document.addEventListener('DOMContentLoaded', function () {
         return d.timestamp;
       }));
 
-      if (key === 'wind_direction') {
+      if (key === "wind_direction") {
         y.domain([0, 380]);
       } else {
-        y.domain([key === 'wind_speed' || key === 'wind_gust' ? 0 : d3.min(values) - 2, d3.max(values) + 2]);
+        y.domain([key === "wind_speed" || key === "wind_gust" ? 0 : d3.min(values) - 2, d3.max(values) + 2]);
       }
 
-      g.append('text').text(metricLabel[key]).attr('class', "mini_chart_label ".concat(key)).attr('y', chartHeight - 1.5 * margin.top).attr('dy', '0.71em').style('font-size', fontSize).attr('x', 0);
+      g.append("text").text(metricLabel[key]).attr("class", "mini_chart_label ".concat(key)).attr("y", chartHeight - 1.5 * margin.top).attr("dy", "0.71em").style("font-size", fontSize).attr("x", 0);
       line.y(function (d) {
         return y(d[key]);
       }).defined(function (d) {
         return d[key] !== null;
       });
 
-      if (key === 'temperature') {
-        g.append('path').attr('class', 'line freezing').attr('d', line(data.map(function (d) {
+      if (key === "temperature") {
+        g.append("path").attr("class", "line freezing").attr("d", line(data.map(function (d) {
           return _objectSpread(_objectSpread({}, d), {}, {
             temperature: 32
           });
-        }))).style('fill-opacity', 0).style('stroke-width', 1.5);
+        }))).style("fill-opacity", 0).style("stroke-width", 1.5);
       }
 
-      g.append('g').attr('class', 'y axis').style('font-size', fontSize).attr('transform', "translate(".concat(width - margin.left - margin.right, ", 0)")).call(yAxis);
-      g.append('path').attr('class', "line prev_10_line ".concat(key)).attr('d', line(data)).style('fill-opacity', 0).style('stroke-width', 1.5); // Only show tick labels on last row
+      g.append("g").attr("class", "y axis").style("font-size", fontSize).attr("transform", "translate(".concat(width - margin.left - margin.right, ", 0)")).call(yAxis);
+      g.append("path").attr("class", "line prev_10_line ".concat(key)).attr("d", line(data)).style("fill-opacity", 0).style("stroke-width", 1.5); // Only show tick labels on last row
 
       if (order === metrics.length - 1) {
-        xAxis.tickFormat(d3.timeFormat(width > 400 ? '%b %d' : '%m/%d'));
+        xAxis.tickFormat(d3.timeFormat(width > 400 ? "%b %d" : "%m/%d"));
       } else {
-        xAxis.tickFormat('');
+        xAxis.tickFormat("");
       }
 
-      g.append('g').attr('class', 'x axis').attr('transform', "translate(0,".concat(chartHeight, ")")).style('font-size', fontSize).call(xAxis);
+      g.append("g").attr("class", "x axis").attr("transform", "translate(0,".concat(chartHeight, ")")).style("font-size", fontSize).call(xAxis);
     }; // Download data, filter it, and render chart
 
 
-    d3.csv('https://s3.amazonaws.com/matthewparrilla.com/mansfield_observations.csv', transformDate, function (unfilteredData) {
+    d3.csv("https://s3.amazonaws.com/matthewparrilla.com/mansfield_observations.csv", transformDate, function (unfilteredData) {
       var data = filterToLast10(unfilteredData);
       metrics.forEach(function (metric, i) {
         return addChart(data, metric, i);
@@ -342,21 +411,21 @@ document.addEventListener('DOMContentLoaded', function () {
       //////////// BEGIN MOUSEOVER CODE /////////////////
       ///////////////////////////////////////////////////
 
-      var mouseG = d3.select('#prev_10_charts').append('g').attr('class', 'mouse-over-effects').attr('transform', "translate(0,".concat(margin.top, ")"));
-      mouseG.append('path') // this is the black vertical line to follow mouse
-      .attr('class', 'mouse-line').style('stroke', 'black').style('stroke-width', '1px').style('opacity', '0');
-      var mousePerLine = mouseG.selectAll('.mouse-per-line').data(metrics).enter().append('g').attr('class', 'mouse-per-line');
-      mousePerLine.append('circle').attr('r', 7).style('stroke', 'black').style('fill', 'none').style('stroke-width', '1px').style('opacity', '0');
-      mousePerLine.append('text').attr('class', 'shadow').attr('transform', 'translate(10,3)');
-      mousePerLine.append('text').attr('class', 'fill').attr('transform', 'translate(10,3)'); // cache y(val) so we can calculate outside of addChart()
+      var mouseG = d3.select("#prev_10_charts").append("g").attr("class", "mouse-over-effects").attr("transform", "translate(0,".concat(margin.top, ")"));
+      mouseG.append("path") // this is the black vertical line to follow mouse
+      .attr("class", "mouse-line").style("stroke", "black").style("stroke-width", "1px").style("opacity", "0");
+      var mousePerLine = mouseG.selectAll(".mouse-per-line").data(metrics).enter().append("g").attr("class", "mouse-per-line");
+      mousePerLine.append("circle").attr("r", 7).style("stroke", "black").style("fill", "none").style("stroke-width", "1px").style("opacity", "0");
+      mousePerLine.append("text").attr("class", "shadow").attr("transform", "translate(10,3)");
+      mousePerLine.append("text").attr("class", "fill").attr("transform", "translate(10,3)"); // cache y(val) so we can calculate outside of addChart()
 
       var metricY = metrics.reduce(function (map, key) {
         var fn = d3.scaleLinear().range([chartHeight, 0]);
 
-        if (key === 'wind_direction') {
+        if (key === "wind_direction") {
           fn.domain([0, 380]);
         } else {
-          fn.domain([key === 'wind_speed' || key === 'wind_gust' ? 0 : d3.min(data, function (v) {
+          fn.domain([key === "wind_speed" || key === "wind_gust" ? 0 : d3.min(data, function (v) {
             return parseInt(v[key], 10);
           }) - 2, d3.max(data, function (v) {
             return parseInt(v[key], 10);
@@ -365,13 +434,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return _objectSpread(_objectSpread({}, map), {}, _defineProperty({}, key, fn));
       }, {});
-      mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-      .attr('width', width) // can't catch mouse events on a g element
-      .attr('height', containerHeight).attr('fill', 'none').attr('pointer-events', 'all').on('mouseout', function () {
+      mouseG.append("svg:rect") // append a rect to catch mouse movements on canvas
+      .attr("width", width) // can't catch mouse events on a g element
+      .attr("height", containerHeight).attr("fill", "none").attr("pointer-events", "all").on("mouseout", function () {
         return setMouseOverOpacity(0);
-      }).on('mouseover', function () {
+      }).on("mouseover", function () {
         return setMouseOverOpacity(1);
-      }).on('mousemove', function onMouseMove() {
+      }).on("mousemove", function onMouseMove() {
         // this usage necessitates non arrow func
         // our rect includes margins, which we want for usability
         var _d3$mouse = d3.mouse(this),
@@ -385,28 +454,28 @@ document.addEventListener('DOMContentLoaded', function () {
         } // vertical line that follows mouse
 
 
-        d3.select('.mouse-line').attr('d', function () {
+        d3.select(".mouse-line").attr("d", function () {
           return "M".concat(mouseX, ",").concat(containerHeight, " ").concat(mouseX, ",0");
         }); // find intersection of x position and relevant line
 
         var xIntersect = x.invert(mouseX - margin.left); // our rect includes margins
 
-        var bisect = d3.bisector(function (_ref5) {
-          var timestamp = _ref5.timestamp;
+        var bisect = d3.bisector(function (_ref7) {
+          var timestamp = _ref7.timestamp;
           return timestamp;
         }).right;
         var index = bisect(data, xIntersect);
         var intersection = data[index] || data[index - 1]; // -1 for when at right edge
         // add circle and text label
 
-        d3.selectAll('.mouse-per-line').attr('transform', function (key, i) {
+        d3.selectAll(".mouse-per-line").attr("transform", function (key, i) {
           return "translate(".concat(margin.left + x(intersection.timestamp), ", ").concat(metricY[key](intersection[key]) + chartHeight * i, ")");
-        }).selectAll('text.shadow').text(function (key) {
+        }).selectAll("text.shadow").text(function (key) {
           return intersection[key];
         });
-        d3.selectAll('.mouse-per-line').attr('transform', function (key, i) {
+        d3.selectAll(".mouse-per-line").attr("transform", function (key, i) {
           return "translate(".concat(margin.left + x(intersection.timestamp), ", ").concat(metricY[key](intersection[key]) + chartHeight * i, ")");
-        }).selectAll('text.fill').text(function (key) {
+        }).selectAll("text.fill").text(function (key) {
           return intersection[key];
         });
       }); ///////////////////////////////////////////////////
