@@ -27,6 +27,54 @@ const transformRow = (season) => {
   };
 };
 
+function interpolateValueForDate(values, targetDate) {
+  // First check if we have an exact match
+  const exactMatch = values.find(
+    d => d.date.getMonth() === targetDate.getMonth() && 
+         d.date.getDate() === targetDate.getDate()
+  );
+  
+  if (exactMatch) {
+    return exactMatch.snowDepth;
+  }
+  
+  // If no exact match, find the closest dates before and after
+  // First convert all dates to a standardized year for comparison
+  const standardYear = 2000; // Arbitrary standard year
+  const targetTime = new Date(
+    standardYear, 
+    targetDate.getMonth(), 
+    targetDate.getDate()
+  ).getTime();
+  
+  // Standardize all dates to the same year for comparison
+  const standardizedValues = values.map(d => ({
+    ...d,
+    standardTime: new Date(
+      standardYear,
+      d.date.getMonth(),
+      d.date.getDate()
+    ).getTime()
+  }));
+  
+  // Find the closest points before and after
+  const before = [...standardizedValues]
+    .filter(d => d.standardTime <= targetTime)
+    .sort((a, b) => b.standardTime - a.standardTime)[0];
+    
+  const after = [...standardizedValues]
+    .filter(d => d.standardTime >= targetTime)
+    .sort((a, b) => a.standardTime - b.standardTime)[0];
+  
+  // If we don't have points on both sides, return the one we have or 0
+  if (!before) return after ? after.snowDepth : 0;
+  if (!after) return before.snowDepth;
+  
+  // Linear interpolation
+  const ratio = (targetTime - before.standardTime) / (after.standardTime - before.standardTime);
+  return Math.round(before.snowDepth + ratio * (after.snowDepth - before.snowDepth));
+}
+
 function fetchNwsForecast() {
   const xhr = new XMLHttpRequest();
 
@@ -153,12 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // update legend with comparison season
       const comparisonData = comparisonSeason.data()[0];
-      const comparisonDay = comparisonData.values.find(
-        (d) =>
-          d.date.getMonth() === lastUpdated.getMonth() &&
-          d.date.getDate() === lastUpdated.getDate()
-      ) || { snowDepth: 0 };
-      d3.select("#comparisonDepth").text(comparisonDay.snowDepth);
+      const interpolatedComparisonDepth = interpolateValueForDate(comparisonData.values, lastUpdated);
+      d3.select("#comparisonDepth").text(interpolatedComparisonDepth);
       d3.select("#comparisonLabel").text(`${comparisonData.season}`);
 
       // need to call raise after raising comparison season
@@ -183,32 +227,25 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Get the average season data for this date
     const averageSeason = historicalData.find(s => s.season === AVERAGE_SEASON);
-    const averageDay = averageSeason.values.find(
-      d => d.date.getMonth() + 1 === month && d.date.getDate() === day
-    );
-    const average = averageDay ? averageDay.snowDepth : 0;
-  
-    // Get historical values for this date (excluding average season)
+    const interpolatedAverage = interpolateValueForDate(averageSeason.values, lastMeasurement.date);
+    const average = interpolatedAverage;
+
+    // Get historical values for this date using interpolation (excluding average season)
     const historicalValues = historicalData
       .filter((season) => season.season !== getCurrentSeason() && season.season !== AVERAGE_SEASON)
-      .map((season) => {
-        const matchingDay = season.values.find(
-          (d) => d.date.getMonth() + 1 === month && d.date.getDate() === day
-        );
-        return matchingDay ? matchingDay.snowDepth : null;
-      })
+      .map((season) => interpolateValueForDate(season.values, lastMeasurement.date))
       .filter((depth) => depth !== null);
-  
-    // Calculate difference from average
-    const difference = currentDepth - average;
-  
-    // Count snowier and less snowy winters
-    const snowierWinters = historicalValues.filter(
-      (depth) => depth > currentDepth
-    ).length;
-    const lessSnowyWinters = historicalValues.filter(
-      (depth) => depth < currentDepth
-    ).length;
+      
+        // Calculate difference from average
+        const difference = currentDepth - average;
+      
+        // Count snowier and less snowy winters
+        const snowierWinters = historicalValues.filter(
+          (depth) => depth > currentDepth
+        ).length;
+        const lessSnowyWinters = historicalValues.filter(
+          (depth) => depth < currentDepth
+        ).length;
   
     // Find last snowier winter
     const lastSnowierWinter =

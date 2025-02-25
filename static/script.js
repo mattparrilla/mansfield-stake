@@ -1,22 +1,30 @@
 "use strict";
 
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
-
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 /* global d3 */
 var AVERAGE_SEASON = "Average Season";
@@ -47,6 +55,48 @@ var transformRow = function transformRow(season) {
     })
   };
 };
+
+function interpolateValueForDate(values, targetDate) {
+  // First check if we have an exact match
+  var exactMatch = values.find(function (d) {
+    return d.date.getMonth() === targetDate.getMonth() && d.date.getDate() === targetDate.getDate();
+  });
+
+  if (exactMatch) {
+    return exactMatch.snowDepth;
+  } // If no exact match, find the closest dates before and after
+  // First convert all dates to a standardized year for comparison
+
+
+  var standardYear = 2000; // Arbitrary standard year
+
+  var targetTime = new Date(standardYear, targetDate.getMonth(), targetDate.getDate()).getTime(); // Standardize all dates to the same year for comparison
+
+  var standardizedValues = values.map(function (d) {
+    return _objectSpread(_objectSpread({}, d), {}, {
+      standardTime: new Date(standardYear, d.date.getMonth(), d.date.getDate()).getTime()
+    });
+  }); // Find the closest points before and after
+
+  var before = _toConsumableArray(standardizedValues).filter(function (d) {
+    return d.standardTime <= targetTime;
+  }).sort(function (a, b) {
+    return b.standardTime - a.standardTime;
+  })[0];
+
+  var after = _toConsumableArray(standardizedValues).filter(function (d) {
+    return d.standardTime >= targetTime;
+  }).sort(function (a, b) {
+    return a.standardTime - b.standardTime;
+  })[0]; // If we don't have points on both sides, return the one we have or 0
+
+
+  if (!before) return after ? after.snowDepth : 0;
+  if (!after) return before.snowDepth; // Linear interpolation
+
+  var ratio = (targetTime - before.standardTime) / (after.standardTime - before.standardTime);
+  return Math.round(before.snowDepth + ratio * (after.snowDepth - before.snowDepth));
+}
 
 function fetchNwsForecast() {
   var xhr = new XMLHttpRequest();
@@ -140,12 +190,8 @@ document.addEventListener("DOMContentLoaded", function () {
       d3.select("#last_updated").text(lastUpdated.toLocaleDateString()); // update legend with comparison season
 
       var comparisonData = comparisonSeason.data()[0];
-      var comparisonDay = comparisonData.values.find(function (d) {
-        return d.date.getMonth() === lastUpdated.getMonth() && d.date.getDate() === lastUpdated.getDate();
-      }) || {
-        snowDepth: 0
-      };
-      d3.select("#comparisonDepth").text(comparisonDay.snowDepth);
+      var interpolatedComparisonDepth = interpolateValueForDate(comparisonData.values, lastUpdated);
+      d3.select("#comparisonDepth").text(interpolatedComparisonDepth);
       d3.select("#comparisonLabel").text("".concat(comparisonData.season)); // need to call raise after raising comparison season
 
       currentSeason.raise();
@@ -172,18 +218,13 @@ document.addEventListener("DOMContentLoaded", function () {
     var averageSeason = historicalData.find(function (s) {
       return s.season === AVERAGE_SEASON;
     });
-    var averageDay = averageSeason.values.find(function (d) {
-      return d.date.getMonth() + 1 === month && d.date.getDate() === day;
-    });
-    var average = averageDay ? averageDay.snowDepth : 0; // Get historical values for this date (excluding average season)
+    var interpolatedAverage = interpolateValueForDate(averageSeason.values, lastMeasurement.date);
+    var average = interpolatedAverage; // Get historical values for this date using interpolation (excluding average season)
 
     var historicalValues = historicalData.filter(function (season) {
       return season.season !== getCurrentSeason() && season.season !== AVERAGE_SEASON;
     }).map(function (season) {
-      var matchingDay = season.values.find(function (d) {
-        return d.date.getMonth() + 1 === month && d.date.getDate() === day;
-      });
-      return matchingDay ? matchingDay.snowDepth : null;
+      return interpolateValueForDate(season.values, lastMeasurement.date);
     }).filter(function (depth) {
       return depth !== null;
     }); // Calculate difference from average
