@@ -251,10 +251,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const lastSnowierWinter =
       historicalData
         .filter((season) => {
-          const matchingDay = season.values.find(
-            (d) => d.date.getMonth() + 1 === month && d.date.getDate() === day
-          );
-          return matchingDay && matchingDay.snowDepth > currentDepth;
+          // Skip current season and average season
+          if (season.season === getCurrentSeason() || season.season === AVERAGE_SEASON) {
+            return false;
+          }
+          // Use interpolation to compare snow depths
+          const interpolatedDepth = interpolateValueForDate(season.values, lastMeasurement.date);
+          return interpolatedDepth > currentDepth;
         })
         .map((season) => {
           const year = season.season.split("-")[0];

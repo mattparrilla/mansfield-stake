@@ -239,10 +239,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }).length; // Find last snowier winter
 
     var lastSnowierWinter = historicalData.filter(function (season) {
-      var matchingDay = season.values.find(function (d) {
-        return d.date.getMonth() + 1 === month && d.date.getDate() === day;
-      });
-      return matchingDay && matchingDay.snowDepth > currentDepth;
+      // Skip current season and average season
+      if (season.season === getCurrentSeason() || season.season === AVERAGE_SEASON) {
+        return false;
+      } // Use interpolation to compare snow depths
+
+
+      var interpolatedDepth = interpolateValueForDate(season.values, lastMeasurement.date);
+      return interpolatedDepth > currentDepth;
     }).map(function (season) {
       var year = season.season.split("-")[0];
       return "".concat(year, "-").concat((parseInt(year) + 1).toString().slice(-2));
