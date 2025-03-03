@@ -42,3 +42,4 @@ venv/
 
 #configuration
 config.py
+*:Zone.Identifier
