@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* REQUEST DATA, DRAW CHART AND AXIS */
     d3.csv(
-      "https://s3.amazonaws.com/matthewparrilla.com/snowDepth2.csv",
+      "https://s3.amazonaws.com/matthewparrilla.com/snow-depth.csv",
       transformRow,
       (csv) => {
         const data = csv.filter((season) => season.season !== "");
