@@ -292,9 +292,151 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   };
 
+  const addMouseoverFunctionality = ({ data, seasonContainer, x, y, line, width, height, margin, getSelectedSeason, setSelectedSeason }) => {
+    // Find the closest season to a given mouse position
+    const findClosestSeason = (mouseX, mouseY) => {
+      const xDate = x.invert(mouseX);
+      let closestSeason = null;
+      let minDistance = Infinity;
+      let directHitSeason = null;
+
+      // Get all seasons except current season (since it's always highlighted)
+      const availableSeasons = data.filter(s => s.season !== getCurrentSeason());
+
+      availableSeasons.forEach(season => {
+        // Find the closest data point to the mouse x position
+        if (season.values.length === 0) return;
+
+        const bisect = d3.bisector(d => d.date).left;
+        const index = bisect(season.values, xDate);
+        
+        // Check both surrounding points
+        const candidates = [
+          season.values[index - 1],
+          season.values[index]
+        ].filter(Boolean);
+
+        candidates.forEach(point => {
+          const pointX = x(point.date);
+          const pointY = y(point.snowDepth);
+          const distance = Math.sqrt(
+            Math.pow(mouseX - pointX, 2) + Math.pow(mouseY - pointY, 2)
+          );
+
+          // Check for very close proximity to actual line points (direct hit)
+          if (distance <= 5) { // 5 pixel tolerance for direct hits
+            directHitSeason = season.season;
+          }
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestSeason = season.season;
+          }
+        });
+
+        // Also check distance to line segments between points for better accuracy
+        if (candidates.length === 2) {
+          const [point1, point2] = candidates;
+          const x1 = x(point1.date);
+          const y1 = y(point1.snowDepth);
+          const x2 = x(point2.date);
+          const y2 = y(point2.snowDepth);
+          
+          // Calculate distance from mouse to line segment
+          const A = mouseX - x1;
+          const B = mouseY - y1;
+          const C = x2 - x1;
+          const D = y2 - y1;
+          
+          const dot = A * C + B * D;
+          const lenSq = C * C + D * D;
+          
+          if (lenSq !== 0) {
+            const param = dot / lenSq;
+            let xx, yy;
+            
+            if (param < 0) {
+              xx = x1;
+              yy = y1;
+            } else if (param > 1) {
+              xx = x2;
+              yy = y2;
+            } else {
+              xx = x1 + param * C;
+              yy = y1 + param * D;
+            }
+            
+            const segmentDistance = Math.sqrt(Math.pow(mouseX - xx, 2) + Math.pow(mouseY - yy, 2));
+            
+            // Check for very close proximity to line segment (direct hit)
+            if (segmentDistance <= 3) { // 3 pixel tolerance for direct line hits
+              directHitSeason = season.season;
+            }
+            
+            if (segmentDistance < minDistance) {
+              minDistance = segmentDistance;
+              closestSeason = season.season;
+            }
+          }
+        }
+      });
+
+      // If we have a direct hit, always return that
+      if (directHitSeason) {
+        return directHitSeason;
+      }
+
+      // Otherwise, only return if reasonably close (within 20 pixels)
+      return minDistance < 20 ? closestSeason : null;
+    };
+
+    // Create invisible overlay for mouse events
+    const mouseOverlay = seasonContainer
+      .append("rect")
+      .attr("class", "mouse-overlay")
+      .attr("width", width - margin.left - margin.right)
+      .attr("height", height - margin.top - margin.bottom)
+      .attr("x", margin.left)
+      .attr("y", margin.top)
+      .style("fill", "none")
+      .style("pointer-events", "all")
+      .style("cursor", "pointer");
+
+    mouseOverlay
+      .on("mousemove", function() {
+        const [mouseX, mouseY] = d3.mouse(this);
+        const hoveredSeason = findClosestSeason(mouseX, mouseY);
+        
+        // Remove previous hover highlighting
+        seasonContainer.selectAll(".season").classed("hovered", false);
+        
+        // Add hover highlighting to the hovered line
+        if (hoveredSeason) {
+          seasonContainer.selectAll(`.season.x${hoveredSeason}`)
+            .classed("hovered", true);
+        }
+      })
+      .on("mouseleave", function() {
+        // Remove all hover highlighting when mouse leaves the chart area
+        seasonContainer.selectAll(".season").classed("hovered", false);
+      })
+      .on("click", function() {
+        const [mouseX, mouseY] = d3.mouse(this);
+        const clickedSeason = findClosestSeason(mouseX, mouseY);
+        
+        if (clickedSeason) {
+          // Update dropdown (which will trigger chart update)
+          const seasonSelect = document.getElementById("select-season");
+          seasonSelect.value = clickedSeason;
+          seasonSelect.dispatchEvent(new Event('change'));
+        }
+      });
+  };
+
   const initSnowDepthChart = () => {
     /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
     const seasonSelect = document.getElementById("select-season");
+    let selectedSeason = AVERAGE_SEASON; // Track persisted selection for mouseover
 
     const g = d3
       .select("#snow_depth_chart")
@@ -396,6 +538,22 @@ document.addEventListener("DOMContentLoaded", () => {
         // Update metrics grid
         updateMetricsGrid(currentDepth, data);
 
+        // Add mouseover functionality
+        addMouseoverFunctionality({ 
+          data, 
+          seasonContainer, 
+          x, 
+          y, 
+          line, 
+          width, 
+          height, 
+          margin, 
+          getSelectedSeason: () => selectedSeason,
+          setSelectedSeason: (season) => { 
+            selectedSeason = season; 
+          }
+        });
+
         // Add seasons to dropdown options
         data
           .map(({ season }) => season)
@@ -412,6 +570,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // add event listener to select season
         seasonSelect.onchange = ({ target: { value: comparisonYear } }) => {
+          selectedSeason = comparisonYear; // Update the tracked selection
           updateSnowDepthChart({
             data,
             line,

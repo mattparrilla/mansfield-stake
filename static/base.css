@@ -515,3 +515,24 @@ h5 {
     font-size: 3.6rem;
   }
 }
+
+/* Mouseover functionality for chart lines */
+.mouse-overlay {
+  cursor: crosshair;
+}
+
+/* Line hover states */
+.season .line {
+  transition: stroke-width 0.15s ease, opacity 0.15s ease;
+}
+
+/* Highlighted state for active line during hover - more subtle */
+.season.highlighted .line {
+  stroke-width: 0.1875rem; /* 3px - slightly thicker when highlighted */
+  opacity: 1;
+}
+
+/* Hovered state for lines on mouseover - makes the line slightly darker */
+.season.hovered .line {
+  filter: brightness(0.5); /* Makes the line slightly darker */
+}
