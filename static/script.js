@@ -275,9 +275,148 @@ document.addEventListener("DOMContentLoaded", function () {
     differenceCard.classList.add(difference > 0 ? "difference-positive" : "difference-negative");
   };
 
+  var addMouseoverFunctionality = function addMouseoverFunctionality(_ref4) {
+    var data = _ref4.data,
+        seasonContainer = _ref4.seasonContainer,
+        x = _ref4.x,
+        y = _ref4.y,
+        line = _ref4.line,
+        width = _ref4.width,
+        height = _ref4.height,
+        margin = _ref4.margin,
+        getSelectedSeason = _ref4.getSelectedSeason,
+        setSelectedSeason = _ref4.setSelectedSeason;
+
+    // Find the closest season to a given mouse position
+    var findClosestSeason = function findClosestSeason(mouseX, mouseY) {
+      var xDate = x.invert(mouseX);
+      var closestSeason = null;
+      var minDistance = Infinity;
+      var directHitSeason = null; // Get all seasons except current season (since it's always highlighted)
+
+      var availableSeasons = data.filter(function (s) {
+        return s.season !== getCurrentSeason();
+      });
+      availableSeasons.forEach(function (season) {
+        // Find the closest data point to the mouse x position
+        if (season.values.length === 0) return;
+        var bisect = d3.bisector(function (d) {
+          return d.date;
+        }).left;
+        var index = bisect(season.values, xDate); // Check both surrounding points
+
+        var candidates = [season.values[index - 1], season.values[index]].filter(Boolean);
+        candidates.forEach(function (point) {
+          var pointX = x(point.date);
+          var pointY = y(point.snowDepth);
+          var distance = Math.sqrt(Math.pow(mouseX - pointX, 2) + Math.pow(mouseY - pointY, 2)); // Check for very close proximity to actual line points (direct hit)
+
+          if (distance <= 5) {
+            // 5 pixel tolerance for direct hits
+            directHitSeason = season.season;
+          }
+
+          if (distance < minDistance) {
+            minDistance = distance;
+            closestSeason = season.season;
+          }
+        }); // Also check distance to line segments between points for better accuracy
+
+        if (candidates.length === 2) {
+          var _candidates = _slicedToArray(candidates, 2),
+              point1 = _candidates[0],
+              point2 = _candidates[1];
+
+          var x1 = x(point1.date);
+          var y1 = y(point1.snowDepth);
+          var x2 = x(point2.date);
+          var y2 = y(point2.snowDepth); // Calculate distance from mouse to line segment
+
+          var A = mouseX - x1;
+          var B = mouseY - y1;
+          var C = x2 - x1;
+          var D = y2 - y1;
+          var dot = A * C + B * D;
+          var lenSq = C * C + D * D;
+
+          if (lenSq !== 0) {
+            var param = dot / lenSq;
+            var xx, yy;
+
+            if (param < 0) {
+              xx = x1;
+              yy = y1;
+            } else if (param > 1) {
+              xx = x2;
+              yy = y2;
+            } else {
+              xx = x1 + param * C;
+              yy = y1 + param * D;
+            }
+
+            var segmentDistance = Math.sqrt(Math.pow(mouseX - xx, 2) + Math.pow(mouseY - yy, 2)); // Check for very close proximity to line segment (direct hit)
+
+            if (segmentDistance <= 3) {
+              // 3 pixel tolerance for direct line hits
+              directHitSeason = season.season;
+            }
+
+            if (segmentDistance < minDistance) {
+              minDistance = segmentDistance;
+              closestSeason = season.season;
+            }
+          }
+        }
+      }); // If we have a direct hit, always return that
+
+      if (directHitSeason) {
+        return directHitSeason;
+      } // Otherwise, only return if reasonably close (within 20 pixels)
+
+
+      return minDistance < 20 ? closestSeason : null;
+    }; // Create invisible overlay for mouse events
+
+
+    var mouseOverlay = seasonContainer.append("rect").attr("class", "mouse-overlay").attr("width", width - margin.left - margin.right).attr("height", height - margin.top - margin.bottom).attr("x", margin.left).attr("y", margin.top).style("fill", "none").style("pointer-events", "all").style("cursor", "pointer");
+    mouseOverlay.on("mousemove", function () {
+      var _d3$mouse = d3.mouse(this),
+          _d3$mouse2 = _slicedToArray(_d3$mouse, 2),
+          mouseX = _d3$mouse2[0],
+          mouseY = _d3$mouse2[1];
+
+      var hoveredSeason = findClosestSeason(mouseX, mouseY); // Remove previous hover highlighting
+
+      seasonContainer.selectAll(".season").classed("hovered", false); // Add hover highlighting to the hovered line
+
+      if (hoveredSeason) {
+        seasonContainer.selectAll(".season.x".concat(hoveredSeason)).classed("hovered", true);
+      }
+    }).on("mouseleave", function () {
+      // Remove all hover highlighting when mouse leaves the chart area
+      seasonContainer.selectAll(".season").classed("hovered", false);
+    }).on("click", function () {
+      var _d3$mouse3 = d3.mouse(this),
+          _d3$mouse4 = _slicedToArray(_d3$mouse3, 2),
+          mouseX = _d3$mouse4[0],
+          mouseY = _d3$mouse4[1];
+
+      var clickedSeason = findClosestSeason(mouseX, mouseY);
+
+      if (clickedSeason) {
+        // Update dropdown (which will trigger chart update)
+        var seasonSelect = document.getElementById("select-season");
+        seasonSelect.value = clickedSeason;
+        seasonSelect.dispatchEvent(new Event('change'));
+      }
+    });
+  };
+
   var initSnowDepthChart = function initSnowDepthChart() {
     /* SET UP SVG ELEMENT AND D3 SHARED OBJECTS */
     var seasonSelect = document.getElementById("select-season");
+    var selectedSeason = AVERAGE_SEASON; // Track persisted selection for mouseover
+
     var g = d3.select("#snow_depth_chart").attr("width", width).attr("height", height);
     var seasonContainer = g.append("g").attr("class", "season-container");
     var x = d3.scaleTime().range([margin.left, width - margin.right - margin.left]);
@@ -339,10 +478,27 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       var currentDepth = currentSeason ? currentSeason.values[currentSeason.values.length - 1].snowDepth : 0; // Update metrics grid
 
-      updateMetricsGrid(currentDepth, data); // Add seasons to dropdown options
+      updateMetricsGrid(currentDepth, data); // Add mouseover functionality
 
-      data.map(function (_ref4) {
-        var season = _ref4.season;
+      addMouseoverFunctionality({
+        data: data,
+        seasonContainer: seasonContainer,
+        x: x,
+        y: y,
+        line: line,
+        width: width,
+        height: height,
+        margin: margin,
+        getSelectedSeason: function getSelectedSeason() {
+          return selectedSeason;
+        },
+        setSelectedSeason: function setSelectedSeason(season) {
+          selectedSeason = season;
+        }
+      }); // Add seasons to dropdown options
+
+      data.map(function (_ref5) {
+        var season = _ref5.season;
         return season;
       }).filter(function (season) {
         return season && season !== getCurrentSeason() && season !== AVERAGE_SEASON;
@@ -355,8 +511,10 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       seasonSelect.value = AVERAGE_SEASON; // add event listener to select season
 
-      seasonSelect.onchange = function (_ref5) {
-        var comparisonYear = _ref5.target.value;
+      seasonSelect.onchange = function (_ref6) {
+        var comparisonYear = _ref6.target.value;
+        selectedSeason = comparisonYear; // Update the tracked selection
+
         updateSnowDepthChart({
           data: data,
           line: line,
@@ -373,9 +531,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var today = new Date();
     var millisecondsPerDay = 24 * 60 * 60 * 1000;
     return data // filter to last 10 days with temperatures above -100 (bad temp values are -9999
-    .filter(function (_ref6) {
-      var timestamp = _ref6.timestamp,
-          temperature = _ref6.temperature;
+    .filter(function (_ref7) {
+      var timestamp = _ref7.timestamp,
+          temperature = _ref7.temperature;
       return Math.round((today - timestamp) / millisecondsPerDay) < 10 && temperature > -100;
     }).map(function (entry) {
       return _objectSpread(_objectSpread({}, entry), {}, {
@@ -502,9 +660,9 @@ document.addEventListener("DOMContentLoaded", function () {
       }).on("mousemove", function onMouseMove() {
         // this usage necessitates non arrow func
         // our rect includes margins, which we want for usability
-        var _d3$mouse = d3.mouse(this),
-            _d3$mouse2 = _slicedToArray(_d3$mouse, 1),
-            mouseX = _d3$mouse2[0];
+        var _d3$mouse5 = d3.mouse(this),
+            _d3$mouse6 = _slicedToArray(_d3$mouse5, 1),
+            mouseX = _d3$mouse6[0];
 
         if (mouseX < margin.left) {
           mouseX = margin.left;
@@ -519,8 +677,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         var xIntersect = x.invert(mouseX - margin.left); // our rect includes margins
 
-        var bisect = d3.bisector(function (_ref7) {
-          var timestamp = _ref7.timestamp;
+        var bisect = d3.bisector(function (_ref8) {
+          var timestamp = _ref8.timestamp;
           return timestamp;
         }).right;
         var index = bisect(data, xIntersect);
