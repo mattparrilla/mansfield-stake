@@ -65,36 +65,90 @@
       <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
     </div>
 
-    <div class="metrics-grid">
-      <div class="metric-card" id="current-depth">
-        <div class="metric-label">Latest Snow Depth</div>
-        <div class="metric-value">86</div>
+    <div class="metrics-container">
+      <div class="metrics-header">
+        <h3 class="metrics-title">Today's Snow Depth vs History</h3>
+
+        <!-- Hero Metric -->
+        <div class="hero-metric">
+          <div id="current-depth" class="hero-depth">
+            <span class="hero-value">86</span>
+            <span class="hero-unit">"</span>
+          </div>
+          <div class="hero-label">Current Snow Depth</div>
+        </div>
+
+        <!-- Key Comparison -->
+        <div class="comparison-bar">
+          <div class="comparison-item">
+            <span class="comparison-label">Average</span>
+            <span id="average-depth" class="comparison-value">60"</span>
+          </div>
+          <div class="comparison-item">
+            <span class="comparison-label">Difference</span>
+            <span id="difference" class="comparison-value difference-positive">+26"</span>
+          </div>
+        </div>
       </div>
 
-      <div class="metric-card" id="average-depth">
-        <div class="metric-label">Average on Date</div>
-        <div class="metric-value">60</div>
+      <!-- Supporting Metrics -->
+      <div class="supporting-metrics">
+        <div class="supporting-metric">
+          <div class="supporting-label">Snowier winters</div>
+          <div id="snowier-count" class="supporting-value">15</div>
+        </div>
+
+        <div class="supporting-metric">
+          <div class="supporting-label">Less snowy winters</div>
+          <div id="less-snowy-count" class="supporting-value">45</div>
+        </div>
+
+        <div class="supporting-metric">
+          <div class="supporting-label">Last snowier winter</div>
+          <div id="last-snowier" class="supporting-value">2019-20</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Season in Review Section -->
+  <section id="season-review" style="display: none;">
+    <div class="season-review-container">
+
+      <!-- Left Column: Hero Metric -->
+      <div class="season-review-header">
+        <h3 class="season-review-title">Season Max Depth</h3>
+
+        <div class="season-review-hero">
+          <div class="season-review-max-depth">
+            <span id="season-review-depth" class="season-review-depth-number">73</span>
+            <span class="season-review-depth-unit">"</span>
+          </div>
+          <div class="season-review-depth-label">Peak Snow Depth</div>
+          <div class="season-review-badge-container">
+            <span id="season-review-ranking" class="season-review-badge">8th Snowiest</span>
+          </div>
+        </div>
       </div>
 
-      <div class="metric-card" id="difference" class="difference-positive">
-        <div class="metric-label">Diff From Average</div>
-        <div class="metric-value">+26</div>
+      <!-- Right Column: Supporting Metrics -->
+      <div class="season-review-metrics">
+        <div class="season-review-metric">
+          <div class="season-review-metric-label">Date of max depth</div>
+          <div id="season-review-date" class="season-review-metric-value">Feb 14</div>
+        </div>
+
+        <div class="season-review-metric">
+          <div class="season-review-metric-label">Diff from average max</div>
+          <div id="season-review-difference" class="season-review-metric-value">+25"</div>
+        </div>
+
+        <div class="season-review-metric">
+          <div class="season-review-metric-label">Last snowier winter</div>
+          <div id="season-review-last-snowier" class="season-review-metric-value">2022-2023</div>
+        </div>
       </div>
 
-      <div class="metric-card" id="last-snowier">
-        <div class="metric-label">Last Snowier Winter</div>
-        <div class="metric-value">2019</div>
-      </div>
-
-      <div class="metric-card" id="snowier-count">
-        <div class="metric-label">Snowier Winters</div>
-        <div class="metric-value">15</div>
-      </div>
-
-      <div class="metric-card" id="less-snowy-count">
-        <div class="metric-label">Less Snowy Winters</div>
-        <div class="metric-value">45</div>
-      </div>
     </div>
   </section>
 
@@ -170,6 +224,7 @@
 
     </div>
   </section>
+
   <script type="text/javascript" src="static/d3.min.js"></script>
   <script type="text/javascript" src="static/script.js"></script>
 </body>

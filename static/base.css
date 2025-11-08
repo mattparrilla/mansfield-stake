@@ -198,34 +198,181 @@ svg .tick text {
   margin-top: 0;
 }
 
-/* Metrics Grid & Cards (Mobile: 2 columns) */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
+/* Metrics Container */
+.metrics-container {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  max-width: 64rem;
   margin: 2rem auto 0;
 }
 
-.metric-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb; /* 1px */
-  border-top: 3px solid #e3624f;
-  padding: 1.25rem 1rem 1rem;
-  transition: all 0.2s ease;
-  position: relative;
+@media (min-width: 48rem) {
+  .metrics-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .metrics-header {
+    grid-column: 1 / 2;
+  }
+
+  .supporting-metrics {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    border-left: 1px solid #e5e7eb;
+    border-top: none;
+  }
+}
+
+.metrics-header {
+  padding: 1.5rem 1rem 2rem;
   text-align: center;
 }
 
-.metric-card:hover {
-  transform: translateY(-0.125rem); /* -2px */
-  box-shadow: 0 0.5rem 1.5rem rgba(149, 157, 165, 0.1); /* 8px and 24px */
+.metrics-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
 }
 
-.metric-label {
-  font-size: 0.75rem;
+/* Hero Metric */
+.hero-metric {
+  margin: 1rem 0;
+}
+
+.hero-depth {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem;
+  line-height: 1;
+}
+
+.hero-value {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 4rem;
+  font-weight: 800;
+  color: #e3624f;
+  font-feature-settings: "tnum" 1;
+  visibility: hidden;
+}
+
+.hero-value.visible {
+  visibility: visible;
+}
+
+.hero-unit {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 2.5rem;
   font-weight: 700;
+  color: #e3624f;
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.hero-label {
+  font-size: 0.875rem;
   color: #6b7280;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
   letter-spacing: 0.05em;
+}
+
+/* Comparison Bar */
+.comparison-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding: 0;
+}
+
+.comparison-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: center;
+  padding: 1rem 0.75rem;
+  background: #fafafa;
+  border-radius: 0.375rem;
+}
+
+.comparison-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.comparison-value {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #111827;
+  font-feature-settings: "tnum" 1;
+  line-height: 1;
+  visibility: hidden;
+}
+
+.comparison-value.visible {
+  visibility: visible;
+}
+
+.comparison-value.difference-positive {
+  color: #059669;
+}
+
+.comparison-value.difference-negative {
+  color: #dc2626;
+}
+
+/* Supporting Metrics */
+.supporting-metrics {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.supporting-metric {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.supporting-metric:last-child {
+  border-bottom: none;
+}
+
+.supporting-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.supporting-value {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  font-feature-settings: "tnum" 1;
+  visibility: hidden;
+}
+
+.supporting-value.visible {
+  visibility: visible;
 }
 
 /* Maps */
@@ -357,10 +504,65 @@ h5 {
     font-size: 1rem;
   }
 
-  .metrics-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem;
-    margin: 3rem auto 2rem;
+  .metrics-header {
+    padding: 1.5rem 1.5rem 1.5rem;
+  }
+
+  .metrics-title {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-metric {
+    margin: 0.5rem 0;
+  }
+
+  .hero-value {
+    font-size: 4rem;
+  }
+
+  .hero-unit {
+    font-size: 2.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .hero-label {
+    font-size: 0.875rem;
+    margin-top: 0.375rem;
+  }
+
+  .comparison-bar {
+    gap: 1rem;
+    padding: 0 1.5rem;
+    margin-top: 1rem;
+  }
+
+  .comparison-item {
+    padding: 1rem 0.75rem;
+  }
+
+  .comparison-label {
+    font-size: 0.75rem;
+  }
+
+  .comparison-value {
+    font-size: 1.5rem;
+  }
+
+  .supporting-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .supporting-metric {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .supporting-label {
+    font-size: 0.8rem;
+  }
+
+  .supporting-value {
+    font-size: 1.25rem;
   }
 
   #last_updated_par {
@@ -535,4 +737,198 @@ h5 {
 /* Hovered state for lines on mouseover - makes the line slightly darker */
 .season.hovered .line {
   filter: brightness(0.5); /* Makes the line slightly darker */
+}
+
+/* ===================================
+   SEASON IN REVIEW STYLES
+   =================================== */
+
+.season-review-container {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.season-review-header {
+  padding: 1.5rem 1rem 2rem;
+  text-align: center;
+}
+
+.season-review-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 1.5rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.875rem;
+}
+
+/* Hero Section */
+.season-review-hero {
+  margin: 1rem 0;
+}
+
+.season-review-max-depth {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.25rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+
+.season-review-depth-number {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 4rem;
+  font-weight: 800;
+  color: #e3624f;
+  font-feature-settings: "tnum" 1;
+  visibility: hidden;
+}
+
+.season-review-depth-number.visible {
+  visibility: visible;
+}
+
+.season-review-depth-unit {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #e3624f;
+  align-self: flex-start;
+  margin-top: 0.5rem;
+}
+
+.season-review-depth-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.5rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.season-review-badge-container {
+  margin-top: 0.75rem;
+}
+
+.season-review-badge {
+  background-color: #dbeafe;
+  color: #1e40af;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.375rem 0.75rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  display: inline-block;
+  visibility: hidden;
+}
+
+.season-review-badge.visible {
+  visibility: visible;
+}
+
+/* Supporting Metrics */
+.season-review-metrics {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.season-review-metric {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.season-review-metric:last-child {
+  border-bottom: none;
+}
+
+.season-review-metric-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.season-review-metric-value {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+  font-feature-settings: "tnum" 1;
+  visibility: hidden;
+}
+
+.season-review-metric-value.visible {
+  visibility: visible;
+}
+
+/* Tablet and Desktop */
+@media (min-width: 48rem) {
+  .season-review-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .season-review-header {
+    grid-column: 1 / 2;
+    padding: 1.5rem 1.5rem 1.5rem;
+  }
+
+  .season-review-title {
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .season-review-hero {
+    margin: 0.5rem 0;
+  }
+
+  .season-review-depth-number {
+    font-size: 4rem;
+  }
+
+  .season-review-depth-unit {
+    font-size: 2.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .season-review-depth-label {
+    font-size: 0.875rem;
+    margin-top: 0.375rem;
+  }
+
+  .season-review-badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .season-review-metrics {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    border-left: 1px solid #e5e7eb;
+    border-top: none;
+    grid-template-columns: 1fr;
+  }
+
+  .season-review-metric {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .season-review-metric-label {
+    font-size: 0.8rem;
+  }
+
+  .season-review-metric-value {
+    font-size: 1.25rem;
+  }
 }
