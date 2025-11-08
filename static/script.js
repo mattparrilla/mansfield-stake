@@ -381,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var comparisonLabel = document.querySelector('.comparison-bar .comparison-item:first-child .comparison-label');
 
     if (comparisonLabel) {
-      var labelText = comparisonSeasonName === AVERAGE_SEASON ? 'Average:' : "".concat(comparisonSeasonName, ":");
+      var labelText = comparisonSeasonName === AVERAGE_SEASON ? 'Average' : comparisonSeasonName;
       comparisonLabel.textContent = labelText;
     } // Add/remove positive/negative classes for difference
 

@@ -395,8 +395,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const comparisonLabel = document.querySelector('.comparison-bar .comparison-item:first-child .comparison-label');
     if (comparisonLabel) {
       const labelText = comparisonSeasonName === AVERAGE_SEASON
-        ? 'Average:'
-        : `${comparisonSeasonName}:`;
+        ? 'Average'
+        : comparisonSeasonName;
       comparisonLabel.textContent = labelText;
     }
 
