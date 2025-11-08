@@ -28,6 +28,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* global d3 */
 var AVERAGE_SEASON = "Average Season";
+var PREVIEW_SEASON_REVIEW = false; // Set to true to preview season review outside Jan-Sept
 
 var getCurrentSeason = function getCurrentSeason() {
   var date = new Date();
@@ -202,26 +203,38 @@ document.addEventListener("DOMContentLoaded", function () {
   };
 
   var calculateSeasonReview = function calculateSeasonReview(data) {
+    var _seasonData$values;
+
     // Only show season review from January 1 to September 1
     var now = new Date();
     var currentMonth = now.getMonth() + 1; // 1-based
 
     var isReviewSeason = currentMonth >= 1 && currentMonth <= 9; // January to September
 
-    if (!isReviewSeason) {
-      document.getElementById('season-review').style.display = 'none';
-      return;
-    } // Get the previous season (the one that just ended)
-
-
-    var currentYear = now.getFullYear();
-    var previousSeason = currentMonth >= 9 ? "".concat(currentYear - 1, "-").concat(currentYear) : "".concat(currentYear - 2, "-").concat(currentYear - 1); // Find the season data
-
-    var seasonData = data.find(function (s) {
-      return s.season === previousSeason;
+    console.log('Season Review Debug:', {
+      currentMonth: currentMonth,
+      isReviewSeason: isReviewSeason,
+      PREVIEW_SEASON_REVIEW: PREVIEW_SEASON_REVIEW,
+      shouldShow: isReviewSeason || PREVIEW_SEASON_REVIEW
     });
 
+    if (!isReviewSeason && !PREVIEW_SEASON_REVIEW) {
+      console.log('Hiding season review - outside date range and preview is off');
+      document.getElementById('season-review').style.display = 'none';
+      return;
+    } // Get the CURRENT season (the one we're in now)
+
+
+    var currentSeasonName = getCurrentSeason();
+    console.log('Looking for current season:', currentSeasonName); // Find the season data
+
+    var seasonData = data.find(function (s) {
+      return s.season === currentSeasonName;
+    });
+    console.log('Found season data:', seasonData ? 'yes' : 'no', (seasonData === null || seasonData === void 0 ? void 0 : (_seasonData$values = seasonData.values) === null || _seasonData$values === void 0 ? void 0 : _seasonData$values.length) || 0, 'values');
+
     if (!seasonData || seasonData.values.length === 0) {
+      console.log('Hiding season review - no data for', currentSeasonName);
       document.getElementById('season-review').style.display = 'none';
       return;
     } // Calculate max depth and date
@@ -231,10 +244,10 @@ document.addEventListener("DOMContentLoaded", function () {
       return entry.snowDepth > max.snowDepth ? entry : max;
     });
     var maxDepth = maxEntry.snowDepth;
-    var maxDate = maxEntry.date; // Get all historical seasons (excluding average season)
+    var maxDate = maxEntry.date; // Get all historical seasons (excluding average season and current season)
 
     var historicalSeasons = data.filter(function (s) {
-      return s.season !== AVERAGE_SEASON && s.season !== previousSeason && s.values.length > 0;
+      return s.season !== AVERAGE_SEASON && s.season !== currentSeasonName && s.values.length > 0;
     }); // Calculate max depths for all seasons for ranking
 
     var allMaxDepths = historicalSeasons.map(function (season) {
@@ -248,7 +261,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }); // Add current season to the list for ranking
 
     allMaxDepths.push({
-      season: previousSeason,
+      season: currentSeasonName,
       maxDepth: maxDepth
     }); // Sort by max depth (descending) and find ranking
 
@@ -256,17 +269,23 @@ document.addEventListener("DOMContentLoaded", function () {
       return b.maxDepth - a.maxDepth;
     });
     var ranking = allMaxDepths.findIndex(function (s) {
-      return s.season === previousSeason;
+      return s.season === currentSeasonName;
     }) + 1; // Calculate average max depth
 
     var averageMaxDepth = Math.round(allMaxDepths.reduce(function (sum, s) {
       return sum + s.maxDepth;
-    }, 0) / allMaxDepths.length); // Find last snowier season
+    }, 0) / allMaxDepths.length); // Find last (most recent) snowier season
+    // Get all seasons with higher max depth than current season
 
     var snowierSeasons = allMaxDepths.filter(function (s) {
-      return s.maxDepth > maxDepth && s.season !== previousSeason;
+      return s.maxDepth > maxDepth && s.season !== currentSeasonName;
+    }); // Sort by season year (descending) to get most recent first
+    // Season format is "YYYY-YYYY", so we can sort as strings
+
+    snowierSeasons.sort(function (a, b) {
+      return b.season.localeCompare(a.season);
     });
-    var lastSnowierSeason = snowierSeasons.length > 0 ? snowierSeasons[snowierSeasons.length - 1] : null; // Helper function for ranking suffix
+    var lastSnowierSeason = snowierSeasons.length > 0 ? snowierSeasons[0] : null; // Helper function for ranking suffix
 
     var getRankingSuffix = function getRankingSuffix(rank) {
       if (rank % 10 === 1 && rank % 100 !== 11) return 'st';
@@ -285,23 +304,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }; // Update the DOM - New structure
 
 
-    document.getElementById('season-review-title').textContent = "".concat(previousSeason, " Winter");
-    document.getElementById('season-review-ranking').textContent = "".concat(ranking).concat(getRankingSuffix(ranking), " Snowiest");
-    document.getElementById('season-review-depth').textContent = maxDepth;
-    document.getElementById('season-review-rank-number').textContent = "".concat(ranking).concat(getRankingSuffix(ranking));
+    var rankingEl = document.getElementById('season-review-ranking');
+    rankingEl.textContent = "".concat(ranking).concat(getRankingSuffix(ranking), " Snowiest");
+    rankingEl.classList.add('visible');
+    var depthEl = document.getElementById('season-review-depth');
+    depthEl.textContent = maxDepth;
+    depthEl.classList.add('visible');
     var difference = maxDepth - averageMaxDepth;
-    document.getElementById('season-review-difference').textContent = "".concat(difference >= 0 ? '+' : '').concat(difference, "\"");
-    document.getElementById('season-review-date').textContent = formatDate(maxDate);
+    var differenceEl = document.getElementById('season-review-difference');
+    differenceEl.textContent = "".concat(difference >= 0 ? '+' : '').concat(difference, "\"");
+    differenceEl.classList.add('visible');
+    var dateEl = document.getElementById('season-review-date');
+    dateEl.textContent = formatDate(maxDate);
+    dateEl.classList.add('visible');
+    var lastSnowierEl = document.getElementById('season-review-last-snowier');
 
     if (lastSnowierSeason) {
-      document.getElementById('season-review-last-snowier').textContent = lastSnowierSeason.season;
-      document.getElementById('season-review-last-snowier-depth').textContent = "".concat(lastSnowierSeason.maxDepth, "\" peak");
+      lastSnowierEl.textContent = lastSnowierSeason.season;
     } else {
-      document.getElementById('season-review-last-snowier').textContent = 'None on record';
-      document.getElementById('season-review-last-snowier-depth').textContent = '';
-    } // Show the section
+      lastSnowierEl.textContent = 'None';
+    }
 
+    lastSnowierEl.classList.add('visible'); // Show the section
 
+    console.log('Showing season review for', currentSeasonName, 'with max depth', maxDepth);
     document.getElementById('season-review').style.display = 'block';
   };
 

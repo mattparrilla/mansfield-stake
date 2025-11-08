@@ -1,6 +1,7 @@
 /* global d3 */
 
 const AVERAGE_SEASON = "Average Season";
+const PREVIEW_SEASON_REVIEW = false; // Set to true to preview season review outside Jan-Sept
 
 const getCurrentSeason = () => {
   const date = new Date();
@@ -218,19 +219,31 @@ document.addEventListener("DOMContentLoaded", () => {
     const now = new Date();
     const currentMonth = now.getMonth() + 1; // 1-based
     const isReviewSeason = currentMonth >= 1 && currentMonth <= 9; // January to September
-    
-    if (!isReviewSeason) {
+
+    console.log('Season Review Debug:', {
+      currentMonth,
+      isReviewSeason,
+      PREVIEW_SEASON_REVIEW,
+      shouldShow: isReviewSeason || PREVIEW_SEASON_REVIEW
+    });
+
+    if (!isReviewSeason && !PREVIEW_SEASON_REVIEW) {
+      console.log('Hiding season review - outside date range and preview is off');
       document.getElementById('season-review').style.display = 'none';
       return;
     }
-    
-    // Get the previous season (the one that just ended)
-    const currentYear = now.getFullYear();
-    const previousSeason = currentMonth >= 9 ? `${currentYear - 1}-${currentYear}` : `${currentYear - 2}-${currentYear - 1}`;
-    
+
+    // Get the CURRENT season (the one we're in now)
+    const currentSeasonName = getCurrentSeason();
+
+    console.log('Looking for current season:', currentSeasonName);
+
     // Find the season data
-    const seasonData = data.find(s => s.season === previousSeason);
+    const seasonData = data.find(s => s.season === currentSeasonName);
+    console.log('Found season data:', seasonData ? 'yes' : 'no', seasonData?.values?.length || 0, 'values');
+
     if (!seasonData || seasonData.values.length === 0) {
+      console.log('Hiding season review - no data for', currentSeasonName);
       document.getElementById('season-review').style.display = 'none';
       return;
     }
@@ -243,10 +256,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const maxDepth = maxEntry.snowDepth;
     const maxDate = maxEntry.date;
     
-    // Get all historical seasons (excluding average season)
-    const historicalSeasons = data.filter(s => 
-      s.season !== AVERAGE_SEASON && 
-      s.season !== previousSeason &&
+    // Get all historical seasons (excluding average season and current season)
+    const historicalSeasons = data.filter(s =>
+      s.season !== AVERAGE_SEASON &&
+      s.season !== currentSeasonName &&
       s.values.length > 0
     );
     
@@ -262,23 +275,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     
     // Add current season to the list for ranking
-    allMaxDepths.push({ season: previousSeason, maxDepth });
-    
+    allMaxDepths.push({ season: currentSeasonName, maxDepth });
+
     // Sort by max depth (descending) and find ranking
     allMaxDepths.sort((a, b) => b.maxDepth - a.maxDepth);
-    const ranking = allMaxDepths.findIndex(s => s.season === previousSeason) + 1;
+    const ranking = allMaxDepths.findIndex(s => s.season === currentSeasonName) + 1;
     
     // Calculate average max depth
     const averageMaxDepth = Math.round(
       allMaxDepths.reduce((sum, s) => sum + s.maxDepth, 0) / allMaxDepths.length
     );
     
-    // Find last snowier season
-    const snowierSeasons = allMaxDepths.filter(s => 
-      s.maxDepth > maxDepth && s.season !== previousSeason
+    // Find last (most recent) snowier season
+    // Get all seasons with higher max depth than current season
+    const snowierSeasons = allMaxDepths.filter(s =>
+      s.maxDepth > maxDepth && s.season !== currentSeasonName
     );
-    const lastSnowierSeason = snowierSeasons.length > 0 ? 
-      snowierSeasons[snowierSeasons.length - 1] : null;
+
+    // Sort by season year (descending) to get most recent first
+    // Season format is "YYYY-YYYY", so we can sort as strings
+    snowierSeasons.sort((a, b) => b.season.localeCompare(a.season));
+
+    const lastSnowierSeason = snowierSeasons.length > 0 ? snowierSeasons[0] : null;
     
     // Helper function for ranking suffix
     const getRankingSuffix = (rank) => {
@@ -295,29 +313,33 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     
     // Update the DOM - New structure
-    document.getElementById('season-review-title').textContent = `${previousSeason} Winter`;
-    document.getElementById('season-review-ranking').textContent =
-      `${ranking}${getRankingSuffix(ranking)} Snowiest`;
-    document.getElementById('season-review-depth').textContent = maxDepth;
-    document.getElementById('season-review-rank-number').textContent =
-      `${ranking}${getRankingSuffix(ranking)}`;
+    const rankingEl = document.getElementById('season-review-ranking');
+    rankingEl.textContent = `${ranking}${getRankingSuffix(ranking)} Snowiest`;
+    rankingEl.classList.add('visible');
+
+    const depthEl = document.getElementById('season-review-depth');
+    depthEl.textContent = maxDepth;
+    depthEl.classList.add('visible');
 
     const difference = maxDepth - averageMaxDepth;
-    document.getElementById('season-review-difference').textContent =
-      `${difference >= 0 ? '+' : ''}${difference}"`;
+    const differenceEl = document.getElementById('season-review-difference');
+    differenceEl.textContent = `${difference >= 0 ? '+' : ''}${difference}"`;
+    differenceEl.classList.add('visible');
 
-    document.getElementById('season-review-date').textContent = formatDate(maxDate);
+    const dateEl = document.getElementById('season-review-date');
+    dateEl.textContent = formatDate(maxDate);
+    dateEl.classList.add('visible');
 
+    const lastSnowierEl = document.getElementById('season-review-last-snowier');
     if (lastSnowierSeason) {
-      document.getElementById('season-review-last-snowier').textContent = lastSnowierSeason.season;
-      document.getElementById('season-review-last-snowier-depth').textContent =
-        `${lastSnowierSeason.maxDepth}" peak`;
+      lastSnowierEl.textContent = lastSnowierSeason.season;
     } else {
-      document.getElementById('season-review-last-snowier').textContent = 'None on record';
-      document.getElementById('season-review-last-snowier-depth').textContent = '';
+      lastSnowierEl.textContent = 'None';
     }
+    lastSnowierEl.classList.add('visible');
 
     // Show the section
+    console.log('Showing season review for', currentSeasonName, 'with max depth', maxDepth);
     document.getElementById('season-review').style.display = 'block';
   };
 

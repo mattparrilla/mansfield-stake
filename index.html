@@ -94,12 +94,12 @@
       <!-- Supporting Metrics -->
       <div class="supporting-metrics">
         <div class="supporting-metric">
-          <div class="supporting-label">Snowier winters on this date</div>
+          <div class="supporting-label">Snowier winters</div>
           <div id="snowier-count" class="supporting-value">15</div>
         </div>
 
         <div class="supporting-metric">
-          <div class="supporting-label">Less snowy winters on this date</div>
+          <div class="supporting-label">Less snowy winters</div>
           <div id="less-snowy-count" class="supporting-value">45</div>
         </div>
 
@@ -108,6 +108,47 @@
           <div id="last-snowier" class="supporting-value">2019-20</div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Season in Review Section -->
+  <section id="season-review" style="display: none;">
+    <div class="season-review-container">
+
+      <!-- Left Column: Hero Metric -->
+      <div class="season-review-header">
+        <h3 class="season-review-title">Season Max Depth</h3>
+
+        <div class="season-review-hero">
+          <div class="season-review-max-depth">
+            <span id="season-review-depth" class="season-review-depth-number">73</span>
+            <span class="season-review-depth-unit">"</span>
+          </div>
+          <div class="season-review-depth-label">Peak Snow Depth</div>
+          <div class="season-review-badge-container">
+            <span id="season-review-ranking" class="season-review-badge">8th Snowiest</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Supporting Metrics -->
+      <div class="season-review-metrics">
+        <div class="season-review-metric">
+          <div class="season-review-metric-label">Date of max depth</div>
+          <div id="season-review-date" class="season-review-metric-value">Feb 14</div>
+        </div>
+
+        <div class="season-review-metric">
+          <div class="season-review-metric-label">Diff from average max</div>
+          <div id="season-review-difference" class="season-review-metric-value">+25"</div>
+        </div>
+
+        <div class="season-review-metric">
+          <div class="season-review-metric-label">Last snowier winter</div>
+          <div id="season-review-last-snowier" class="season-review-metric-value">2022-2023</div>
+        </div>
+      </div>
+
     </div>
   </section>
 
@@ -180,56 +221,6 @@
           href="https://s3.amazonaws.com/matthewparrilla.com/snow-depth.csv">here.</a></p>
       <p>This is my copy of the data and includes values reported to me over COVID and cleaning of erroneous values.
         It is updated within the hour of a new depth report by the NWS.</p>
-
-    </div>
-  </section>
-
-  <!-- Season in Review Section -->
-  <section id="season-review" style="display: none;">
-    <div class="season-review-container">
-
-      <!-- Header section -->
-      <div class="season-review-header">
-        <h3 class="season-review-title">Season Maximum Comparison</h3>
-
-        <!-- Hero metric -->
-        <div class="season-review-hero">
-          <div id="season-review-title" class="season-review-season-name">2024-2025 Winter</div>
-          <div class="season-review-max-depth">
-            <span id="season-review-depth" class="season-review-depth-number">73</span>
-            <span class="season-review-depth-unit">"</span>
-          </div>
-          <div class="season-review-depth-label">Peak Snow Depth</div>
-          <div class="season-review-badge-container">
-            <span id="season-review-ranking" class="season-review-badge">8th Snowiest</span>
-          </div>
-        </div>
-
-        <!-- Key comparison -->
-        <div class="season-review-comparison-bar">
-          <div class="season-review-comparison-item">
-            <span class="season-review-comparison-label">Rank</span>
-            <span id="season-review-rank-number" class="season-review-comparison-value">8th</span>
-          </div>
-          <div class="season-review-comparison-item">
-            <span class="season-review-comparison-label">vs Average</span>
-            <span id="season-review-difference" class="season-review-comparison-value">+25"</span>
-          </div>
-          <div class="season-review-comparison-item">
-            <span class="season-review-comparison-label">Peak on</span>
-            <span id="season-review-date" class="season-review-comparison-value">Feb 14</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Supporting Info -->
-      <div class="season-review-footer">
-        <div class="season-review-footer-label">Last snowier season</div>
-        <div class="season-review-footer-content">
-          <span id="season-review-last-snowier" class="season-review-footer-season">2022-2023</span>
-          <span id="season-review-last-snowier-depth" class="season-review-footer-depth">81" peak</span>
-        </div>
-      </div>
 
     </div>
   </section>
