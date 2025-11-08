@@ -201,7 +201,112 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  var calculateSeasonReview = function calculateSeasonReview(data) {
+    // Only show season review from January 1 to September 1
+    var now = new Date();
+    var currentMonth = now.getMonth() + 1; // 1-based
+
+    var isReviewSeason = currentMonth >= 1 && currentMonth <= 9; // January to September
+
+    if (!isReviewSeason) {
+      document.getElementById('season-review').style.display = 'none';
+      return;
+    } // Get the previous season (the one that just ended)
+
+
+    var currentYear = now.getFullYear();
+    var previousSeason = currentMonth >= 9 ? "".concat(currentYear - 1, "-").concat(currentYear) : "".concat(currentYear - 2, "-").concat(currentYear - 1); // Find the season data
+
+    var seasonData = data.find(function (s) {
+      return s.season === previousSeason;
+    });
+
+    if (!seasonData || seasonData.values.length === 0) {
+      document.getElementById('season-review').style.display = 'none';
+      return;
+    } // Calculate max depth and date
+
+
+    var maxEntry = seasonData.values.reduce(function (max, entry) {
+      return entry.snowDepth > max.snowDepth ? entry : max;
+    });
+    var maxDepth = maxEntry.snowDepth;
+    var maxDate = maxEntry.date; // Get all historical seasons (excluding average season)
+
+    var historicalSeasons = data.filter(function (s) {
+      return s.season !== AVERAGE_SEASON && s.season !== previousSeason && s.values.length > 0;
+    }); // Calculate max depths for all seasons for ranking
+
+    var allMaxDepths = historicalSeasons.map(function (season) {
+      var seasonMax = season.values.reduce(function (max, entry) {
+        return entry.snowDepth > max.snowDepth ? entry : max;
+      });
+      return {
+        season: season.season,
+        maxDepth: seasonMax.snowDepth
+      };
+    }); // Add current season to the list for ranking
+
+    allMaxDepths.push({
+      season: previousSeason,
+      maxDepth: maxDepth
+    }); // Sort by max depth (descending) and find ranking
+
+    allMaxDepths.sort(function (a, b) {
+      return b.maxDepth - a.maxDepth;
+    });
+    var ranking = allMaxDepths.findIndex(function (s) {
+      return s.season === previousSeason;
+    }) + 1; // Calculate average max depth
+
+    var averageMaxDepth = Math.round(allMaxDepths.reduce(function (sum, s) {
+      return sum + s.maxDepth;
+    }, 0) / allMaxDepths.length); // Find last snowier season
+
+    var snowierSeasons = allMaxDepths.filter(function (s) {
+      return s.maxDepth > maxDepth && s.season !== previousSeason;
+    });
+    var lastSnowierSeason = snowierSeasons.length > 0 ? snowierSeasons[snowierSeasons.length - 1] : null; // Helper function for ranking suffix
+
+    var getRankingSuffix = function getRankingSuffix(rank) {
+      if (rank % 10 === 1 && rank % 100 !== 11) return 'st';
+      if (rank % 10 === 2 && rank % 100 !== 12) return 'nd';
+      if (rank % 10 === 3 && rank % 100 !== 13) return 'rd';
+      return 'th';
+    }; // Format date
+
+
+    var formatDate = function formatDate(date) {
+      var options = {
+        month: 'short',
+        day: 'numeric'
+      };
+      return date.toLocaleDateString('en-US', options);
+    }; // Update the DOM - New structure
+
+
+    document.getElementById('season-review-title').textContent = "".concat(previousSeason, " Winter");
+    document.getElementById('season-review-ranking').textContent = "".concat(ranking).concat(getRankingSuffix(ranking), " Snowiest");
+    document.getElementById('season-review-depth').textContent = maxDepth;
+    document.getElementById('season-review-rank-number').textContent = "".concat(ranking).concat(getRankingSuffix(ranking));
+    var difference = maxDepth - averageMaxDepth;
+    document.getElementById('season-review-difference').textContent = "".concat(difference >= 0 ? '+' : '').concat(difference, "\"");
+    document.getElementById('season-review-date').textContent = formatDate(maxDate);
+
+    if (lastSnowierSeason) {
+      document.getElementById('season-review-last-snowier').textContent = lastSnowierSeason.season;
+      document.getElementById('season-review-last-snowier-depth').textContent = "".concat(lastSnowierSeason.maxDepth, "\" peak");
+    } else {
+      document.getElementById('season-review-last-snowier').textContent = 'None on record';
+      document.getElementById('season-review-last-snowier-depth').textContent = '';
+    } // Show the section
+
+
+    document.getElementById('season-review').style.display = 'block';
+  };
+
   var updateMetricsGrid = function updateMetricsGrid(currentDepth, historicalData) {
+    var comparisonSeasonName = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : AVERAGE_SEASON;
     // Find latest measurement date from current season
     var currentSeason = historicalData.find(function (s) {
       return s.season === getCurrentSeason();
@@ -213,13 +318,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     var month = lastMeasurement.date.getMonth() + 1;
-    var day = lastMeasurement.date.getDate(); // Get the average season data for this date
+    var day = lastMeasurement.date.getDate(); // Get the comparison season data for this date
 
-    var averageSeason = historicalData.find(function (s) {
-      return s.season === AVERAGE_SEASON;
+    var comparisonSeason = historicalData.find(function (s) {
+      return s.season === comparisonSeasonName;
     });
-    var interpolatedAverage = interpolateValueForDate(averageSeason.values, lastMeasurement.date);
-    var average = interpolatedAverage; // Get historical values for this date using interpolation (excluding average season)
+    var interpolatedComparison = interpolateValueForDate(comparisonSeason.values, lastMeasurement.date);
+    var average = interpolatedComparison; // Get historical values for this date using interpolation (excluding average season)
 
     var historicalValues = historicalData.filter(function (season) {
       return season.season !== getCurrentSeason() && season.season !== AVERAGE_SEASON;
@@ -250,15 +355,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }).map(function (season) {
       var year = season.season.split("-")[0];
       return "".concat(year, "-").concat((parseInt(year) + 1).toString().slice(-2));
-    }).pop() || "None"; // Update DOM
+    }).pop() || "None"; // Update DOM - New structure
 
     var metrics = {
-      "#current-depth .metric-value": currentDepth,
-      "#average-depth .metric-value": average,
-      "#difference .metric-value": "".concat(difference > 0 ? "+" : "").concat(difference),
-      "#last-snowier .metric-value": lastSnowierWinter,
-      "#snowier-count .metric-value": snowierWinters,
-      "#less-snowy-count .metric-value": lessSnowyWinters
+      ".hero-value": currentDepth,
+      "#average-depth": "".concat(average, "\""),
+      "#difference": "".concat(difference > 0 ? "+" : "").concat(difference, "\""),
+      "#last-snowier": lastSnowierWinter,
+      "#snowier-count": snowierWinters,
+      "#less-snowy-count": lessSnowyWinters
     };
     Object.entries(metrics).forEach(function (_ref2) {
       var _ref3 = _slicedToArray(_ref2, 2),
@@ -266,13 +371,27 @@ document.addEventListener("DOMContentLoaded", function () {
           value = _ref3[1];
 
       var element = document.querySelector(selector);
-      element.textContent = value;
-      element.classList.add("visible");
-    }); // Add/remove positive/negative classes for difference card
 
-    var differenceCard = document.querySelector("#difference");
-    differenceCard.classList.remove("difference-positive", "difference-negative");
-    differenceCard.classList.add(difference > 0 ? "difference-positive" : "difference-negative");
+      if (element) {
+        element.textContent = value;
+        element.classList.add("visible");
+      }
+    }); // Update comparison label
+
+    var comparisonLabel = document.querySelector('.comparison-bar .comparison-item:first-child .comparison-label');
+
+    if (comparisonLabel) {
+      var labelText = comparisonSeasonName === AVERAGE_SEASON ? 'Average:' : "".concat(comparisonSeasonName, ":");
+      comparisonLabel.textContent = labelText;
+    } // Add/remove positive/negative classes for difference
+
+
+    var differenceEl = document.querySelector("#difference");
+
+    if (differenceEl) {
+      differenceEl.classList.remove("difference-positive", "difference-negative");
+      differenceEl.classList.add(difference > 0 ? "difference-positive" : "difference-negative");
+    }
   };
 
   var addMouseoverFunctionality = function addMouseoverFunctionality(_ref4) {
@@ -478,7 +597,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       var currentDepth = currentSeason ? currentSeason.values[currentSeason.values.length - 1].snowDepth : 0; // Update metrics grid
 
-      updateMetricsGrid(currentDepth, data); // Add mouseover functionality
+      updateMetricsGrid(currentDepth, data); // Calculate and display season review (April-September only)
+
+      calculateSeasonReview(data); // Add mouseover functionality
 
       addMouseoverFunctionality({
         data: data,
@@ -520,7 +641,9 @@ document.addEventListener("DOMContentLoaded", function () {
           line: line,
           seasonContainer: seasonContainer,
           comparisonYear: comparisonYear
-        });
+        }); // Update metrics to compare with selected season
+
+        updateMetricsGrid(currentDepth, data, comparisonYear);
       };
     });
   }; // TODO: make this more performant (maybe reverse and find, then slice)
