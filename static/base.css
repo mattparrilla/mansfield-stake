@@ -127,16 +127,16 @@ p {
 .yearly-trend .line {
   fill: none;
   stroke: #d3d3d3;
-  stroke-width: 0.0625rem; /* 1px */
+  stroke-width: 0.03125rem; /* 0.5px */
 }
 
 .current .line {
-  stroke-width: 0.125rem; /* 2px */
+  stroke-width: 0.0625rem; /* 1px */
   stroke: #e3624f;
 }
 
 .comparison .line {
-  stroke-width: 0.125rem; /* 2px */
+  stroke-width: 0.0625rem; /* 1px */
   stroke: #1a1a1a;
 }
 
@@ -484,6 +484,18 @@ h5 {
 
 /* Media Queries (Min-Width Only) */
 @media (min-width: 48rem) { /* 768px */
+  .yearly-trend .line {
+    stroke-width: 0.0625rem; /* 1px */
+  }
+
+  .current .line {
+    stroke-width: 0.125rem; /* 2px */
+  }
+
+  .comparison .line {
+    stroke-width: 0.125rem; /* 2px */
+  }
+
   #legend div.legend_label {
     line-height: 1.25;
     font-size: 1.125rem; /* 18px */
