@@ -43,3 +43,6 @@ venv/
 #configuration
 config.py
 *:Zone.Identifier
+
+tmp/
+snow-depth.csv
