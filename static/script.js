@@ -28,7 +28,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* global d3 */
 var AVERAGE_SEASON = "Average Season";
-var PREVIEW_SEASON_REVIEW = false; // Set to true to preview season review outside Jan-Sept
+var PREVIEW_SEASON_REVIEW = true; // Set to true to preview season review outside Jan-Sept
 
 var getCurrentSeason = function getCurrentSeason() {
   var date = new Date();

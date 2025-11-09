@@ -1,7 +1,7 @@
 /* global d3 */
 
 const AVERAGE_SEASON = "Average Season";
-const PREVIEW_SEASON_REVIEW = false; // Set to true to preview season review outside Jan-Sept
+const PREVIEW_SEASON_REVIEW = true; // Set to true to preview season review outside Jan-Sept
 
 const getCurrentSeason = () => {
   const date = new Date();
