@@ -1,7 +1,6 @@
 /* global d3 */
 
 const AVERAGE_SEASON = "Average Season";
-const PREVIEW_SEASON_REVIEW = true; // Set to true to preview season review outside Jan-Sept
 
 const getCurrentSeason = () => {
   const date = new Date();
@@ -215,24 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const calculateSeasonReview = (data) => {
-    // Only show season review from January 1 to September 1
-    const now = new Date();
-    const currentMonth = now.getMonth() + 1; // 1-based
-    const isReviewSeason = currentMonth >= 1 && currentMonth <= 9; // January to September
-
-    console.log('Season Review Debug:', {
-      currentMonth,
-      isReviewSeason,
-      PREVIEW_SEASON_REVIEW,
-      shouldShow: isReviewSeason || PREVIEW_SEASON_REVIEW
-    });
-
-    if (!isReviewSeason && !PREVIEW_SEASON_REVIEW) {
-      console.log('Hiding season review - outside date range and preview is off');
-      document.getElementById('season-review').style.display = 'none';
-      return;
-    }
-
     // Get the CURRENT season (the one we're in now)
     const currentSeasonName = getCurrentSeason();
 
