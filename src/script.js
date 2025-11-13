@@ -224,8 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log('Found season data:', seasonData ? 'yes' : 'no', seasonData?.values?.length || 0, 'values');
 
     if (!seasonData || seasonData.values.length === 0) {
-      console.log('Hiding season review - no data for', currentSeasonName);
-      document.getElementById('season-review').style.display = 'none';
+      console.log('No data for', currentSeasonName);
       return;
     }
     
@@ -319,9 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     lastSnowierEl.classList.add('visible');
 
-    // Show the section
-    console.log('Showing season review for', currentSeasonName, 'with max depth', maxDepth);
-    document.getElementById('season-review').style.display = 'block';
+    console.log('Updated season review for', currentSeasonName, 'with max depth', maxDepth);
   };
 
   const updateMetricsGrid = (currentDepth, historicalData, comparisonSeasonName = AVERAGE_SEASON) => {
@@ -978,7 +975,132 @@ document.addEventListener("DOMContentLoaded", () => {
     );
   };
 
+  const initWeatherCharts = () => {
+    fetch('https://s3.amazonaws.com/matthewparrilla.com/mansfield-observations.json')
+      .then(response => response.json())
+      .then(data => {
+        const observations = data.observations.map(obs => ({
+          ...obs,
+          timestamp: new Date(obs.timestamp)
+        }));
+
+        // Temperature Chart - keep all observations, nulls will create gaps
+        createWeatherChart({
+          containerId: 'temperature_chart',
+          data: observations,
+          valueKey: 'temperature_f',
+          yLabel: 'Temperature (°F)',
+          color: '#e3624f',
+          showFreezingLine: true
+        });
+
+        // Wind Speed Chart - keep all observations, nulls will create gaps
+        createWeatherChart({
+          containerId: 'wind_chart',
+          data: observations,
+          valueKey: 'wind_speed_mph',
+          yLabel: 'Wind Speed (mph)',
+          color: '#1E88E5',
+          showFreezingLine: false
+        });
+      });
+  };
+
+  const createWeatherChart = ({ containerId, data, valueKey, yLabel, color, showFreezingLine }) => {
+    const container = document.getElementById(containerId);
+    const containerWidth = container.parentElement.clientWidth;
+    const chartWidth = containerWidth;
+    const chartHeight = containerWidth / 3;
+
+    const chartMargin = {
+      top: 20,
+      right: 60,
+      bottom: 40,
+      left: 60
+    };
+
+    const svg = d3.select(`#${containerId}`)
+      .attr('width', chartWidth)
+      .attr('height', chartHeight);
+
+    // Filter data for domain calculation (exclude nulls)
+    const validData = data.filter(d => d[valueKey] !== null);
+
+    const x = d3.scaleTime()
+      .domain(d3.extent(data, d => d.timestamp))
+      .range([chartMargin.left, chartWidth - chartMargin.right]);
+
+    const y = d3.scaleLinear()
+      .domain([
+        d3.min(validData, d => d[valueKey]) - 5,
+        d3.max(validData, d => d[valueKey]) + 5
+      ])
+      .range([chartHeight - chartMargin.bottom, chartMargin.top]);
+
+    const line = d3.line()
+      .defined(d => d[valueKey] !== null)  // Skip null values
+      .x(d => x(d.timestamp))
+      .y(d => y(d[valueKey]))
+      .curve(d3.curveMonotoneX);
+
+    // Add grid lines at ticks
+    const yTicks = y.ticks(5);
+    yTicks.forEach(tickValue => {
+      svg.append('line')
+        .attr('class', 'weather-grid-line')
+        .attr('x1', chartMargin.left)
+        .attr('x2', chartWidth - chartMargin.right)
+        .attr('y1', y(tickValue))
+        .attr('y2', y(tickValue))
+        .attr('stroke', '#cccccc')
+        .attr('stroke-width', 1)
+        .attr('opacity', 0.5);
+    });
+
+    // Add freezing line at 32°F if requested
+    if (showFreezingLine) {
+      svg.append('line')
+        .attr('class', 'freezing-line')
+        .attr('x1', chartMargin.left)
+        .attr('x2', chartWidth - chartMargin.right)
+        .attr('y1', y(32))
+        .attr('y2', y(32))
+        .attr('stroke', '#000000')
+        .attr('stroke-width', 2);
+    }
+
+    // Add the line
+    svg.append('path')
+      .datum(data)
+      .attr('fill', 'none')
+      .attr('stroke', color)
+      .attr('stroke-width', 2)
+      .attr('d', line);
+
+    // Add x-axis
+    svg.append('g')
+      .attr('transform', `translate(0,${chartHeight - chartMargin.bottom})`)
+      .call(d3.axisBottom(x).ticks(5).tickFormat(d3.timeFormat('%b %d')))
+      .style('font-size', '12px');
+
+    // Add y-axis
+    svg.append('g')
+      .attr('transform', `translate(${chartWidth - chartMargin.right}, 0)`)
+      .call(d3.axisRight(y).ticks(5))
+      .style('font-size', '12px');
+
+    // Add y-axis label
+    svg.append('text')
+      .attr('transform', 'rotate(-90)')
+      .attr('y', chartWidth - chartMargin.right + 45)
+      .attr('x', -(chartHeight / 2))
+      .attr('text-anchor', 'middle')
+      .style('font-size', '14px')
+      .style('fill', '#374151')
+      .text(yLabel);
+  };
+
   initSnowDepthChart();
-  // initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
+  initWeatherCharts();
   fetchNwsForecast();
 });

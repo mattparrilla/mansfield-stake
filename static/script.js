@@ -214,8 +214,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log('Found season data:', seasonData ? 'yes' : 'no', (seasonData === null || seasonData === void 0 ? void 0 : (_seasonData$values = seasonData.values) === null || _seasonData$values === void 0 ? void 0 : _seasonData$values.length) || 0, 'values');
 
     if (!seasonData || seasonData.values.length === 0) {
-      console.log('Hiding season review - no data for', currentSeasonName);
-      document.getElementById('season-review').style.display = 'none';
+      console.log('No data for', currentSeasonName);
       return;
     } // Calculate max depth and date
 
@@ -305,10 +304,8 @@ document.addEventListener("DOMContentLoaded", function () {
       lastSnowierEl.textContent = 'None';
     }
 
-    lastSnowierEl.classList.add('visible'); // Show the section
-
-    console.log('Showing season review for', currentSeasonName, 'with max depth', maxDepth);
-    document.getElementById('season-review').style.display = 'block';
+    lastSnowierEl.classList.add('visible');
+    console.log('Updated season review for', currentSeasonName, 'with max depth', maxDepth);
   };
 
   var updateMetricsGrid = function updateMetricsGrid(currentDepth, historicalData) {
@@ -830,7 +827,95 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  initSnowDepthChart(); // initPrev10Charts(['temperature', 'wind_gust', 'wind_direction']);
+  var initWeatherCharts = function initWeatherCharts() {
+    fetch('https://s3.amazonaws.com/matthewparrilla.com/mansfield-observations.json').then(function (response) {
+      return response.json();
+    }).then(function (data) {
+      var observations = data.observations.map(function (obs) {
+        return _objectSpread(_objectSpread({}, obs), {}, {
+          timestamp: new Date(obs.timestamp)
+        });
+      }); // Temperature Chart - keep all observations, nulls will create gaps
 
+      createWeatherChart({
+        containerId: 'temperature_chart',
+        data: observations,
+        valueKey: 'temperature_f',
+        yLabel: 'Temperature (°F)',
+        color: '#e3624f',
+        showFreezingLine: true
+      }); // Wind Speed Chart - keep all observations, nulls will create gaps
+
+      createWeatherChart({
+        containerId: 'wind_chart',
+        data: observations,
+        valueKey: 'wind_speed_mph',
+        yLabel: 'Wind Speed (mph)',
+        color: '#1E88E5',
+        showFreezingLine: false
+      });
+    });
+  };
+
+  var createWeatherChart = function createWeatherChart(_ref9) {
+    var containerId = _ref9.containerId,
+        data = _ref9.data,
+        valueKey = _ref9.valueKey,
+        yLabel = _ref9.yLabel,
+        color = _ref9.color,
+        showFreezingLine = _ref9.showFreezingLine;
+    var container = document.getElementById(containerId);
+    var containerWidth = container.parentElement.clientWidth;
+    var chartWidth = containerWidth;
+    var chartHeight = containerWidth / 3;
+    var chartMargin = {
+      top: 20,
+      right: 60,
+      bottom: 40,
+      left: 60
+    };
+    var svg = d3.select("#".concat(containerId)).attr('width', chartWidth).attr('height', chartHeight); // Filter data for domain calculation (exclude nulls)
+
+    var validData = data.filter(function (d) {
+      return d[valueKey] !== null;
+    });
+    var x = d3.scaleTime().domain(d3.extent(data, function (d) {
+      return d.timestamp;
+    })).range([chartMargin.left, chartWidth - chartMargin.right]);
+    var y = d3.scaleLinear().domain([d3.min(validData, function (d) {
+      return d[valueKey];
+    }) - 5, d3.max(validData, function (d) {
+      return d[valueKey];
+    }) + 5]).range([chartHeight - chartMargin.bottom, chartMargin.top]);
+    var line = d3.line().defined(function (d) {
+      return d[valueKey] !== null;
+    }) // Skip null values
+    .x(function (d) {
+      return x(d.timestamp);
+    }).y(function (d) {
+      return y(d[valueKey]);
+    }).curve(d3.curveMonotoneX); // Add grid lines at ticks
+
+    var yTicks = y.ticks(5);
+    yTicks.forEach(function (tickValue) {
+      svg.append('line').attr('class', 'weather-grid-line').attr('x1', chartMargin.left).attr('x2', chartWidth - chartMargin.right).attr('y1', y(tickValue)).attr('y2', y(tickValue)).attr('stroke', '#cccccc').attr('stroke-width', 1).attr('opacity', 0.5);
+    }); // Add freezing line at 32°F if requested
+
+    if (showFreezingLine) {
+      svg.append('line').attr('class', 'freezing-line').attr('x1', chartMargin.left).attr('x2', chartWidth - chartMargin.right).attr('y1', y(32)).attr('y2', y(32)).attr('stroke', '#000000').attr('stroke-width', 2);
+    } // Add the line
+
+
+    svg.append('path').datum(data).attr('fill', 'none').attr('stroke', color).attr('stroke-width', 2).attr('d', line); // Add x-axis
+
+    svg.append('g').attr('transform', "translate(0,".concat(chartHeight - chartMargin.bottom, ")")).call(d3.axisBottom(x).ticks(5).tickFormat(d3.timeFormat('%b %d'))).style('font-size', '12px'); // Add y-axis
+
+    svg.append('g').attr('transform', "translate(".concat(chartWidth - chartMargin.right, ", 0)")).call(d3.axisRight(y).ticks(5)).style('font-size', '12px'); // Add y-axis label
+
+    svg.append('text').attr('transform', 'rotate(-90)').attr('y', chartWidth - chartMargin.right + 45).attr('x', -(chartHeight / 2)).attr('text-anchor', 'middle').style('font-size', '14px').style('fill', '#374151').text(yLabel);
+  };
+
+  initSnowDepthChart();
+  initWeatherCharts();
   fetchNwsForecast();
 });

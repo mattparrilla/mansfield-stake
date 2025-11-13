@@ -64,10 +64,13 @@
       <svg id="snow_depth_chart" class="yearly-trend"></svg>
       <p id="last_updated_par">Last reported by NWS on: <span id="last_updated"></span></p>
     </div>
+  </section>
 
+  <section class="metrics-grid">
+    <!-- Current Depth Metrics -->
     <div class="metrics-container">
       <div class="metrics-header">
-        <h3 class="metrics-title">Today's Snow Depth</h3>
+        <h3 class="metrics-title">Current Snow Depth</h3>
 
         <!-- Hero Metric -->
         <div class="hero-metric">
@@ -75,7 +78,6 @@
             <span class="hero-value">86</span>
             <span class="hero-unit">"</span>
           </div>
-          <div class="hero-label">Current Snow Depth</div>
         </div>
 
         <!-- Key Comparison -->
@@ -109,48 +111,59 @@
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- Season in Review Section -->
-  <section id="season-review" style="display: none;">
-    <div class="season-review-container">
-
+    <!-- Season in Review Section -->
+    <div class="metrics-container" id="season-review">
       <!-- Left Column: Hero Metric -->
-      <div class="season-review-header">
-        <h3 class="season-review-title">Season Max Depth</h3>
+      <div class="metrics-header">
+        <h3 class="metrics-title">Season Max Depth</h3>
 
-        <div class="season-review-hero">
-          <div class="season-review-max-depth">
-            <span id="season-review-depth" class="season-review-depth-number">73</span>
-            <span class="season-review-depth-unit">"</span>
+        <div class="hero-metric">
+          <div class="hero-depth">
+            <span id="season-review-depth" class="hero-value">73</span>
+            <span class="hero-unit">"</span>
           </div>
-          <div class="season-review-depth-label">Peak Snow Depth</div>
-          <div class="season-review-badge-container">
-            <span id="season-review-ranking" class="season-review-badge">8th Snowiest</span>
+          <div class="badge-container">
+            <span id="season-review-ranking" class="badge">8th Snowiest</span>
           </div>
         </div>
       </div>
 
       <!-- Right Column: Supporting Metrics -->
-      <div class="season-review-metrics">
-        <div class="season-review-metric">
-          <div class="season-review-metric-label">Date of max depth</div>
-          <div id="season-review-date" class="season-review-metric-value">Feb 14</div>
+      <div class="supporting-metrics">
+        <div class="supporting-metric">
+          <div class="supporting-label">Date of max depth</div>
+          <div id="season-review-date" class="supporting-value">Feb 14</div>
         </div>
 
-        <div class="season-review-metric">
-          <div class="season-review-metric-label">Diff from average max</div>
-          <div id="season-review-difference" class="season-review-metric-value">+25"</div>
+        <div class="supporting-metric">
+          <div class="supporting-label">Diff from average max</div>
+          <div id="season-review-difference" class="supporting-value">+25"</div>
         </div>
 
-        <div class="season-review-metric">
-          <div class="season-review-metric-label">Last snowier winter</div>
-          <div id="season-review-last-snowier" class="season-review-metric-value">2022-2023</div>
+        <div class="supporting-metric">
+          <div class="supporting-label">Last snowier winter</div>
+          <div id="season-review-last-snowier" class="supporting-value">2022-2023</div>
         </div>
       </div>
-
     </div>
   </section>
+
+  <div style="display: none">
+    <section>
+      <h2>Recent Temperature</h2>
+      <div id="temperature_chart_container">
+        <svg id="temperature_chart" class="weather-chart"></svg>
+      </div>
+    </section>
+
+    <section>
+      <h2>Recent Wind Speed</h2>
+      <div id="wind_chart_container">
+        <svg id="wind_chart" class="weather-chart"></svg>
+      </div>
+    </section>
+  </div>
 
   <div class="ramble">
     <picture>
@@ -213,15 +226,12 @@
         report.</p>
       <p>In recent years there have been some gaps in NWS reporting that I have filled with skier reports.</p>
       <p>Thanks to the many folks who have kept this record going over the years.</p>
-      <h3>Contact</h3>
+      <h5>Contact</h3>
       <p>You can reach me at <a href="mailto:matt@ramblemaps.com">matt@ramblemaps.com</a>.</p>
 
-      <h3>Download Data</h3>
+      <h5>Download Data</h3>
       <p>If you'd like a copy of this data, you can find it <a
           href="https://s3.amazonaws.com/matthewparrilla.com/snow-depth.csv">here.</a></p>
-      <p>This is my copy of the data and includes values reported to me over COVID and cleaning of erroneous values.
-        It is updated within the hour of a new depth report by the NWS.</p>
-
     </div>
   </section>
 
