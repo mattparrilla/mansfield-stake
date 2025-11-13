@@ -283,19 +283,27 @@ document.addEventListener("DOMContentLoaded", function () {
     }; // Update the DOM - New structure
 
 
-    var rankingEl = document.getElementById('season-review-ranking');
-    rankingEl.textContent = "".concat(ranking).concat(getRankingSuffix(ranking), " Snowiest");
-    rankingEl.classList.add('visible');
     var depthEl = document.getElementById('season-review-depth');
     depthEl.textContent = maxDepth;
-    depthEl.classList.add('visible');
+    depthEl.classList.add('visible'); // Update average
+
+    var averageEl = document.getElementById('season-review-average');
+    averageEl.textContent = "".concat(averageMaxDepth, "\"");
+    averageEl.classList.add('visible'); // Update difference
+
     var difference = maxDepth - averageMaxDepth;
     var differenceEl = document.getElementById('season-review-difference');
     differenceEl.textContent = "".concat(difference >= 0 ? '+' : '').concat(difference, "\"");
     differenceEl.classList.add('visible');
+    differenceEl.classList.remove('difference-positive', 'difference-negative');
+    differenceEl.classList.add(difference >= 0 ? 'difference-positive' : 'difference-negative');
     var dateEl = document.getElementById('season-review-date');
     dateEl.textContent = formatDate(maxDate);
-    dateEl.classList.add('visible');
+    dateEl.classList.add('visible'); // Update winter ranking
+
+    var rankingEl = document.getElementById('season-review-ranking');
+    rankingEl.textContent = ranking;
+    rankingEl.classList.add('visible');
     var lastSnowierEl = document.getElementById('season-review-last-snowier');
 
     if (lastSnowierSeason) {
