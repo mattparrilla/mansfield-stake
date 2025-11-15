@@ -163,8 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
     line,
     seasonContainer,
   }) => {
-    d3.select(".comparison-label").text(comparisonYear);
-
     const season = seasonContainer.selectAll(".season").data(
       data.filter((d) => d.season !== comparisonYear),
       (d) => d.season
@@ -316,12 +314,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update winter ranking
     const rankingEl = document.getElementById('season-review-ranking');
-    rankingEl.textContent = ranking;
+    rankingEl.textContent = `#${ranking}`;
     rankingEl.classList.add('visible');
 
     const lastSnowierEl = document.getElementById('season-review-last-snowier');
     if (lastSnowierSeason) {
       lastSnowierEl.textContent = lastSnowierSeason.season;
+      lastSnowierEl.classList.add("clickable");
+      lastSnowierEl.onclick = () => {
+        const seasonSelect = document.getElementById("select-season");
+        seasonSelect.value = lastSnowierSeason.season;
+        seasonSelect.dispatchEvent(new Event('change'));
+      };
     } else {
       lastSnowierEl.textContent = 'None';
     }
@@ -330,7 +334,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log('Updated season review for', currentSeasonName, 'with max depth', maxDepth);
   };
 
-  const updateMetricsGrid = (currentDepth, historicalData, comparisonSeasonName = AVERAGE_SEASON) => {
+  const updateMetricsGrid = (currentDepth, historicalData) => {
     // Find latest measurement date from current season
     const currentSeason = historicalData.find((s) => s.season === getCurrentSeason());
     const lastMeasurement = currentSeason?.values[currentSeason.values.length - 1];
@@ -339,11 +343,14 @@ document.addEventListener("DOMContentLoaded", () => {
       return; // No data yet for current season
     }
 
-    const month = lastMeasurement.date.getMonth() + 1;
-    const day = lastMeasurement.date.getDate();
+    // Format date
+    const formatDate = (date) => {
+      const options = { month: 'short', day: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    };
 
-    // Get the comparison season data for this date
-    const comparisonSeason = historicalData.find(s => s.season === comparisonSeasonName);
+    // Get the comparison season data for this date (always use AVERAGE_SEASON)
+    const comparisonSeason = historicalData.find(s => s.season === AVERAGE_SEASON);
     const interpolatedComparison = interpolateValueForDate(comparisonSeason.values, lastMeasurement.date);
     const average = interpolatedComparison;
 
@@ -352,20 +359,17 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter((season) => season.season !== getCurrentSeason() && season.season !== AVERAGE_SEASON)
       .map((season) => interpolateValueForDate(season.values, lastMeasurement.date))
       .filter((depth) => depth !== null);
-      
-        // Calculate difference from average
-        const difference = currentDepth - average;
-      
-        // Count snowier and less snowy winters
-        const snowierWinters = historicalValues.filter(
-          (depth) => depth > currentDepth
-        ).length;
-        const lessSnowyWinters = historicalValues.filter(
-          (depth) => depth < currentDepth
-        ).length;
-  
+
+    // Calculate difference from average
+    const difference = currentDepth - average;
+
+    // Count snowier winters
+    const snowierWinters = historicalValues.filter(
+      (depth) => depth > currentDepth
+    ).length;
+
     // Find last snowier winter
-    const lastSnowierWinter =
+    const lastSnowierWinterData =
       historicalData
         .filter((season) => {
           // Skip current season and average season
@@ -376,20 +380,23 @@ document.addEventListener("DOMContentLoaded", () => {
           const interpolatedDepth = interpolateValueForDate(season.values, lastMeasurement.date);
           return interpolatedDepth > currentDepth;
         })
-        .map((season) => {
-          const year = season.season.split("-")[0];
+        .pop();
+
+    const lastSnowierWinter = lastSnowierWinterData
+      ? (() => {
+          const year = lastSnowierWinterData.season.split("-")[0];
           return `${year}-${(parseInt(year) + 1).toString().slice(-2)}`;
-        })
-        .pop() || "None";
-  
+        })()
+      : "None";
+
     // Update DOM - New structure
     const metrics = {
       ".hero-value": currentDepth,
       "#average-depth": `${average}"`,
       "#difference": `${difference > 0 ? "+" : ""}${difference}"`,
       "#last-snowier": lastSnowierWinter,
-      "#snowier-count": snowierWinters,
-      "#less-snowy-count": lessSnowyWinters,
+      "#snowier-count": `#${snowierWinters + 1}`,
+      "#last-update-date": formatDate(lastMeasurement.date),
     };
 
     Object.entries(metrics).forEach(([selector, value]) => {
@@ -400,15 +407,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Update comparison label
-    const comparisonLabel = document.querySelector('.comparison-bar .comparison-item:first-child .comparison-label');
-    if (comparisonLabel) {
-      const labelText = comparisonSeasonName === AVERAGE_SEASON
-        ? 'Average'
-        : comparisonSeasonName;
-      comparisonLabel.textContent = labelText;
-    }
-
     // Add/remove positive/negative classes for difference
     const differenceEl = document.querySelector("#difference");
     if (differenceEl) {
@@ -416,6 +414,17 @@ document.addEventListener("DOMContentLoaded", () => {
       differenceEl.classList.add(
         difference > 0 ? "difference-positive" : "difference-negative"
       );
+    }
+
+    // Make last snowier winter clickable
+    const lastSnowierEl = document.querySelector("#last-snowier");
+    if (lastSnowierEl && lastSnowierWinterData) {
+      lastSnowierEl.classList.add("clickable");
+      lastSnowierEl.onclick = () => {
+        const seasonSelect = document.getElementById("select-season");
+        seasonSelect.value = lastSnowierWinterData.season;
+        seasonSelect.dispatchEvent(new Event('change'));
+      };
     }
   };
 
@@ -707,8 +716,6 @@ document.addEventListener("DOMContentLoaded", () => {
             seasonContainer,
             comparisonYear,
           });
-          // Update metrics to compare with selected season
-          updateMetricsGrid(currentDepth, data, comparisonYear);
         };
       }
     );

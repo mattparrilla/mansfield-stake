@@ -399,6 +399,15 @@ svg .tick text {
   visibility: visible;
 }
 
+.supporting-value.clickable {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.supporting-value.clickable:hover {
+  color: #1E88E5;
+}
+
 /* Maps */
 .maps_too {
   display: flex;
