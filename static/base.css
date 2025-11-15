@@ -313,7 +313,7 @@ svg .tick text {
 /* Comparison Bar */
 .comparison-bar {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 0.5rem;
   margin-top: 0.5rem;
   padding: 0;
